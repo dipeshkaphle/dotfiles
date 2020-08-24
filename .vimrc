@@ -151,3 +151,11 @@ let g:haskell_backpack = 1                " to enable highlighting of backpack k
 " Terminal Mode remap
 tnoremap <Esc> <C-\><C-n>
 
+
+" Setting syntax for MD as markdown
+" Overriding if it was already set
+au BufRead,BufNewFile *.MD set filetype=markdown
+
+"Set syntax for MD as markdown
+"Doesnt override if already set tho
+"au BufRead,BufNewFile *.MD setfiletype markdown
