@@ -159,3 +159,19 @@ au BufRead,BufNewFile *.MD set filetype=markdown
 "Set syntax for MD as markdown
 "Doesnt override if already set tho
 "au BufRead,BufNewFile *.MD setfiletype markdown
+"
+"
+" My mappings
+inoremap <C-k> <Esc>O
+inoremap <C-j> <Esc>o
+inoremap <C-l> <Esc>A
+inoremap <C-h> <Esc>^i
+inoremap <C-b> <Esc>0i
+cnoremap makecpp ! g++ -lm % -o %:t:r
+cnoremap makec ! gcc -lm % -o %:t:r
+cnoremap runpy terminal python %
+cnoremap runrb terminal ruby %
+cnoremap irb terminal irb
+cnoremap ipy terminal python
+cnoremap makehs ghc %
+cnoremap runc terminal ./%:t:r
