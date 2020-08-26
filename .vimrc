@@ -176,9 +176,12 @@ cnoremap irb terminal irb
 cnoremap ipy terminal python
 cnoremap makehs ghc %
 cnoremap runc terminal ./%:t:r
-cnoremap mrcpp makecpp <CR><CR> <bar> runc
+cnoremap echo ! echo 'Hi' && echo 'Hello'
 
 
 " My leader
 let mapleader = "\<Space>"
+		
 
+" Markdown specific mapping
+autocmd FileType markdown cnoremap makepdf ! zsh ~/scripts/mdMake.sh %
