@@ -170,11 +170,11 @@ inoremap <C-b> <Esc>0i
 inoremap <C-s> <Esc>:w<CR>i
 cnoremap makecpp ! g++ -lm % -o %:t:r
 cnoremap makec ! gcc -lm % -o %:t:r 
-cnoremap runpy terminal python %
-cnoremap runrb terminal ruby %
+cnoremap py terminal python %
+cnoremap rb terminal ruby %
 cnoremap irb terminal irb
 cnoremap ipy terminal python
-cnoremap makehs ghc %
+cnoremap makehs ! ghc % && ./%:t:r
 cnoremap runc terminal ./%:t:r
 cnoremap echo ! echo 'Hi' && echo 'Hello'
 

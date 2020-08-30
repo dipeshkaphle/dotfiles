@@ -6,6 +6,10 @@ So whenever i try to open a file not owned by me itll open the right vim for me.
 Hence I wont need to worry about opening root files with nvim and let this script decide
 =end
 filename = ARGV[0]
+if(not File.file?(filename))
+  exec("nvim #{filename}")
+end
+
 if(File.owned?(filename))
   exec("nvim #{filename}")
 else
