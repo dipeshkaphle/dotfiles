@@ -155,12 +155,13 @@ tnoremap <Esc> <C-\><C-n>
 " Setting syntax for MD as markdown
 " Overriding if it was already set
 au BufRead,BufNewFile *.MD set filetype=markdown
-
 "Set syntax for MD as markdown
 "Doesnt override if already set tho
 "au BufRead,BufNewFile *.MD setfiletype markdown
-"
-"
+
+" My leader
+let mapleader = "\<Space>"
+	
 " My mappings
 inoremap <C-k> <Esc>O
 inoremap <C-j> <Esc>o
@@ -168,20 +169,17 @@ inoremap <C-l> <Esc>A
 inoremap <C-h> <Esc>^i
 inoremap <C-b> <Esc>0i
 inoremap <C-s> <Esc>:w<CR>i
-cnoremap makecpp ! g++ -lm % -o %:t:r
-cnoremap makec ! gcc -lm % -o %:t:r 
-cnoremap py terminal python %
-cnoremap rb terminal ruby %
-cnoremap irb terminal irb
-cnoremap ipy terminal python
-cnoremap makehs ! ghc % && ./%:t:r
-cnoremap runc terminal ./%:t:r
-cnoremap echo ! echo 'Hi' && echo 'Hello'
+nnoremap <leader>cpp : ! g++ -lm % -o %:t:r
+nnoremap <leader>c :! gcc -lm % -o %:t:r 
+nnoremap <leader>py : terminal python %
+nnoremap <leader>rb :terminal ruby %
+nnoremap <leader>irb :terminal irb
+nnoremap <leader>ipy :terminal python
+nnoremap <leader>hs :! ghc %
+nnoremap <leader>runhs : terminal ./%:t:r
+nnoremap <leader>ghs : terminal ghci %
+nnoremap <leader>runc : terminal ./%:t:r
 
-
-" My leader
-let mapleader = "\<Space>"
-		
 
 " Markdown specific mapping
-autocmd FileType markdown cnoremap makepdf ! zsh ~/scripts/mdMake.sh %
+autocmd FileType markdown nnoremap <leader>pdf :! zsh ~/scripts/mdMake.sh %
