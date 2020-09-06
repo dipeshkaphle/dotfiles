@@ -106,7 +106,7 @@ set tabstop=4
 set shiftwidth=4
 "set softtabstop=4
 "set expandtab
-set clipboard=unnamedplus
+set clipboard+=unnamedplus
 
 syntax enable
 
@@ -124,16 +124,16 @@ set mouse+=a
 
 
 
-"let g:gruvbox_contrast_dark='hard'
-"let g:gruvbox_contrast_light='hard'
-"colorscheme gruvbox
+let g:gruvbox_contrast_dark='hard'
+let g:gruvbox_contrast_light='medium'
+set background=dark
+colorscheme gruvbox
 "let g:molokai_original = 1
 "let g:solarized_contrast="low"
-colorscheme molokai
-"set background=dark
+"colorscheme solarized
+"colorscheme molokai
 "colorscheme jay
-set background=dark
-let g:molokai_original = 1
+"let g:molokai_original = 1
 "colorscheme solarized
 " Removes color bleeding on kitty
 set t_ut=
@@ -169,8 +169,8 @@ inoremap <C-l> <Esc>A
 inoremap <C-h> <Esc>^i
 inoremap <C-b> <Esc>0i
 inoremap <C-s> <Esc>:w<CR>i
-nnoremap <leader>cpp : ! g++ -lm % -o %:t:r
-nnoremap <leader>c :! gcc -lm % -o %:t:r 
+nnoremap <leader>cpp : ! g++ -lm % -o %:t:r -Wall -g 
+nnoremap <leader>c :! gcc -lm % -o %:t:r -Wall -g 
 nnoremap <leader>py : terminal python %
 nnoremap <leader>rb :terminal ruby %
 nnoremap <leader>irb :terminal irb
@@ -179,7 +179,33 @@ nnoremap <leader>hs :! ghc %
 nnoremap <leader>runhs : terminal ./%:t:r
 nnoremap <leader>ghs : terminal ghci %
 nnoremap <leader>runc : terminal ./%:t:r
+nnoremap <leader>y "+y<CR>
+nnoremap <leader>yy "+yy<CR>
+nnoremap <leader>p "+p<CR>
 
+" Removing bad habits 
+" i.e. using up down side keys and moving to
+" h j k l navigationskeys
+" In insert mode with Alt+{h,j,k,l}
+
+
+" Remove newbie crutches in Insert Mode
+inoremap <Down> <Nop>
+inoremap <Left> <Nop>
+inoremap <Right> <Nop>
+inoremap <Up> <Nop>
+
+" Remove newbie crutches in Normal Mode
+nnoremap <Down> <Nop>
+nnoremap <Left> <Nop>
+nnoremap <Right> <Nop>
+nnoremap <Up> <Nop>
+
+" Remove newbie crutches in Visual Mode
+vnoremap <Down> <Nop>
+vnoremap <Left> <Nop>
+vnoremap <Right> <Nop>
+vnoremap <Up> <Nop>
 
 " Markdown specific mapping
 autocmd FileType markdown nnoremap <leader>pdf :! zsh ~/scripts/mdMake.sh %
