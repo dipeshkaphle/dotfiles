@@ -159,6 +159,12 @@ au BufRead,BufNewFile *.MD set filetype=markdown
 "Doesnt override if already set tho
 "au BufRead,BufNewFile *.MD setfiletype markdown
 
+inoremap <A-l> <Right>
+inoremap <A-j> <Down>
+inoremap <A-k> <Up>
+inoremap <A-h> <Left>
+
+
 " My leader
 let mapleader = "\<Space>"
 	
@@ -182,6 +188,9 @@ nnoremap <leader>runc : terminal ./%:t:r
 nnoremap <leader>y "+y<CR>
 nnoremap <leader>yy "+yy<CR>
 nnoremap <leader>p "+p<CR>
+nnoremap <leader>n :NERDTree
+nnoremap <leader>qn :NERDTreeClose
+nnoremap <leader>rn :NERDTreeRefreshRoot
 
 " Removing bad habits 
 " i.e. using up down side keys and moving to
