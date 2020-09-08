@@ -31,6 +31,7 @@ bindkey -e
 WORDCHARS=${WORDCHARS//[\/]}
 
 
+
 # --------------------
 # Module configuration
 # --------------------
@@ -124,33 +125,46 @@ bindkey -M vicmd 'j' history-substring-search-down
 
 
 
-
-mkcd(){
-	mkdir $1
-	cd $1
-}
-
-
 # Example aliases
-alias la='ls -a'
-alias ll='ls -l'
-alias lla='ls -la'
+# Some aliases are defined globally so that theyll
+# expand inside the functions like copy and vimOut
+alias -g la='ls -a'
+alias -g ll='ls -l'
+alias -g lla='ls -la'
 alias tmuxat='tmux a -t'
 alias tmux='tmux -u'
 alias open='xdg-open'
 alias sublime='~/sublime_text_3/sublime_text'
-alias lsd='ruby ~/scripts/lsImproved.rb -t dirs'
-alias lsA='ruby ~/scripts/lsImproved.rb'
-alias lsf='ruby ~/scripts/lsImproved.rb -t files'
-alias lsfa='lsf -a'
-alias lsfl='lsf -l'
-alias lsfla='lsf -la'
-alias lsda='lsd -a'
-alias lsdl='lsd -l'
-alias lsdla='lsd -la'
+alias -g lsd='ruby ~/scripts/lsImproved.rb -t dirs'
+alias -g lsA='ruby ~/scripts/lsImproved.rb'
+alias -g lsf='ruby ~/scripts/lsImproved.rb -t files'
+alias -g lsfa='lsf -a'
+alias -g lsfl='lsf -l'
+alias -g lsfla='lsf -la'
+alias -g lsda='lsd -a'
+alias -g lsdl='lsd -l'
+alias -g lsdla='lsd -la'
 alias gl='git log --graph --decorate'
 alias gs='git status'
 alias glo='git log --oneline'
 alias chrome='google-chrome-stable'
 alias acad='cd ~/Acads/Sem3'
 alias vimm='ruby ~/scripts/myvim.rb'
+
+
+
+
+
+mkcd(){
+	mkdir $1
+	cd $1
+}
+
+# Pastes the output of a command to the clipboard
+copy(){
+	$@ | xclip -selection clipboard
+}
+
+vimOut(){
+	nvim <<<$($@)
+}
