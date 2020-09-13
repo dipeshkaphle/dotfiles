@@ -165,6 +165,3 @@ copy(){
 	$@ | xclip -selection clipboard
 }
 
-vimOut(){
-	nvim <<<$($@)
-}

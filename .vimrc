@@ -106,7 +106,7 @@ set tabstop=4
 set shiftwidth=4
 "set softtabstop=4
 "set expandtab
-set clipboard+=unnamedplus
+set clipboard+=unnamed
 
 syntax enable
 
@@ -117,9 +117,9 @@ syntax enable
 set mouse+=a
 
 
-:let ruby_operators = 1
-:let ruby_pseudo_operators = 1
-:let ruby_space_errors = 1
+let ruby_operators = 1
+let ruby_pseudo_operators = 1
+let ruby_space_errors = 1
 
 
 
