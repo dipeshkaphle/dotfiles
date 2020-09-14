@@ -72,6 +72,7 @@ Plug 'josuegaleas/jay'
 Plug 'altercation/vim-colors-solarized'
 Plug 'scrooloose/nerdtree'
 Plug 'neovimhaskell/haskell-vim'
+Plug 'lambdalisue/suda.vim'
 call plug#end()
 
 
@@ -138,7 +139,8 @@ colorscheme gruvbox
 " Removes color bleeding on kitty
 set t_ut=
 set cursorline
-cmap w!! w !sudo tee %
+cmap w!! :SudaWrite
+"cmap w!! w !sudo tee %
 let g:haskell_enable_quantification = 1   " to enable highlighting of `forall`
 let g:haskell_enable_recursivedo = 1      " to enable highlighting of `mdo` and `rec`
 let g:haskell_enable_arrowsyntax = 1      " to enable highlighting of `proc`
@@ -152,6 +154,8 @@ let g:haskell_backpack = 1                " to enable highlighting of backpack k
 tnoremap <Esc> <C-\><C-n>
 
 
+
+
 " Setting syntax for MD as markdown
 " Overriding if it was already set
 au BufRead,BufNewFile *.MD set filetype=markdown
@@ -159,22 +163,24 @@ au BufRead,BufNewFile *.MD set filetype=markdown
 "Doesnt override if already set tho
 "au BufRead,BufNewFile *.MD setfiletype markdown
 
-inoremap <A-l> <Right>
-inoremap <A-j> <Down>
-inoremap <A-k> <Up>
-inoremap <A-h> <Left>
-
-
 " My leader
 let mapleader = "\<Space>"
 	
 " My mappings
-inoremap <C-k> <Esc>O
-inoremap <C-j> <Esc>o
-inoremap <C-l> <Esc>A
-inoremap <C-h> <Esc>^i
-inoremap <C-b> <Esc>0i
+inoremap <C-k> <Up>
+inoremap <C-j> <Down>
+inoremap <C-l> <Right>
+inoremap <C-h> <Left>
+"ctrl s save in insert mode
+"C-b will move back a word
+"C-Shift-b will move to first character on the line
+"C-Shift-f will move to the end of the line in insert mode
+"ctrl w to move by word
 inoremap <C-s> <Esc>:w<CR>i
+inoremap <C-w> <C-o>w
+inoremap <C-b> <C-o>b
+inoremap <C-S-b> <C-o>^
+inoremap <C-S-f> <C-o>$
 nnoremap <leader>cpp : ! g++ -lm % -o %:t:r -Wall -g 
 nnoremap <leader>c :! gcc -lm % -o %:t:r -Wall -g 
 nnoremap <leader>py : terminal python %
@@ -196,13 +202,12 @@ nnoremap <leader>rn :NERDTreeRefreshRoot
 " i.e. using up down side keys and moving to
 " h j k l navigationskeys
 " In insert mode with Alt+{h,j,k,l}
-
-
-" Remove newbie crutches in Insert Mode
 inoremap <Down> <Nop>
 inoremap <Left> <Nop>
 inoremap <Right> <Nop>
 inoremap <Up> <Nop>
+
+
 
 " Remove newbie crutches in Normal Mode
 nnoremap <Down> <Nop>
