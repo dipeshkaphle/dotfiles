@@ -171,16 +171,23 @@ inoremap <C-k> <Up>
 inoremap <C-j> <Down>
 inoremap <C-l> <Right>
 inoremap <C-h> <Left>
+
+"Mapping to resize the splits a bit faster
+nnoremap <C-w>> 3<C-w>>
+nnoremap <C-w>< 3<C-w><
+
 "ctrl s save in insert mode
 "C-b will move back a word
 "C-Shift-b will move to first character on the line
 "C-Shift-f will move to the end of the line in insert mode
 "ctrl w to move by word
 inoremap <C-s> <Esc>:w<CR>i
-inoremap <C-w> <C-o>w
-inoremap <C-b> <C-o>b
-inoremap <C-S-b> <C-o>^
-inoremap <C-S-f> <C-o>$
+inoremap <C-w> <C-o>W
+inoremap <C-b> <C-o>B
+inoremap <C-f> <C-o>^
+inoremap <C-e> <C-o>$
+inoremap <C-t> <C-o>O
+inoremap <C-d> <C-o>o
 nnoremap <leader>cpp : ! g++ -lm % -o %:t:r -Wall -g 
 nnoremap <leader>c :! gcc -lm % -o %:t:r -Wall -g 
 nnoremap <leader>py : terminal python %
@@ -191,7 +198,7 @@ nnoremap <leader>hs :! ghc %
 nnoremap <leader>runhs : terminal ./%:t:r
 nnoremap <leader>ghs : terminal ghci %
 nnoremap <leader>runc : terminal ./%:t:r
-nnoremap <leader>y "+y<CR>
+vnoremap <leader>y "+y<CR>
 nnoremap <leader>yy "+yy<CR>
 nnoremap <leader>p "+p<CR>
 nnoremap <leader>n :NERDTree
