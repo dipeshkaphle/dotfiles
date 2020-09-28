@@ -37,6 +37,7 @@ exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
 exec --no-startup-id nm-applet
 exec --no-startup-id ~/.config/polybar/launch.sh
 exec --no-startup-id feh --bg-scale ~/dotfiles/wallpapers/urban-japan-3440×1440.jpg
+exec --no-startup-id picom --config '/home/dipesh/.config/picom/picom.conf' -b
 
 # Use pactl to adjust volume in PulseAudio.
 set $refresh_i3status killall -SIGUSR1 i3status
@@ -200,7 +201,7 @@ bindsym $mod+r mode "resize"
 # finds out, if available)
 bar {
 	font pango:mono 11
-	status_command i3status
+	status_command i3blocks
 	mode dock
 	modifier None
 	colors {

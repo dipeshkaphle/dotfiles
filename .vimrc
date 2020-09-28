@@ -205,28 +205,10 @@ nnoremap <leader>n :NERDTree
 nnoremap <leader>qn :NERDTreeClose
 nnoremap <leader>rn :NERDTreeRefreshRoot
 
-" Removing bad habits 
-" i.e. using up down side keys and moving to
-" h j k l navigationskeys
-" In insert mode with Alt+{h,j,k,l}
-inoremap <Down> <Nop>
-inoremap <Left> <Nop>
-inoremap <Right> <Nop>
-inoremap <Up> <Nop>
-
-
-
-" Remove newbie crutches in Normal Mode
-nnoremap <Down> <Nop>
-nnoremap <Left> <Nop>
-nnoremap <Right> <Nop>
-nnoremap <Up> <Nop>
-
-" Remove newbie crutches in Visual Mode
-vnoremap <Down> <Nop>
-vnoremap <Left> <Nop>
-vnoremap <Right> <Nop>
-vnoremap <Up> <Nop>
-
 " Markdown specific mapping
 autocmd FileType markdown nnoremap <leader>pdf :! zsh ~/scripts/mdMake.sh %
+
+
+
+" For transparency in termite in i3 with picom
+hi Normal guibg=NONE ctermbg=NONE
