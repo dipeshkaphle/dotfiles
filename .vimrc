@@ -73,6 +73,7 @@ Plug 'altercation/vim-colors-solarized'
 Plug 'scrooloose/nerdtree'
 Plug 'neovimhaskell/haskell-vim'
 Plug 'lambdalisue/suda.vim'
+Plug 'atelierbram/vim-colors_atelier-schemes'
 call plug#end()
 
 
@@ -128,7 +129,9 @@ let ruby_space_errors = 1
 let g:gruvbox_contrast_dark='hard'
 let g:gruvbox_contrast_light='medium'
 set background=dark
-colorscheme gruvbox
+"colorscheme gruvbox
+"colorscheme Atelier_SeasideDark
+colorscheme Atelier_DuneDark
 "let g:molokai_original = 1
 "let g:solarized_contrast="low"
 "colorscheme solarized

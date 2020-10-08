@@ -1,5 +1,6 @@
-git clone --depth 1 https://github.com/dexpota/kitty-themes ~/.config/kitty/kitty-themes
-ln -s ~/.config/kitty/kitty-themes/themes/Kibble.conf theme.conf
+pushd ~/.config
+mkdir kitty
+popd
 ln -s $(pwd)/theme.conf ~/.config/kitty/theme.conf
 rm ~/.config/kitty/kitty.conf
 ln -s $(pwd)/kitty.conf ~/.config/kitty/kitty.conf
@@ -24,4 +25,15 @@ ln -s ~/.vim/plugged ~/.config/nvim/plugged
 # setting up the scripts for zsh aliases like lsf and vimm
 ln -s $(pwd)/scripts ~/scripts
 echo 'Open vimrc and do PlugInstall'
+
+rm -r ~/.config/{polybar,i3,i3status,picom}
+pushd ~/.config
+mkdir i3
+mkdir termite
+popd
+ln -s $(pwd)/i3config ~/.config/i3/config
+ln -s $(pwd)/polybar ~/.config/polybar
+ln -s $(pwd)/picom ~/.config/picom
+ln -s $(pwd)/termiteConfig ~/.config/termite/config
+
 
