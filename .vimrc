@@ -141,7 +141,7 @@ colorscheme Atelier_DuneDark
 "colorscheme solarized
 " Removes color bleeding on kitty
 set t_ut=
-set cursorline
+"set cursorline
 cmap w!! :SudaWrite
 "cmap w!! w !sudo tee %
 let g:haskell_enable_quantification = 1   " to enable highlighting of `forall`
