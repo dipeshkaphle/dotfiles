@@ -1,4 +1,6 @@
 {
+  "clangd.fallbackFlags": ["-std=c++20"],
+  "diagnostic.displayByAle": true,
   "languageserver": {
     "haskell": {
       "command": "ghcide",

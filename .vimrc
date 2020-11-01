@@ -57,48 +57,6 @@ nmap Q <Nop> " 'Q' in normal mode enters Ex mode. You almost never want this.
 set noerrorbells visualbell t_vb=
 
 
-filetype plugin indent on
-
-
-call plug#begin()
-Plug 'tpope/vim-surround'
-Plug 'raimondi/delimitmate'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-ruby/vim-ruby'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'morhetz/gruvbox'
-Plug 'tomasr/molokai'
-Plug 'josuegaleas/jay'
-Plug 'altercation/vim-colors-solarized'
-Plug 'scrooloose/nerdtree'
-Plug 'neovimhaskell/haskell-vim'
-Plug 'lambdalisue/suda.vim'
-Plug 'atelierbram/vim-colors_atelier-schemes'
-call plug#end()
-
-
-
-
-let g:haskell_indent_if = 3
-let g:haskell_indent_case = 2
-let g:haskell_indent_let = 4
-let g:haskell_indent_where = 6
-let g:haskell_indent_before_where = 2
-let g:haskell_indent_after_bare_where = 2
-let g:haskell_indent_do = 3
-let g:haskell_indent_in = 1
-let g:haskell_indent_guard = 2
-let g:haskell_indent_case_alternative = 1
-let g:cabal_indent_section = 2
-
-
-
-
-" Haskell specific
-autocmd FileType haskell setlocal softtabstop=4 expandtab
-
-
-
 
 " General rules
 set autoindent
@@ -118,11 +76,87 @@ syntax enable
 "sometimes be convenient.
 set mouse+=a
 
+filetype plugin indent on
+
+
+	
+" My mappings
+inoremap <C-k> <Up>
+inoremap <C-j> <Down>
+inoremap <C-l> <Right>
+inoremap <C-h> <Left>
+
+"ctrl s save in insert mode
+"C-b will move back a word
+"C-Shift-b will move to first character on the line
+"C-Shift-f will move to the end of the line in insert mode
+"ctrl w to move by word
+inoremap <C-s> <Esc>:w<CR>i
+inoremap <C-w> <C-o>W
+inoremap <C-b> <C-o>B
+inoremap <C-f> <C-o>^
+inoremap <C-e> <C-o>$
+inoremap <C-t> <C-o>O
+inoremap <C-d> <C-o>o
+
+
+" My leader
+let mapleader = "\<Space>"
+
+
+" Protecting plugins from vscode
+if !exists('g:vscode')
+
+call plug#begin()
+Plug 'tpope/vim-surround'
+Plug 'raimondi/delimitmate'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-ruby/vim-ruby'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'morhetz/gruvbox'
+Plug 'tomasr/molokai'
+Plug 'josuegaleas/jay'
+Plug 'altercation/vim-colors-solarized'
+Plug 'scrooloose/nerdtree'
+Plug 'neovimhaskell/haskell-vim'
+Plug 'lambdalisue/suda.vim'
+Plug 'atelierbram/vim-colors_atelier-schemes'
+Plug 'nbouscal/vim-stylish-haskell'
+Plug 'w0rp/ale'
+call plug#end()
+
+" ALE stuff
+let g:ale_disable_lsp = 1
+let g:ale_sign_error = '>>'
+let g:ale_sign_warning = '-'
+let g:ale_fixers = {
+      \    'ruby': ['rubocop'],
+      \}
+let g:ale_fix_on_save = 1
+
+let g:haskell_indent_if = 3
+let g:haskell_indent_case = 2
+let g:haskell_indent_let = 4
+let g:haskell_indent_where = 6
+let g:haskell_indent_before_where = 2
+let g:haskell_indent_after_bare_where = 2
+let g:haskell_indent_do = 3
+let g:haskell_indent_in = 1
+let g:haskell_indent_guard = 2
+let g:haskell_indent_case_alternative = 1
+let g:cabal_indent_section = 2
+
+
+
+
+" Haskell specific
+autocmd FileType haskell setlocal softtabstop=4 expandtab
+autocmd FileType haskell ALEDisable
+autocmd FileType cpp ALEDisable
 
 let ruby_operators = 1
 let ruby_pseudo_operators = 1
 let ruby_space_errors = 1
-
 
 
 
@@ -166,32 +200,12 @@ au BufRead,BufNewFile *.MD set filetype=markdown
 "Doesnt override if already set tho
 "au BufRead,BufNewFile *.MD setfiletype markdown
 
-" My leader
-let mapleader = "\<Space>"
-	
-" My mappings
-inoremap <C-k> <Up>
-inoremap <C-j> <Down>
-inoremap <C-l> <Right>
-inoremap <C-h> <Left>
 
 "Mapping to resize the splits a bit faster
 nnoremap <C-w>> 3<C-w>>
 nnoremap <C-w>< 3<C-w><
 
-"ctrl s save in insert mode
-"C-b will move back a word
-"C-Shift-b will move to first character on the line
-"C-Shift-f will move to the end of the line in insert mode
-"ctrl w to move by word
-inoremap <C-s> <Esc>:w<CR>i
-inoremap <C-w> <C-o>W
-inoremap <C-b> <C-o>B
-inoremap <C-f> <C-o>^
-inoremap <C-e> <C-o>$
-inoremap <C-t> <C-o>O
-inoremap <C-d> <C-o>o
-nnoremap <leader>cpp : ! g++ -lm % -o %:t:r -Wall -g 
+nnoremap <leader>cpp : ! g++ -std=c++20 -lm % -o %:t:r -Wall -g 
 nnoremap <leader>c :! gcc -lm % -o %:t:r -Wall -g 
 nnoremap <leader>py : terminal python %
 nnoremap <leader>rb :terminal ruby %
@@ -215,3 +229,4 @@ autocmd FileType markdown nnoremap <leader>pdf :! zsh ~/scripts/mdMake.sh %
 
 " For transparency in termite in i3 with picom
 hi Normal guibg=NONE ctermbg=NONE
+endif
