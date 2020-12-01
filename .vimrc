@@ -100,6 +100,11 @@ inoremap <C-t> <C-o>O
 inoremap <C-d> <C-o>o
 
 
+
+nnoremap <S-j> <C-e>
+nnoremap <S-k> <C-y>
+
+
 " My leader
 let mapleader = "\<Space>"
 
@@ -123,6 +128,7 @@ Plug 'lambdalisue/suda.vim'
 Plug 'atelierbram/vim-colors_atelier-schemes'
 Plug 'nbouscal/vim-stylish-haskell'
 Plug 'w0rp/ale'
+Plug 'honza/vim-snippets'
 call plug#end()
 
 " ALE stuff
@@ -152,7 +158,7 @@ let g:cabal_indent_section = 2
 " Haskell specific
 autocmd FileType haskell setlocal softtabstop=4 expandtab
 autocmd FileType haskell ALEDisable
-autocmd FileType cpp ALEDisable
+
 
 let ruby_operators = 1
 let ruby_pseudo_operators = 1
@@ -163,16 +169,17 @@ let ruby_space_errors = 1
 let g:gruvbox_contrast_dark='hard'
 let g:gruvbox_contrast_light='medium'
 set background=dark
-"colorscheme gruvbox
+colorscheme gruvbox
 "colorscheme Atelier_SeasideDark
-colorscheme Atelier_DuneDark
+"colorscheme Atelier_DuneDark
 "let g:molokai_original = 1
-"let g:solarized_contrast="low"
+"let g:solarized_contrast="medium"
 "colorscheme solarized
 "colorscheme molokai
 "colorscheme jay
 "let g:molokai_original = 1
 "colorscheme solarized
+"set background=dark
 " Removes color bleeding on kitty
 set t_ut=
 "set cursorline
@@ -205,8 +212,9 @@ au BufRead,BufNewFile *.MD set filetype=markdown
 nnoremap <C-w>> 3<C-w>>
 nnoremap <C-w>< 3<C-w><
 
-nnoremap <leader>cpp : ! g++ -std=c++20 -lm % -o %:t:r -Wall -g 
-nnoremap <leader>c :! gcc -lm % -o %:t:r -Wall -g 
+nnoremap <leader>fmt :!clang-format -i %<CR>
+nnoremap <leader>cpp : ! g++ -std=c++20 -lm % -o %:t:r -Wall -g -fsanitize=address
+nnoremap <leader>c :! gcc -lm % -o %:t:r -Wall -g -fsanitize=address
 nnoremap <leader>py : terminal python %
 nnoremap <leader>rb :terminal ruby %
 nnoremap <leader>irb :terminal irb
@@ -222,6 +230,7 @@ nnoremap <leader>n :NERDTree
 nnoremap <leader>qn :NERDTreeClose
 nnoremap <leader>rn :NERDTreeRefreshRoot
 
+
 " Markdown specific mapping
 autocmd FileType markdown nnoremap <leader>pdf :! zsh ~/scripts/mdMake.sh %
 
@@ -230,3 +239,40 @@ autocmd FileType markdown nnoremap <leader>pdf :! zsh ~/scripts/mdMake.sh %
 " For transparency in termite in i3 with picom
 hi Normal guibg=NONE ctermbg=NONE
 endif
+
+
+" --------------------------------------------------------------------------
+" --------------------------------------------------------------------------
+" Snippets CoC
+"
+" Use <C-l> for trigger snippet expand.
+imap <C-l> <Plug>(coc-snippets-expand)
+
+" Use <C-j> for select text for visual placeholder of snippet.
+vmap <C-j> <Plug>(coc-snippets-select)
+
+" Use <C-j> for jump to next placeholder, it's default of coc.nvim
+let g:coc_snippet_next = '<c-j>'
+
+" Use <C-k> for jump to previous placeholder, it's default of coc.nvim
+let g:coc_snippet_prev = '<c-k>'
+
+" Use <C-j> for both expand and jump (make expand higher priority.)
+imap <C-j> <Plug>(coc-snippets-expand-jump)
+
+" Use <leader>x for convert visual selected code to snippet
+xmap <leader>x  <Plug>(coc-convert-snippet)
+
+
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? coc#_select_confirm() :
+      \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+let g:coc_snippet_next = '<tab>'

@@ -167,6 +167,10 @@ bindsym $mod+Shift+7 move container to workspace number $ws7
 bindsym $mod+Shift+8 move container to workspace number $ws8
 bindsym $mod+Shift+9 move container to workspace number $ws9
 bindsym $mod+Shift+0 move container to workspace number $ws10
+bindsym $mod+Shift+n move container to workspace next
+bindsym $mod+Shift+p move container to workspace prev
+
+
 
 # reload the configuration file
 bindsym $mod+Shift+c reload
@@ -175,6 +179,7 @@ bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 bindsym $mod+Ctrl+l exec --no-startup-id i3lock -i ~/dotfiles/wallpapers/lockscreen.png
+bindsym $mod+Shift+s exec --no-startup-id sh /home/dipesh/scripts/prompt "Suspend computer?" "systemctl suspend" && i3lock -i ~/dotfiles/wallpapers/lockscreen.png
 # resize window (you can also use the mouse for that)
 mode "resize" {
         # These bindings trigger as soon as you enter the resize mode
