@@ -1,0 +1,55 @@
+// Place your key bindings in this file to override the defaults
+[
+    {
+        "key": "meta+up",
+        "command":"workbench.action.terminal.resizePaneUp",
+        "when": "editorTextFocus"
+    },{
+        "key": "ctrl+b",
+        "command": "cursorWordEndLeft",
+        "when": "editorTextFocus"
+    },{
+        "key": "ctrl+k",
+        "command":"cursorUp",
+        "when": "editorTextFocus"
+    },{
+        "key": "ctrl+j",
+        "command": "cursorDown",
+        "when": "editorTextFocus"
+    },{
+        "key": "ctrl+l",
+        "command": "cursorRight",
+        "when": "editorTextFocus"
+    },{
+        "key": "ctrl+h",
+        "command": "cursorLeft",
+        "when": "editorTextFocus"
+    },{
+        "key": "ctrl+w",
+        "command":"cursorWordEndRight",
+        "when": "editorTextFocus"
+    },{
+        "key": "ctrl+a",
+        "command": "cursorLineEnd",
+        "when": "editorTextFocus " 
+    },{
+        "key": "ctrl+d",
+        "command":"editor.action.insertLineAfter",
+        "when": "editorTextFocus"
+    },{
+        "key": "ctrl+t",
+        "command": "editor.action.insertLineBefore",
+        "when": "editorTextFocus"
+    },{
+        "key": "ctrl+f",
+        "command": "cursorLineStart",
+        "when": "editorTextFocus"
+    },{
+        "key": "meta+down",
+        "command": "workbench.action.terminal.resizePaneDown",
+        "when": "editorTextFocus"
+    },{
+        "key": "ctrl+space",
+        "command": "workbench.action.focusActiveEditorGroup"
+    }
+]

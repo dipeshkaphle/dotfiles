@@ -10,6 +10,8 @@
 " loaded some other way (e.g. saved as `foo`, and then Vim started with
 " `vim -u foo`).
 set nocompatible
+set hidden
+
 
 " Turn on syntax highlighting.
 syntax on
@@ -81,10 +83,10 @@ filetype plugin indent on
 
 	
 " My mappings
-inoremap <C-k> <Up>
-inoremap <C-j> <Down>
-inoremap <C-l> <Right>
-inoremap <C-h> <Left>
+imap <C-k> <Up>
+imap <C-j> <Down>
+imap <C-l> <Right>
+imap <C-h> <Left>
 
 "ctrl s save in insert mode
 "C-b will move back a word
@@ -129,6 +131,7 @@ Plug 'atelierbram/vim-colors_atelier-schemes'
 Plug 'nbouscal/vim-stylish-haskell'
 Plug 'w0rp/ale'
 Plug 'honza/vim-snippets'
+Plug 'scrooloose/nerdcommenter'
 call plug#end()
 
 " ALE stuff
@@ -138,7 +141,10 @@ let g:ale_sign_warning = '-'
 let g:ale_fixers = {
       \    'ruby': ['rubocop'],
       \}
+let g:ale_linters = { 'c':['cc'],'cpp':['cc']}
+let g:ale_cpp_cc_options = '-std=c++2a -Wall'
 let g:ale_fix_on_save = 1
+let g:airline#extensions#ale#enabled = 1
 
 let g:haskell_indent_if = 3
 let g:haskell_indent_case = 2
@@ -157,7 +163,8 @@ let g:cabal_indent_section = 2
 
 " Haskell specific
 autocmd FileType haskell setlocal softtabstop=4 expandtab
-autocmd FileType haskell ALEDisable
+" autocmd FileType haskell ALEDisable
+" autocmd FileType cpp ALEDisable
 
 
 let ruby_operators = 1
@@ -229,50 +236,76 @@ nnoremap <leader>p "+p<CR>
 nnoremap <leader>n :NERDTree
 nnoremap <leader>qn :NERDTreeClose
 nnoremap <leader>rn :NERDTreeRefreshRoot
+map <leader>z <plug>NERDCommenterToggle
 
 
+
+" --------------------------------------------------------------------------
+" Pressing these will take me to places with errors
+nmap <silent> [n <Plug>(coc-diagnostic-prev)
+nmap <silent> ]n <Plug>(coc-diagnostic-next)
+" Formatting selected code.
+xmap <leader>f  <Plug>(coc-format-selected)
+nmap <leader>f  <Plug>(coc-format-selected)
+
+
+" Use K to show documentation in float window.
+nnoremap <silent> Q :call <SID>show_documentation()<CR>
+
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
+
+" Remap <C-f> and <C-b> for scroll float windows/popups.
+if has('nvim-0.4.0') || has('patch-8.2.0750')
+  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+  inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+  inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+endif
+
+
+"----------------------------------------------------------------------------------------------
 " Markdown specific mapping
 autocmd FileType markdown nnoremap <leader>pdf :! zsh ~/scripts/mdMake.sh %
 
 
 
 " For transparency in termite in i3 with picom
-hi Normal guibg=NONE ctermbg=NONE
+" hi Normal guibg=NONE ctermbg=NONE
+hi Normal ctermbg=NONE
 endif
 
+" -----------------------------------------------------------------------
+" Create default mappings
+let g:NERDCreateDefaultMappings = 1
 
-" --------------------------------------------------------------------------
-" --------------------------------------------------------------------------
-" Snippets CoC
-"
-" Use <C-l> for trigger snippet expand.
-imap <C-l> <Plug>(coc-snippets-expand)
+" Add spaces after comment delimiters by default
+let g:NERDSpaceDelims = 1
 
-" Use <C-j> for select text for visual placeholder of snippet.
-vmap <C-j> <Plug>(coc-snippets-select)
+" Use compact syntax for prettified multi-line comments
+let g:NERDCompactSexyComs = 1
 
-" Use <C-j> for jump to next placeholder, it's default of coc.nvim
-let g:coc_snippet_next = '<c-j>'
+" Align line-wise comment delimiters flush left instead of following code indentation
+let g:NERDDefaultAlign = 'left'
 
-" Use <C-k> for jump to previous placeholder, it's default of coc.nvim
-let g:coc_snippet_prev = '<c-k>'
+" Allow commenting and inverting empty lines (useful when commenting a region)
+let g:NERDCommentEmptyLines = 1
 
-" Use <C-j> for both expand and jump (make expand higher priority.)
-imap <C-j> <Plug>(coc-snippets-expand-jump)
+" Enable trimming of trailing whitespace when uncommenting
+let g:NERDTrimTrailingWhitespace = 1
 
-" Use <leader>x for convert visual selected code to snippet
-xmap <leader>x  <Plug>(coc-convert-snippet)
+" Enable NERDCommenterToggle to check all selected lines is commented or not
+let g:NERDToggleCheckAllLines = 1
 
 
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? coc#_select_confirm() :
-      \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
 
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
-let g:coc_snippet_next = '<tab>'
