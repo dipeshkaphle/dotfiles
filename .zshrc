@@ -145,7 +145,7 @@ alias gs='git status'
 alias glo='git log --graph --decorate --oneline'
 alias gloa='git log --all --graph --decorate --oneline'
 alias chrome='google-chrome-stable'
-alias acad='cd ~/Acads/Sem3'
+alias acad='cd ~/Acads'
 alias vimm='ruby ~/scripts/myvim.rb'
 
 

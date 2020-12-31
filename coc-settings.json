@@ -1,7 +1,8 @@
 {
   "clangd.fallbackFlags": ["-std=c++2a"],
   "coc.preferences.floatActions": true,
-  "coc.preferences.formatOnSaveFiletypes": ["c","cpp"],
+  "coc.preferences.formatOnSaveFiletypes": ["c","cpp","javascript","js"],
+  "html.autoClosingTags": false,
   "diagnostic.enable": true,
   "diagnostic.displayByAle": false,
   "languageserver": {

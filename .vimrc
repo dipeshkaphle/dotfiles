@@ -95,7 +95,7 @@ imap <C-h> <Left>
 "ctrl w to move by word
 inoremap <C-s> <Esc>:w<CR>i
 inoremap <C-w> <C-o>W
-inoremap <C-b> <C-o>B
+inoremap <C-b> <C-o><C-Left>
 inoremap <C-f> <C-o>^
 inoremap <C-e> <C-o>$
 inoremap <C-t> <C-o>O
@@ -132,7 +132,18 @@ Plug 'nbouscal/vim-stylish-haskell'
 Plug 'w0rp/ale'
 Plug 'honza/vim-snippets'
 Plug 'scrooloose/nerdcommenter'
+Plug 'alvan/vim-closetag'
+Plug 'sheerun/vim-polyglot'
 call plug#end()
+
+
+" vim close-tag config
+"
+
+let g:closetag_filenames = '*.html,*.xhtml,*.xml,*.js,*.html.erb,*.md'
+
+
+" Airline Config
 
 " ALE stuff
 let g:ale_disable_lsp = 1
@@ -159,10 +170,17 @@ let g:haskell_indent_case_alternative = 1
 let g:cabal_indent_section = 2
 
 
+" cpp enhanced highlight
+" let g:cpp_no_function_highlight = 1
+" let g:cpp_concepts_highlight = 1
+
 
 
 " Haskell specific
 autocmd FileType haskell setlocal softtabstop=4 expandtab
+autocmd FileType javascript setlocal ts=2 sts=2 sw=2
+autocmd FileType c setlocal ts=2 sts=2 sw=2
+autocmd FileType cpp setlocal ts=2 sts=2 sw=2
 " autocmd FileType haskell ALEDisable
 " autocmd FileType cpp ALEDisable
 
@@ -176,17 +194,19 @@ let ruby_space_errors = 1
 let g:gruvbox_contrast_dark='hard'
 let g:gruvbox_contrast_light='medium'
 set background=dark
-colorscheme gruvbox
-"colorscheme Atelier_SeasideDark
-"colorscheme Atelier_DuneDark
-"let g:molokai_original = 1
-"let g:solarized_contrast="medium"
-"colorscheme solarized
-"colorscheme molokai
-"colorscheme jay
-"let g:molokai_original = 1
-"colorscheme solarized
-"set background=dark
+" colorscheme gruvbox
+
+" colorscheme Atelier_SeasideDark
+" colorscheme Atelier_DuneDark
+let g:molokai_original = 1
+let g:solarized_contrast="normal"
+let g:solarized_termcolors=256
+" colorscheme solarized
+colorscheme molokai
+" colorscheme jay
+let g:molokai_original = 1
+" colorscheme solarized
+" set background=dark
 " Removes color bleeding on kitty
 set t_ut=
 "set cursorline
@@ -236,6 +256,7 @@ nnoremap <leader>p "+p<CR>
 nnoremap <leader>n :NERDTree
 nnoremap <leader>qn :NERDTreeClose
 nnoremap <leader>rn :NERDTreeRefreshRoot
+nnoremap <leader>nh :nohl<CR>
 map <leader>z <plug>NERDCommenterToggle
 
 
@@ -264,14 +285,14 @@ function! s:show_documentation()
 endfunction
 
 " Remap <C-f> and <C-b> for scroll float windows/popups.
-if has('nvim-0.4.0') || has('patch-8.2.0750')
-  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-  inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
-  inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
-  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-endif
+" if has('nvim1.4.0') || has('patch-8.2.0750')
+"   nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+"   nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+"   inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+"   inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+"   vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+"   vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+" endif
 
 
 "----------------------------------------------------------------------------------------------
@@ -283,6 +304,14 @@ autocmd FileType markdown nnoremap <leader>pdf :! zsh ~/scripts/mdMake.sh %
 " For transparency in termite in i3 with picom
 " hi Normal guibg=NONE ctermbg=NONE
 hi Normal ctermbg=NONE
+" highlight Visual cterm=bold ctermbg=NONE ctermfg=NONE
+"
+"	for molakai selection highlighting
+	if molokai_original
+		hi Visual term=reverse cterm=reverse 
+	endif
+
+
 endif
 
 " -----------------------------------------------------------------------
