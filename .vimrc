@@ -122,20 +122,19 @@ Plug 'vim-ruby/vim-ruby'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'morhetz/gruvbox'
 Plug 'tomasr/molokai'
-Plug 'josuegaleas/jay'
-Plug 'altercation/vim-colors-solarized'
 Plug 'scrooloose/nerdtree'
 Plug 'neovimhaskell/haskell-vim'
 Plug 'lambdalisue/suda.vim'
 Plug 'atelierbram/vim-colors_atelier-schemes'
 Plug 'nbouscal/vim-stylish-haskell'
-Plug 'w0rp/ale'
 Plug 'honza/vim-snippets'
 Plug 'scrooloose/nerdcommenter'
 Plug 'alvan/vim-closetag'
+Plug 'dense-analysis/ale'
 Plug 'sheerun/vim-polyglot'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 call plug#end()
-
 
 " vim close-tag config
 "
@@ -145,15 +144,16 @@ let g:closetag_filenames = '*.html,*.xhtml,*.xml,*.js,*.html.erb,*.md'
 
 " Airline Config
 
-" ALE stuff
+"ALE stuff
+
 let g:ale_disable_lsp = 1
-let g:ale_sign_error = '>>'
-let g:ale_sign_warning = '-'
+" let g:ale_sign_error = '>>'
+" let g:ale_sign_warning = '-'
 let g:ale_fixers = {
       \    'ruby': ['rubocop'],
       \}
-let g:ale_linters = { 'c':['cc'],'cpp':['cc']}
-let g:ale_cpp_cc_options = '-std=c++2a -Wall'
+" let g:ale_linters = { 'c':['cc'],'cpp':['cc']}
+" let g:ale_cpp_cc_options = '-std=c++2a -Wall'
 let g:ale_fix_on_save = 1
 let g:airline#extensions#ale#enabled = 1
 
@@ -181,8 +181,8 @@ autocmd FileType haskell setlocal softtabstop=4 expandtab
 autocmd FileType javascript setlocal ts=2 sts=2 sw=2
 autocmd FileType c setlocal ts=2 sts=2 sw=2
 autocmd FileType cpp setlocal ts=2 sts=2 sw=2
-" autocmd FileType haskell ALEDisable
-" autocmd FileType cpp ALEDisable
+autocmd FileType haskell ALEDisable
+autocmd FileType cpp ALEDisable
 
 
 let ruby_operators = 1
@@ -336,5 +336,16 @@ let g:NERDTrimTrailingWhitespace = 1
 " Enable NERDCommenterToggle to check all selected lines is commented or not
 let g:NERDToggleCheckAllLines = 1
 
+
+
+" -----------------------------------------------------------------------
+" -----------------------------------------------------------------------
+" -----------------------------------------------------------------------
+" -----------------------------------------------------------------------
+let g:fzf_preview_window = ['right:50%', 'ctrl-/']
+" -----------------------------------------------------------------------
+" -----------------------------------------------------------------------
+" -----------------------------------------------------------------------
+" -----------------------------------------------------------------------
 
 

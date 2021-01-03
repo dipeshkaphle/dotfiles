@@ -2,53 +2,76 @@
 [
     {
         "key": "meta+up",
-        "command":"workbench.action.terminal.resizePaneUp",
+        "command": "workbench.action.terminal.resizePaneUp",
         "when": "editorTextFocus"
-    },{
+    },
+    {
         "key": "ctrl+b",
         "command": "cursorWordEndLeft",
-        "when": "editorTextFocus"
-    },{
+        "when": "neovim.mode==insert && editorTextFocus "
+    },
+    {
         "key": "ctrl+k",
-        "command":"cursorUp",
+        "command": "cursorUp",
         "when": "editorTextFocus"
-    },{
+    },
+    {
         "key": "ctrl+j",
         "command": "cursorDown",
         "when": "editorTextFocus"
-    },{
+    },
+    {
         "key": "ctrl+l",
         "command": "cursorRight",
         "when": "editorTextFocus"
-    },{
+    },
+    {
         "key": "ctrl+h",
         "command": "cursorLeft",
         "when": "editorTextFocus"
-    },{
+    },
+    {
         "key": "ctrl+w",
-        "command":"cursorWordEndRight",
-        "when": "editorTextFocus"
-    },{
-        "key": "ctrl+a",
+        "command": "cursorWordEndRight",
+        "when": "neovim.mode==insert && editorTextFocus "
+    },
+    {
+        "key": "shift+a",
+        "command": "vscode-neovim.send",
+        "when": "neovim.mode!=insert && editorTextFocus",
+        "args": "$i<Right>"
+    },
+    {
+        "key": "ctrl+e",
         "command": "cursorLineEnd",
-        "when": "editorTextFocus " 
-    },{
+        "when": "neovim.mode==insert && editorTextFocus "
+    },
+    {
         "key": "ctrl+d",
-        "command":"editor.action.insertLineAfter",
-        "when": "editorTextFocus"
-    },{
+        "command": "editor.action.insertLineAfter",
+        "when": "neovim.mode==insert && editorTextFocus"
+    },
+    {
         "key": "ctrl+t",
         "command": "editor.action.insertLineBefore",
-        "when": "editorTextFocus"
-    },{
+        "when": "neovim.mode==insert && editorTextFocus"
+    },
+    {
         "key": "ctrl+f",
         "command": "cursorLineStart",
-        "when": "editorTextFocus"
-    },{
+        "when": "neovim.mode==insert && editorTextFocus"
+    },
+    {
         "key": "meta+down",
         "command": "workbench.action.terminal.resizePaneDown",
         "when": "editorTextFocus"
-    },{
+    },
+    {
+        "key": "shift+q",
+        "command": "editor.action.showHover",
+        "when": "neovim.mode!= insert && editorTextFocus"
+    },
+    {
         "key": "ctrl+space",
         "command": "workbench.action.focusActiveEditorGroup"
     }

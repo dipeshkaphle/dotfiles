@@ -1,62 +1,46 @@
 {
-    "workbench.colorTheme": "Gruvbox Dark Hard",
-    "ruby.codeCompletion": "rcodetools",
-    "ruby.format": "rubocop",
-    "ruby.rctComplete.commandPath": "/home/dipesh/.gem/ruby/2.7.0/bin/rct-complete",
-    "window.zoomLevel": 0,
-    "code-runner.runInTerminal": true,
-    "code-runner.fileDirectoryAsCwd": true,
-    "C_Cpp.default.cppStandard": "gnu++20",
-    "C_Cpp.default.cStandard": "gnu17",
-    "C_Cpp.default.intelliSenseMode": "clang-x86",
-    "workbench.iconTheme": "vscode-icons",
-    "vim.highlightedyank.enable": true,
-    "vim.useCtrlKeys": true,
-    "vim.insertModeKeyBindings": [
-        
-        {
-            "before": ["<C-w>"],
-            "after": ["<C-o>","W"]
-        },
-        {
-            "before": ["<C-e>"],
-            "after": ["<C-o>","$"]
-        },
-        {
-            "before": ["<C-t>"],
-            "after": ["<C-o>","O"]
-        },
-        {
-            "before": ["<C-d>"],
-            "after": ["<C-o>","o"]
-        },
-        {
-            "before": ["<C-j>"],
-            "after": ["<Down>"]
-        },
-        {
-            "before": ["<C-k>"],
-            "after": ["<Up>"]
-        },
-        {
-            "before": ["<C-h>"],
-            "after": ["<Left>"]
-        },
-        {
-            "before": ["<C-l>"],
-            "after": ["<Right>"]
-        }
-    ],
-    
-    "vim.useSystemClipboard": true,
-    "vim.handleKeys": {
-        "<C-b>":false,
-        "<C-f>":false
-        
-    },
-    "vscode-neovim.mouseSelectionStartVisualMode": true,
-    "vscode-neovim.neovimExecutablePaths.linux": "/usr/bin/nvim",
-    "vscode-neovim.neovimInitVimPaths.linux": "/home/dipesh/.vimrc",
-    "editor.fontFamily": "Fira Code",
-    "editor.fontLigatures": true,
+  "workbench.colorTheme": "Gruvbox Dark Hard",
+  "ruby.codeCompletion": "rcodetools",
+  "ruby.format": "rubocop",
+  "ruby.rctComplete.commandPath": "/home/dipesh/.gem/ruby/2.7.0/bin/rct-complete",
+  "window.zoomLevel": 0,
+  "code-runner.runInTerminal": true,
+  "code-runner.fileDirectoryAsCwd": true,
+  "C_Cpp.default.cppStandard": "c++20",
+  "C_Cpp.default.cStandard": "gnu17",
+  "C_Cpp.default.intelliSenseMode": "gcc-x64",
+  "workbench.iconTheme": "vscode-icons",
+  "vscode-neovim.mouseSelectionStartVisualMode": true,
+  "vscode-neovim.neovimExecutablePaths.linux": "/usr/bin/nvim",
+  "vscode-neovim.neovimInitVimPaths.linux": "/home/dipesh/.vimrc",
+  "editor.fontFamily": "Fira Code",
+  "editor.fontLigatures": true,
+  "editor.formatOnSave": true,
+  "[cpp]": {
+    "editor.wordBasedSuggestions": false,
+    "editor.suggest.insertMode": "replace",
+    "editor.semanticHighlighting.enabled": true
+  },
+  "eslint.codeActionsOnSave.mode": "problems",
+  "eslint.codeAction.showDocumentation": {
+    "enable": true
+  },
+  "C_Cpp.clang_format_path": "/usr/bin/clang-format",
+  "C_Cpp.errorSquiggles": "Enabled",
+  "C_Cpp.experimentalFeatures": "Enabled",
+  "C_Cpp.intelliSenseEngineFallback": "Enabled",
+  "c-cpp-flylint.clang.standard": ["c++20"],
+  "python.languageServer": "Pylance",
+  "c-cpp-flylint.clang.enable": true,
+  "c-cpp-flylint.cppcheck.enable": false,
+  "c-cpp-flylint.flexelint.enable": false,
+  "vsicons.dontShowNewVersionMessage": true,
+  "prettier.printWidth": 150,
+  "prettier.jsxBracketSameLine": true,
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }
