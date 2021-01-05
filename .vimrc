@@ -9,8 +9,15 @@
 " is present. But we're including it here just in case this config file is
 " loaded some other way (e.g. saved as `foo`, and then Vim started with
 " `vim -u foo`).
+"
+"
+"
+"
 set nocompatible
 set hidden
+if has('nvim')
+	set termguicolors
+endif
 
 
 " Turn on syntax highlighting.
@@ -118,6 +125,7 @@ call plug#begin()
 Plug 'tpope/vim-surround'
 Plug 'raimondi/delimitmate'
 Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 Plug 'vim-ruby/vim-ruby'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'morhetz/gruvbox'
@@ -131,19 +139,34 @@ Plug 'honza/vim-snippets'
 Plug 'scrooloose/nerdcommenter'
 Plug 'alvan/vim-closetag'
 Plug 'dense-analysis/ale'
-Plug 'sheerun/vim-polyglot'
+Plug 'bfrg/vim-cpp-modern'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 call plug#end()
 
+" polyglot cpp 
+let g:cpp_no_function_highlight = 1
+let g:cpp_simple_highlight = 1
+let g:cpp_attributes_highlight = 1
+let g:cpp_member_highlight = 1
+" Haskell vim
+let g:haskell_enable_quantification = 1   " to enable highlighting of `forall`
+let g:haskell_enable_recursivedo = 1      " to enable highlighting of `mdo` and `rec`
+let g:haskell_enable_arrowsyntax = 1      " to enable highlighting of `proc`
+let g:haskell_enable_pattern_synonyms = 1 " to enable highlighting of `pattern`
+let g:haskell_enable_typeroles = 1        " to enable highlighting of type roles
+let g:haskell_enable_static_pointers = 1  " to enable highlighting of `static`
+let g:haskell_backpack = 1                " to enable highlighting of backpack keywords
+" let g:haskell_classic_highlighting = 1
+
 " vim close-tag config
 "
-
 let g:closetag_filenames = '*.html,*.xhtml,*.xml,*.js,*.html.erb,*.md'
 
 
 " Airline Config
-
+let g:airline_theme='Atelier_DuneDark'
+let g:airline_powerline_fonts=1
 "ALE stuff
 
 let g:ale_disable_lsp = 1
@@ -192,23 +215,28 @@ let ruby_space_errors = 1
 
 
 let g:gruvbox_contrast_dark='hard'
-let g:gruvbox_contrast_light='medium'
+let g:gruvbox_contrast_light="hard"
+let g:gruvbox_invert_signs=0
+let g:gruvbox_improved_strings=0
+let g:gruvbox_improved_warnings=1
+let g:gruvbox_undercurl=1
 set background=dark
-" colorscheme gruvbox
+colorscheme gruvbox
+
 
 " colorscheme Atelier_SeasideDark
 " colorscheme Atelier_DuneDark
-let g:molokai_original = 1
 let g:solarized_contrast="normal"
 let g:solarized_termcolors=256
 " colorscheme solarized
-colorscheme molokai
-" colorscheme jay
-let g:molokai_original = 1
+" colorscheme molokai
+" let g:molokai_original = 1
 " colorscheme solarized
 " set background=dark
 " Removes color bleeding on kitty
 set t_ut=
+set t_Co=256
+" set t_md=
 "set cursorline
 cmap w!! :SudaWrite
 "cmap w!! w !sudo tee %
@@ -303,13 +331,13 @@ autocmd FileType markdown nnoremap <leader>pdf :! zsh ~/scripts/mdMake.sh %
 
 " For transparency in termite in i3 with picom
 " hi Normal guibg=NONE ctermbg=NONE
-hi Normal ctermbg=NONE
+" hi Normal ctermbg=NONE
 " highlight Visual cterm=bold ctermbg=NONE ctermfg=NONE
 "
 "	for molakai selection highlighting
-	if molokai_original
-		hi Visual term=reverse cterm=reverse 
-	endif
+    " if molokai_original
+    "     hi Visual term=reverse cterm=reverse
+    " endif
 
 
 endif

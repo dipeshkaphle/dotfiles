@@ -12,10 +12,13 @@
     "javascriptreact",
     "json",
     "html",
-    "ruby"
+    "markdown",
+    "ruby",
+    "python"
   ],
   "coc.preferences.snippets.enable": true,
   "prettier.printWidth": 80,
+  "prettier.proseWrap": "always",
   "prettier.formatterPriority": 1,
   "prettier.singleQuote": true,
   "python.analysis.diagnosticEnabled": true,

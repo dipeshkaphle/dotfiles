@@ -35,8 +35,8 @@
   "c-cpp-flylint.cppcheck.enable": false,
   "c-cpp-flylint.flexelint.enable": false,
   "vsicons.dontShowNewVersionMessage": true,
-  "prettier.printWidth": 150,
-  "prettier.jsxBracketSameLine": true,
+  "prettier.printWidth": 80,
+  "prettier.jsxBracketSameLine": false,
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
