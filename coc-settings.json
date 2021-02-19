@@ -1,7 +1,4 @@
 {
-  "clangd.fallbackFlags": [
-    "-std=c++2a"
-  ],
   "coc.preferences.floatActions": true,
   "coc.preferences.formatOnSaveFiletypes": [
     "c",
@@ -14,41 +11,44 @@
     "html",
     "markdown",
     "ruby",
-    "python"
+    "python",
+    "rust",
+    "cmake"
   ],
-  "coc.preferences.snippets.enable": true,
   "prettier.printWidth": 80,
   "prettier.proseWrap": "always",
   "prettier.formatterPriority": 1,
   "prettier.singleQuote": true,
-  "python.analysis.diagnosticEnabled": true,
-  "html.autoClosingTags": false,
+  "python.analysis.diagnosticMode":"openFilesOnly",
+  // "html.autoClosingTags": false,
   "diagnostic.enable": true,
   "solargraph.hover": true,
   "solargraph.diagnostics": true,
   "diagnostic.displayByAle": false,
-  "diagnostic.errorSign": ">>",
+  "diagnostic.errorSign": "✖",
   "diagnostic.warningSign": "⚠",
-  "diagnostic.infoSign": "-",
+  "diagnostic.infoSign": "●",
+  "diagnostic.hintSign": "○",
   "diagnostic.showUnused": true,
+  // "clangd.path": "/usr/bin/clangd",
   "languageserver": {
-    "haskell": {
-      "command": "ghcide",
-      "args": [
-        "--lsp"
-      ],
-      "rootPatterns": [
-        ".stack.yaml",
-        ".hie-bios",
-        "BUILD.bazel",
-        "cabal.config",
-        "package.yaml"
-      ],
-      "filetypes": [
-        "hs",
-        "lhs",
-        "haskell"
-      ]
+    "sorbet": {
+      "command": "srb",
+      "args": ["tc", "--typed", "true", "--enable-all-experimental-lsp-features", "--lsp", "--disable-watchman", "--dir", "."],
+      "filetypes": ["ruby"],
+      "rootPatterns": ["sorbet/config"],
+      "initializationOptions": {},
+      "settings": {}
+    },
+  "ccls": {
+    "command": "ccls",
+    "filetypes": ["c", "cc", "cpp", "c++" ],
+    "rootPatterns": [".ccls", "compile_commands.json", ".git/"],
+    "initializationOptions": {
+        "cache": {
+          "directory": "/tmp/ccls"
+        }
+      }
     }
   }
 }

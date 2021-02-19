@@ -99,7 +99,7 @@ font:
     #   - (macOS) Menlo
     #   - (Linux/BSD) monospace
     #   - (Windows) Consolas
-    #family: "Noto Sans Mono"
+    # family: "Noto Sans Mono"
     family: "Fira Code"
 
     # The `style` can be specified to pick a specific face.
@@ -139,7 +139,7 @@ font:
     #style: Bold Italic
 
   # Point size
-  size: 11.0
+  size: 10.5
 
   # Offset is the extra space around each character. `offset.y` can be thought of
   # as modifying the line spacing, and `offset.x` as modifying the letter spacing.

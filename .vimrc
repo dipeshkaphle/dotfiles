@@ -19,6 +19,8 @@ if has('nvim')
 	set termguicolors
 endif
 
+set splitright
+set splitbelow
 
 " Turn on syntax highlighting.
 syntax on
@@ -127,7 +129,7 @@ Plug 'raimondi/delimitmate'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'vim-ruby/vim-ruby'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'neoclide/coc.nvim'
 Plug 'morhetz/gruvbox'
 Plug 'tomasr/molokai'
 Plug 'scrooloose/nerdtree'
@@ -136,19 +138,45 @@ Plug 'lambdalisue/suda.vim'
 Plug 'atelierbram/vim-colors_atelier-schemes'
 Plug 'nbouscal/vim-stylish-haskell'
 Plug 'honza/vim-snippets'
+Plug 'SirVer/ultisnips'
 Plug 'scrooloose/nerdcommenter'
 Plug 'alvan/vim-closetag'
 Plug 'dense-analysis/ale'
 Plug 'bfrg/vim-cpp-modern'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+Plug 'rust-lang/rust.vim'
+Plug 'voldikss/vim-floaterm'
+Plug 'tpope/vim-fugitive'
+if has('nvim')
+	Plug 'ms-jpq/chadtree', {'branch': 'chad', 'do': 'python3 -m chadtree deps'}
+endif
+Plug 'sheerun/vim-polyglot'
+Plug 'stsewd/fzf-checkout.vim'
+Plug 'szw/vim-maximizer' 
 call plug#end()
 
-" polyglot cpp 
+let $FZF_DEFAULT_OPTS='--reverse'
+
+
+" Chadtree config
+
+
+" Snippets 
+" defaults
+" let g:UltiSnipsExpandTrigger=<Tab>
+" let g:UltiSnipsListSnippets =<c-Tab>
+" let g:UltiSnipsJumpForwardTrigger          <c-j>
+" let g:UltiSnipsJumpBackwardTrigger         <c-k>
+
+
+
 let g:cpp_no_function_highlight = 1
 let g:cpp_simple_highlight = 1
 let g:cpp_attributes_highlight = 1
 let g:cpp_member_highlight = 1
+
+
 " Haskell vim
 let g:haskell_enable_quantification = 1   " to enable highlighting of `forall`
 let g:haskell_enable_recursivedo = 1      " to enable highlighting of `mdo` and `rec`
@@ -165,17 +193,35 @@ let g:closetag_filenames = '*.html,*.xhtml,*.xml,*.js,*.html.erb,*.md'
 
 
 " Airline Config
-let g:airline_theme='Atelier_DuneDark'
 let g:airline_powerline_fonts=1
+let g:airline_theme='base16_spacemacs'
+" let g:airline_theme='random'
+let g:airline#extensions#branch#enabled = 1
+"tabline
+
+let g:airline#extensions#tabline#enabled = 1           " enable airline tabline                                                           
+let g:airline#extensions#tabline#show_close_button = 0 " remove 'X' at the end of the tabline                                            
+let g:airline#extensions#tabline#tabs_label = ''       " can put text here like BUFFERS to denote buffers (I clear it so nothing is shown)
+let g:airline#extensions#tabline#buffers_label = ''    " can put text here like TABS to denote tabs (I clear it so nothing is shown)
+" let g:airline#extensions#tabline#fnamemod = ':t'       " disable file paths in the tab
+let g:airline#extensions#tabline#show_tab_count = 0    " dont show tab numbers on the right                                                           
+let g:airline#extensions#tabline#show_buffers = 0      " dont show buffers in the tabline                                                 
+let g:airline#extensions#tabline#tab_min_count = 2     " minimum of 2 tabs needed to display the tabline                                  
+let g:airline#extensions#tabline#show_splits = 0       " disables the buffer name that displays on the right of the tabline               
+let g:airline#extensions#tabline#show_tab_nr = 0       " disable tab numbers                                                              
+let g:airline#extensions#tabline#show_tab_type = 0     " disables the weird ornage arrow on the tabline
+
 "ALE stuff
 
 let g:ale_disable_lsp = 1
+autocmd FileType ruby :ALEEnable
 " let g:ale_sign_error = '>>'
 " let g:ale_sign_warning = '-'
 let g:ale_fixers = {
       \    'ruby': ['rubocop'],
       \}
 " let g:ale_linters = { 'c':['cc'],'cpp':['cc']}
+let g:ale_linters = {'ruby':['rubocop']}
 " let g:ale_cpp_cc_options = '-std=c++2a -Wall'
 let g:ale_fix_on_save = 1
 let g:airline#extensions#ale#enabled = 1
@@ -264,32 +310,62 @@ au BufRead,BufNewFile *.MD set filetype=markdown
 
 
 "Mapping to resize the splits a bit faster
-nnoremap <C-w>> 3<C-w>>
-nnoremap <C-w>< 3<C-w><
+nnoremap <C-w>> 15<C-w>>
+nnoremap <C-w>< 15<C-w><
 
-nnoremap <leader>fmt :!clang-format -i %<CR>
-nnoremap <leader>cpp : ! g++ -std=c++20 -lm % -o %:t:r -Wall -g -fsanitize=address
-nnoremap <leader>c :! gcc -lm % -o %:t:r -Wall -g -fsanitize=address
-nnoremap <leader>py : terminal python %
-nnoremap <leader>rb :terminal ruby %
-nnoremap <leader>irb :terminal irb
-nnoremap <leader>ipy :terminal python
+nnoremap <leader>cpp : ! g++ -std=c++20 -lm % -o %:t:r -Wall -Wpedantic -Wextra -Werror -g -fsanitize=address
+nnoremap <leader>c :! gcc -lm % -o %:t:r -Wall -Wpedantic -Wextra -Werror -g -fsanitize=address
 nnoremap <leader>hs :! ghc %
-nnoremap <leader>runhs : terminal ./%:t:r
-nnoremap <leader>ghs : terminal ghci %
-nnoremap <leader>runc : terminal ./%:t:r
+if has('nvim')
+	nnoremap <leader>runc :vnew term://zsh -c ./%:t:r
+	nnoremap <leader>ghs :vnew term://zsh -c 'ghci %'
+	nnoremap <leader>runhs :vnew term://zsh -c ./%:t:r
+	nnoremap <leader>py :vnew term://zsh -c 'python %:p'
+	nnoremap <leader>rb :vnew term://zsh -c 'ruby %'
+	nnoremap <leader>irb :vnew term://zsh -c irb
+	nnoremap <leader>ipy :vnew term://zsh -c python
+	nnoremap <leader>term :vnew term://zsh
+else
+	nnoremap <leader>runc :vert terminal ./%:t:r
+	nnoremap <leader>ghs :vert term ghci %
+	nnoremap <leader>runhs :vert term ./%:t:r
+	nnoremap <leader>py :vert term python %
+	nnoremap <leader>rb :vert term ruby %
+	nnoremap <leader>irb :vert term irb
+	nnoremap <leader>ipy :vert term python
+	nnoremap <leader>term :vert term
+end
 vnoremap <leader>y "+y<CR>
 nnoremap <leader>yy "+yy<CR>
 nnoremap <leader>p "+p<CR>
-nnoremap <leader>n :NERDTree
-nnoremap <leader>qn :NERDTreeClose
-nnoremap <leader>rn :NERDTreeRefreshRoot
+if has('nvim')
+	nnoremap <leader>n :CHADopen
+else
+	nnoremap <leader>n :NERDTreeOpen
+	nnoremap <leader>qn :NERDTreeClose
+	nnoremap <leader>rn :NERDTreeRefreshRoot
+endif
 nnoremap <leader>nh :nohl<CR>
-map <leader>z <plug>NERDCommenterToggle
+nnoremap <leader>tn :FloatermNew
+nnoremap <leader>th :FloatermHide
+nnoremap <leader>ts :FloatermShow
+nnoremap <leader>tt :FloatermToggle
 
+nnoremap <leader>fs :FZF<CR>
+nnoremap <leader>buf :Buffers<CR>
+nnoremap <leader>rg :Rg<CR>
+map <leader>z <plug>NERDCommenterToggle
+nmap <leader>rnm <Plug>(coc-rename)
+" nmap :rename <Plug>(coc-rename)
+
+" fugitive maps
+nmap <leader>gs :G<CR>
+nnoremap <leader>gc :GCheckout<CR>
+nnoremap <leader>max :MaximizerToggle
 
 
 " --------------------------------------------------------------------------
+" COC stuff
 " Pressing these will take me to places with errors
 nmap <silent> [n <Plug>(coc-diagnostic-prev)
 nmap <silent> ]n <Plug>(coc-diagnostic-next)
@@ -297,6 +373,22 @@ nmap <silent> ]n <Plug>(coc-diagnostic-next)
 xmap <leader>f  <Plug>(coc-format-selected)
 nmap <leader>f  <Plug>(coc-format-selected)
 
+" Use tab for trigger completion with characters ahead and navigate.
+" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+" other plugin before putting this into your config.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+
+" GoTo code navigation.
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+nnoremap  <leader>cr :CocRestart
 
 " Use K to show documentation in float window.
 nnoremap <silent> Q :call <SID>show_documentation()<CR>
@@ -338,8 +430,8 @@ autocmd FileType markdown nnoremap <leader>pdf :! zsh ~/scripts/mdMake.sh %
     " if molokai_original
     "     hi Visual term=reverse cterm=reverse
     " endif
-
-
+highlight Comment cterm=italic gui=italic
+highlight Function cterm=none gui=none
 endif
 
 " -----------------------------------------------------------------------

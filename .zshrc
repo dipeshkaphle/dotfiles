@@ -7,15 +7,18 @@
 # Zsh configuration
 # -----------------
 
+
+# Set editor default keymap to emacs (`-e`) or vi (`-v`)
+bindkey -v
+
 #
 # History
-#
 
 # FZF settings
 source /usr/share/fzf/key-bindings.zsh
 source /usr/share/fzf/completion.zsh
-export FZF_CTRL_T_OPTS="--preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'"
-export FZF_DEFAULT_OPTS="--preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'"
+export FZF_CTRL_T_OPTS="--reverse --preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'"
+export FZF_DEFAULT_OPTS="--reverse --preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'"
 
 # Remove older command from the history if a duplicate is to be added.
 setopt HIST_IGNORE_ALL_DUPS
@@ -24,8 +27,6 @@ setopt HIST_IGNORE_ALL_DUPS
 # Input/output
 #
 
-# Set editor default keymap to emacs (`-e`) or vi (`-v`)
-bindkey -e
 
 # Prompt for spelling correction of commands.
 #setopt CORRECT
@@ -155,7 +156,13 @@ alias vimm='ruby ~/scripts/myvim.rb'
 
 
 
+makec(){
+ gcc -lm $2 -o $1 -Wall -Wpedantic -Wextra -Werror -fsanitize=address $3
+}
 
+makecpp(){
+ g++ -std=c++2a -lm $2 -o $1 -Wall -Wpedantic -Wextra -Werror -fsanitize=address $3
+}
 
 mkcd(){
 	mkdir $1

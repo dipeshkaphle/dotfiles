@@ -1,4 +1,5 @@
 [options]
+# font = fira code
 font = Noto Sans Mono 13
 
 [colors]
