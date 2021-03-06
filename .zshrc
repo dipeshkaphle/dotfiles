@@ -135,9 +135,9 @@ bindkey -M vicmd 'j' history-substring-search-down
 # Example aliases
 # Some aliases are defined globally so that theyll
 # expand inside the functions like copy and vimOut
-alias -g la='ls -a'
-alias -g ll='ls -l'
-alias -g lla='ls -la'
+alias -g la='exa -a'
+alias -g ll='exa -l'
+alias -g lla='exa -la'
 alias tmuxat='tmux a -t'
 alias tmux='tmux -u'
 alias open='xdg-open'
@@ -152,7 +152,8 @@ alias gs='git status'
 alias glo='git log --graph --decorate --oneline'
 alias gloa='git log --all --graph --decorate --oneline'
 alias acad='cd ~/Acads'
-alias vimm='ruby ~/scripts/myvim.rb'
+alias clrs_open='zathura "~/Books/CS/Algo/Introduction_to_algorithms-3rd Edition.pdf" &'
+
 
 
 

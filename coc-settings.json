@@ -30,6 +30,8 @@
   "diagnostic.infoSign": "●",
   "diagnostic.hintSign": "○",
   "diagnostic.showUnused": true,
+  "rust-analyzer.lens.run": true,
+  "rust-analyzer.lens.enable": true,
   // "clangd.path": "/usr/bin/clangd",
   "languageserver": {
     "sorbet": {
@@ -49,6 +51,15 @@
           "directory": "/tmp/ccls"
         }
       }
+    },
+    "haskell": {
+      "command": "~/.local/bin/haskell-language-server-wrapper",
+      "args": ["--lsp"],
+      "rootPatterns": ["*.cabal", "stack.yaml", "cabal.project", "package.yaml", "hie.yaml"],
+      // "rootPatterns": ["*.cabal", "stack.yaml", "cabal.project"],
+      "filetypes": ["haskell", "lhaskell"]
     }
-  }
+  },
+  "codeLens.enable": true
+  
 }
