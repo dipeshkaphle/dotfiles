@@ -20,6 +20,8 @@ set hidden
 if has('nvim')
 	set termguicolors
 endif
+" Sets command height
+set cmdheight=2
 
 set splitright
 set splitbelow
@@ -158,7 +160,8 @@ Plug 'stsewd/fzf-checkout.vim'
 Plug 'szw/vim-maximizer' 
 call plug#end()
 
-let $FZF_DEFAULT_OPTS='--reverse'
+" Copied from someone
+let $FZF_DEFAULT_OPTS="--ansi --preview-window 'right:60%' --layout reverse --margin=1,4 --preview 'bat --color=always --style=header,grid {}'"
 
 
 " Chadtree config
@@ -252,8 +255,8 @@ autocmd FileType haskell setlocal softtabstop=4 expandtab
 autocmd FileType javascript setlocal ts=2 sts=2 sw=2
 autocmd FileType c setlocal ts=2 sts=2 sw=2
 autocmd FileType cpp setlocal ts=2 sts=2 sw=2
-autocmd FileType haskell ALEDisable
-autocmd FileType cpp ALEDisable
+autocmd FileType haskell :ALEDisable
+autocmd FileType cpp :ALEDisable
 
 
 let ruby_operators = 1

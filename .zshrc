@@ -7,6 +7,7 @@
 # Zsh configuration
 # -----------------
 
+export BAT_THEME='gruvbox-dark'
 
 # Set editor default keymap to emacs (`-e`) or vi (`-v`)
 bindkey -v
@@ -17,11 +18,31 @@ bindkey -v
 # FZF settings
 source /usr/share/fzf/key-bindings.zsh
 source /usr/share/fzf/completion.zsh
-export FZF_CTRL_T_OPTS="--reverse --preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'"
-export FZF_DEFAULT_OPTS="--reverse --preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'"
+export FZF_CTRL_T_OPTS="--reverse --preview '(bat --color=always --style=header,grid --line-range :500 {} ) 2> /dev/null '"
+export FZF_DEFAULT_OPTS="--reverse --preview '(bat --color=always --style=header,grid --line-range :500 {} ) 2> /dev/null '"
+
+
+# USes rg to do fuzzy search in file contents
+ff(){
+  cmdtorun="echo"
+  if [[ "$1" != "" ]]; then
+    cmdtorun=$1
+  fi
+  INITIAL_QUERY=""
+  RG_PREFIX="rg --colors 'match:bg:yellow' --line-number --color=always --smart-case "
+  FZF_DEFAULT_COMMAND="$RG_PREFIX '$INITIAL_QUERY'" \
+    selected=$(fzf --bind "change:reload:$RG_PREFIX {q} || true" \
+        --ansi --disabled --query "$INITIAL_QUERY" \
+        --height=50% --layout=reverse \
+        --preview "bat --color=always --style=header,grid \$(echo {} | cut -d':' -f1) -H \$(echo {} | cut -d':' -f2) -r \$(echo {} | cut -d':' -f2):" | cut -d':' -f1)
+
+  [[ -n $selected ]] && $cmdtorun $selected
+}
+
 
 # Remove older command from the history if a duplicate is to be added.
 setopt HIST_IGNORE_ALL_DUPS
+ 
 
 #
 # Input/output
