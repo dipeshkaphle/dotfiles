@@ -64,7 +64,7 @@ bindsym $mod+Tab exec --no-startup-id rofi -show windowcd
 bindsym Mod4+b exec --no-startup-id brave
 bindsym Mod4+f exec   firefox
 bindsym Mod4+s exec  --no-startup-id ksysguard
-bindsym Mod4+d exec  --no-startup-id dolphin
+bindsym Mod4+d exec  --no-startup-id nautilus
 bindsym Mod4+c exec  --no-startup-id code
 bindsym Mod4+w exec nm-connection-editor
 bindsym Mod4+k exec  kitty

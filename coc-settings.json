@@ -13,13 +13,14 @@
     "ruby",
     "python",
     "rust",
-    "cmake"
+    "cmake",
+    "haskell"
   ],
   "prettier.printWidth": 80,
   "prettier.proseWrap": "always",
   "prettier.formatterPriority": 1,
   "prettier.singleQuote": true,
-  "python.analysis.diagnosticMode":"openFilesOnly",
+  "python.analysis.diagnosticMode": "openFilesOnly",
   // "html.autoClosingTags": false,
   "diagnostic.enable": true,
   "solargraph.hover": true,
@@ -34,32 +35,31 @@
   "rust-analyzer.lens.enable": true,
   // "clangd.path": "/usr/bin/clangd",
   "languageserver": {
-    "sorbet": {
-      "command": "srb",
-      "args": ["tc", "--typed", "true", "--enable-all-experimental-lsp-features", "--lsp", "--disable-watchman", "--dir", "."],
-      "filetypes": ["ruby"],
-      "rootPatterns": ["sorbet/config"],
-      "initializationOptions": {},
-      "settings": {}
-    },
-  "ccls": {
-    "command": "ccls",
-    "filetypes": ["c", "cc", "cpp", "c++" ],
-    "rootPatterns": [".ccls", "compile_commands.json", ".git/"],
-    "initializationOptions": {
+    "ccls": {
+      "command": "ccls",
+      "filetypes": ["c", "cc", "cpp", "c++"],
+      "rootPatterns": [".ccls", "compile_commands.json", ".git/"],
+      "initializationOptions": {
         "cache": {
           "directory": "/tmp/ccls"
         }
       }
     },
-    "haskell": {
-      "command": "~/.local/bin/haskell-language-server-wrapper",
-      "args": ["--lsp"],
-      "rootPatterns": ["*.cabal", "stack.yaml", "cabal.project", "package.yaml", "hie.yaml"],
-      // "rootPatterns": ["*.cabal", "stack.yaml", "cabal.project"],
-      "filetypes": ["haskell", "lhaskell"]
-    }
-  },
-  "codeLens.enable": true
-  
+  //   "haskell": {
+  //     "command": "~/.local/bin/haskell-language-server-wrapper",
+  //     "args": ["--lsp"],
+  //     "rootPatterns": [
+  //       "*.cabal",
+  //       "stack.yaml",
+  //       "cabal.project",
+  //       "package.yaml",
+  //       "hie.yaml"
+  //     ],
+  //     // "rootPatterns": ["*.cabal", "stack.yaml", "cabal.project"],
+  //     "filetypes": ["haskell", "lhaskell"]
+  //   }
+  // },
+  "codeLens.enable": true,
+  // "codeLens.separator": "‣"
+  "codeLens.separator": ""
 }

@@ -7,6 +7,8 @@
 # Zsh configuration
 # -----------------
 
+# keyboard repeat rate 
+xset r rate 500 50
 export BAT_THEME='gruvbox-dark'
 
 # Set editor default keymap to emacs (`-e`) or vi (`-v`)
@@ -179,11 +181,19 @@ alias clrs_open='zathura "~/Books/CS/Algo/Introduction_to_algorithms-3rd Edition
 
 
 makec(){
- gcc -lm $2 -o $1 -Wall -Wpedantic -Wextra -Werror -fsanitize=address $3
+  CC=gcc
+  if [[ $3 != "" ]]; then
+    CC="$3"
+  fi
+  $CC -lm $2 -o $1 -Wall -Wpedantic -Wextra -fsanitize=address $4
 }
 
 makecpp(){
- g++ -std=c++2a -lm $2 -o $1 -Wall -Wpedantic -Wextra -Werror -fsanitize=address $3
+  CC=g++
+  if [[ $3 != "" ]]; then
+    CC="$3"
+  fi
+ "$CC" -std=c++2a -lm $2 -o $1 -Wall -Wpedantic -Wextra -fsanitize=address $4
 }
 
 mkcd(){

@@ -17,9 +17,15 @@ set encoding=utf-8
 "
 set nocompatible
 set hidden
-if has('nvim')
-	set termguicolors
+" Works lol so idc
+if exists('+termguicolors')
+  let &t_8f="\<Esc>[38;2;%lu;%lu;%lum"
+  let &t_8b="\<Esc>[48;2;%lu;%lu;%lum"
+  set termguicolors
 endif
+" if has('nvim')
+"     set termguicolors
+" endif
 " Sets command height
 set cmdheight=2
 
@@ -134,13 +140,13 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'vim-ruby/vim-ruby'
 Plug 'neoclide/coc.nvim'
-Plug 'morhetz/gruvbox'
+" Plug 'morhetz/gruvbox'
+Plug 'sainnhe/gruvbox-material'
 Plug 'tomasr/molokai'
 Plug 'scrooloose/nerdtree'
 Plug 'neovimhaskell/haskell-vim'
 Plug 'lambdalisue/suda.vim'
 Plug 'atelierbram/vim-colors_atelier-schemes'
-Plug 'nbouscal/vim-stylish-haskell'
 Plug 'honza/vim-snippets'
 Plug 'SirVer/ultisnips'
 Plug 'scrooloose/nerdcommenter'
@@ -159,6 +165,7 @@ Plug 'sheerun/vim-polyglot'
 Plug 'stsewd/fzf-checkout.vim'
 Plug 'szw/vim-maximizer' 
 call plug#end()
+
 
 " Copied from someone
 let $FZF_DEFAULT_OPTS="--ansi --preview-window 'right:60%' --layout reverse --margin=1,4 --preview 'bat --color=always --style=header,grid {}'"
@@ -199,7 +206,7 @@ let g:closetag_filenames = '*.html,*.xhtml,*.xml,*.js,*.html.erb,*.md'
 
 " Airline Config
 let g:airline_powerline_fonts=1
-let g:airline_theme='base16_spacemacs'
+let g:airline_theme='gruvbox_material'
 " let g:airline_theme='random'
 let g:airline#extensions#branch#enabled = 1
 "tabline
@@ -226,9 +233,12 @@ let g:ale_fixers = {
       \    'ruby': ['rubocop'],
       \}
 " let g:ale_linters = { 'c':['cc'],'cpp':['cc']}
-let g:ale_linters = {'ruby':['rubocop']}
+let g:ale_linters = {'ruby':['rubocop'], }
 " let g:ale_cpp_cc_options = '-std=c++2a -Wall'
 let g:ale_fix_on_save = 1
+let g:ale_c_parse_makefile=1
+let g:ale_c_parse_compile_commands=1
+
 let g:airline#extensions#ale#enabled = 1
 
 let g:haskell_indent_if = 3
@@ -252,7 +262,7 @@ let g:cabal_indent_section = 2
 
 " Haskell specific
 autocmd FileType haskell setlocal softtabstop=4 expandtab
-autocmd FileType javascript setlocal ts=2 sts=2 sw=2
+" autocmd FileType javascript setlocal ts=2 sts=2 sw=2
 autocmd FileType c setlocal ts=2 sts=2 sw=2
 autocmd FileType cpp setlocal ts=2 sts=2 sw=2
 autocmd FileType haskell :ALEDisable
@@ -265,14 +275,32 @@ let ruby_space_errors = 1
 
 
 
-let g:gruvbox_contrast_dark='hard'
-let g:gruvbox_contrast_light="hard"
-let g:gruvbox_invert_signs=0
-let g:gruvbox_improved_strings=0
-let g:gruvbox_improved_warnings=1
-let g:gruvbox_undercurl=1
+" morhetz gruvbox
+" let g:gruvbox_contrast_dark='hard'
+" let g:gruvbox_contrast_light="hard"
+" let g:gruvbox_invert_signs=0
+" let g:gruvbox_improved_strings=1
+" let g:gruvbox_improved_warnings=1
+" let g:gruvbox_undercurl=1
+" set background=dark
+" colorscheme gruvbox
+
+
+" material gruvbox
+" For dark version.
 set background=dark
-colorscheme gruvbox
+" Set contrast.
+" This configuration option should be placed before `colorscheme gruvbox-material`.
+" Available values: 'hard', 'medium'(default), 'soft'
+let g:gruvbox_material_background= 'hard'
+let g:gruvbox_material_palette = 'original'
+" let g:gruvbox_material_enable_italic = 1
+let g:gruvbox_material_disable_italic_comment = 0
+" let g:gruvbox_material_diagnostic_line_highlight = 1
+let g:gruvbox_material_better_performance = 1
+" let g:gruvbox_material_cursor= 'red' // works in gvim only
+" let g:gruvbox_material_visual= 'reverse'
+colorscheme gruvbox-material
 
 
 " colorscheme Atelier_SeasideDark
