@@ -99,7 +99,7 @@ keys = [
     Key([mod], "f", lazy.spawn("firefox")),
     Key([mod], "b", lazy.spawn("brave")),
     Key([], "Print", lazy.spawn("xfce4-screenshooter")),
-    Key([mod,"shift"], "s", lazy.spawn('''sh /home/dipesh/scripts/prompt "Suspend computer?" "systemctl suspend" && i3lock -i ~/dotfiles/wallpapers/lockscreen.png''')),
+    Key([mod,"shift"], "s", lazy.spawn('''sh /home/dipesh/scripts/prompt "Suspend computer?" "systemctl suspend" && i3lock -i /home/dipesh/dotfiles/wallpapers/lockscreen.png''')),
     Key([mod,"shift"], "r", lazy.spawn('''sh /home/dipesh/scripts/prompt "Reboot computer?" "reboot"''')),
     Key([mod,"shift"], "x", lazy.spawn('''sh /home/dipesh/scripts/prompt "Shutdown computer?" "shutdown now"''')),
     # Media hotkeys
@@ -110,7 +110,8 @@ keys = [
     Key([mod],"p",lazy.screen.prev_group()),
     Key([mod],"d",lazy.spawn("rofi -show drun")),
     Key([mod],"c",lazy.spawn("code")),
-    Key([mod],"t",lazy.spawn("thunar"))
+    Key([mod],"t",lazy.spawn("thunar")),
+    Key([mod],"s",lazy.spawn("xfce4-taskmanager")),
 
 ]
 
@@ -132,19 +133,19 @@ for i in groups:
     ])
 
 layouts = [
-    layout.Columns(border_focus_stack='#d75f5f'),
-    layout.Max(),
+    layout.Bsp(border_focus_stack='#d75f5f', margin=4),
+    layout.Columns(border_focus_stack='#d75f5f', margin=4),
+    layout.Max(border_focus_stack='#d75f5f', margin=4),
     # Try more layouts by unleashing below layouts.
-    # layout.Stack(num_stacks=2),
-    # layout.Bsp(),
+    #  layout.Stack(num_stacks=2),
     # layout.Matrix(),
     # layout.MonadTall(),
     # layout.MonadWide(),
     # layout.RatioTile(),
-    # layout.Tile(),
+    layout.Tile(border_focus_stack='#d75f5f', margin=4),
     # layout.TreeTab(),
     # layout.VerticalTile(),
-    # layout.Zoomy(),
+    #  layout.Zoomy(),
 ]
 
 widget_defaults = dict(
@@ -224,7 +225,7 @@ widgets = [
 		foreground = colours[3],
 		format = '{load_percent}%',
 		mouse_callbacks = {"Button1": lambda: qtile.cmd_spawn(myTerm + ' -e ytop')},
-		update_interval = 5.0,
+		update_interval = 20.0,
 	),
 	widget.Sep(
 		foreground = colours[2],
@@ -243,6 +244,7 @@ widgets = [
 		foreground = colours[4],
 		format = '{MemUsed} MB',
 		mouse_callbacks = {"Button1": lambda: qtile.cmd_spawn(myTerm + ' -e ytop')},
+		update_interval = 20.0,
 	),
 	widget.Sep(
 		foreground = colours[2],
@@ -325,6 +327,7 @@ widgets = [
         foreground = colours[7],
         format = '{down}  ',
         interface = 'wlp3s0',
+		update_interval = 20.0,
     ),
 	widget.Sep(
 		foreground = colours[2],
@@ -375,9 +378,9 @@ widgets = [
 	#),
 ]
 
-status_bar = lambda widgets: bar.Bar(widgets, 18, opacity=1.0)
+status_bar = lambda widgets: bar.Bar(widgets, 20, background = colours[0][0],opacity=0.9, margin=4)
 
-screens = [Screen(top=status_bar(widgets))]
+screens = [Screen(top=status_bar(widgets),  )]
 
 
 #  screens = [

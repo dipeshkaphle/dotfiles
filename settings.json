@@ -19,6 +19,13 @@
   "[cpp]": {
     "editor.wordBasedSuggestions": false,
     "editor.suggest.insertMode": "replace",
+    "editor.semanticHighlighting.enabled": true,
+    "editor.defaultFormatter": "xaver.clang-format"
+  },
+  "[c]": {
+    "editor.wordBasedSuggestions": false,
+    "editor.suggest.insertMode": "replace",
+    "editor.defaultFormatter": "xaver.clang-format",
     "editor.semanticHighlighting.enabled": true
   },
   "eslint.codeActionsOnSave.mode": "problems",
@@ -42,5 +49,6 @@
   },
   "[javascriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+  "C_Cpp.updateChannel": "Insiders"
 }

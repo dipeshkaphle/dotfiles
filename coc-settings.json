@@ -58,7 +58,7 @@
   //     // "rootPatterns": ["*.cabal", "stack.yaml", "cabal.project"],
   //     "filetypes": ["haskell", "lhaskell"]
   //   }
-  // },
+  },
   "codeLens.enable": true,
   // "codeLens.separator": "‣"
   "codeLens.separator": ""
