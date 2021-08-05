@@ -7,6 +7,7 @@
 # Zsh configuration
 # -----------------
 
+export EDITOR='nvim'
 # keyboard repeat rate 
 xset r rate 500 50
 export BAT_THEME='gruvbox-dark'
@@ -206,3 +207,7 @@ copy(){
 	$@ | xclip -selection clipboard
 }
 
+# for starship
+#https://starship.rs/config/#prompt
+eval "$(starship init zsh)"
+export STARSHIP_CONFIG=~/.starship/config.toml

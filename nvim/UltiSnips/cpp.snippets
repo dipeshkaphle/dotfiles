@@ -1,0 +1,249 @@
+snippet inclstd "Includes all headers and aliases" b
+#include <algorithm>
+#include <iostream>
+#include <iterator>
+#include <map>
+#include <numeric>
+#include <queue>
+#include <set>
+#include <stack>
+#include <string>
+#include <string_view>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
+
+using i32 = int;
+using i64 = long long;
+using u32 = unsigned;
+using u64 = size_t;
+using ll = long long;
+template <typename T> using Vec = std::vector<T>;
+template <typename T> using o_set = std::set<T>;
+template <typename T> using u_set = std::unordered_set<T>;
+template <typename K, typename V> using u_map = std::unordered_map<K, V>;
+template <typename K, typename V> using o_map = std::map<K, V>;
+using namespace std;
+
+int main(){
+
+}
+endsnippet
+	
+snippet incl "Includes all headers and aliases" b
+#include <algorithm>
+#include <iostream>
+#include <iterator>
+#include <map>
+#include <numeric>
+#include <queue>
+#include <set>
+#include <stack>
+#include <string>
+#include <string_view>
+#include <unordered_map>
+#include <unordered_set>
+#include <vector>
+
+using i32 = int;
+using i64 = long long;
+using u32 = unsigned;
+using u64 = size_t;
+using ll = long long;
+template <typename T> using Vec = std::vector<T>;
+template <typename T> using o_set = std::set<T>;
+template <typename T> using u_set = std::unordered_set<T>;
+template <typename K, typename V> using u_map = std::unordered_map<K, V>;
+template <typename K, typename V> using o_map = std::map<K, V>;
+
+int main(){
+
+}
+endsnippet
+
+snippet sparse_tab "Sparse table rmq" b
+template <typename It, typename F> struct sparse_table {
+  using T = remove_reference_t<decltype(*declval<It>())>;
+  template <typename U> using Vec = vector<U>;
+  Vec<Vec<T>> tab;
+  int n;
+  F f;
+  // template <typename Iterator, typename G>
+  sparse_table(It fst, It lst, F g) : f(g) {
+    n = distance(fst, lst);
+    int rows = log2(n);
+    tab = Vec<Vec<T>>(rows + 1, Vec<T>(n));
+    copy(fst, lst, tab[0].begin());
+    for (int r = 1; r <= rows; r++) {
+      for (int i = 0; (i + (1 << r)) <= n; i++) {
+        tab[r][i] = f(tab[r - 1][i], tab[r - 1][i + (1 << (r - 1))]);
+      }
+    }
+  }
+  T query(int l, int r) {
+    int x = log2(r - l + 1);
+    return f(tab[x][l], tab[x][r - ((1 << x) - 1)]);
+  }
+};
+endsnippet
+
+snippet fen_tree "fenwick tree" b
+// https://stackoverflow.com/questions/27875691/need-a-clear-explanation-of-range-updates-and-range-queries-binary-indexed-tree/27877427#27877427
+struct fen_tree {
+  using ll = long long;
+  vector<ll> t1, t2;
+  size_t n;
+  fen_tree(size_t n) : n(n), t1(n + 1, 0), t2(n + 1, 0) {}
+  fen_tree(const vector<ll> &vec) : fen_tree(vec.size()) {
+
+    // nlogn  construction
+    for (int i = 1; i <= n; i++) {
+      range_update(i, i, vec[i - 1]);
+    }
+  }
+
+  void _update(vector<ll> &t, size_t ind, ll x) {
+    for (; ind <= n; ind += (ind & -ind))
+      t[ind] += x;
+  }
+  ll _sum(vector<ll> &t, size_t ind) {
+    ll sum = 0;
+    for (; ind > 0; ind -= (ind & -ind))
+      sum += t[ind];
+    return sum;
+  }
+
+  void range_update(size_t l, size_t r, ll val) {
+    _update(t1, l, val);
+    _update(t1, r + 1, -val);
+
+    _update(t2, l, val * (l - 1));
+    _update(t2, r + 1, -val * r);
+  }
+  ll prefix_sum(size_t ind) { return _sum(t1, ind) * ind - _sum(t2, ind); }
+  ll range_sum(size_t l, size_t r) { return prefix_sum(r) - prefix_sum(l - 1); }
+};
+endsnippet
+
+snippet seg_tree "seg tree" b
+struct seg_tree {
+  using ret_type = long long;
+  using combine = std::plus<ret_type>;
+  using update_func = std::plus<ret_type>;
+  /*
+   * attributes
+   */
+  ret_type default_val = ret_type();
+  vector<ret_type> t;
+  size_t n;
+
+  seg_tree(size_t n_) : n(n_) { t.assign(this->n * 4 + 5, 0); }
+  seg_tree(const vector<ret_type> &vec) : seg_tree(vec.size()) {
+    build(vec, 0, 0, n - 1);
+  }
+  void build(const vector<ret_type> &vec, size_t ind, size_t t_l, size_t t_r) {
+    if (t_l == t_r) {
+      t[ind] = vec[t_l];
+    } else {
+      size_t m = (t_l + t_r) / 2;
+      build(vec, 2 * ind + 1, t_l, m);
+      build(vec, 2 * ind + 2, m + 1, t_r);
+      t[ind] = combine()(t[2 * ind + 1], t[2 * ind + 2]);
+    }
+  }
+
+  inline void point_update(size_t index, ret_type new_val) {
+    point_update(index, new_val, 0, 0, n - 1);
+  }
+  void point_update(size_t ind, ret_type new_val, size_t t_ind, size_t t_l,
+                    size_t t_r) {
+    if (t_l == t_r) {
+      t[t_ind] = update_func()(t[t_ind], new_val);
+    } else {
+      size_t m = (t_l + t_r) / 2;
+      if (ind <= m)
+        point_update(ind, new_val, 2 * t_ind + 1, t_l, m);
+      else
+        point_update(ind, new_val, 2 * t_ind + 2, m + 1, t_r);
+      t[t_ind] = combine()(t[2 * t_ind + 1], t[2 * t_ind + 2]);
+    }
+  }
+
+  inline ret_type range_query(size_t l, size_t r) {
+    return range_query(l, r, 0, n - 1, 0);
+  }
+  ret_type range_query(size_t l, size_t r, size_t t_l, size_t t_r, size_t ind) {
+    if (l > r)
+      return default_val;
+    if (t_l == l && t_r == r)
+      return t[ind];
+    size_t m = (t_l + t_r) / 2;
+    auto x = range_query(l, min(r, m), t_l, m, 2 * ind + 1);
+    auto y = range_query(max(m + 1, l), r, m + 1, t_r, 2 * ind + 2);
+    return combine()(x, y);
+  }
+};
+endsnippet
+
+snippet seg_tree_lazy "lazy seg tree" b
+struct seg_tree {
+  using ll = long long;
+  int n;
+  vector<ll> t, lazy;
+  seg_tree(int n) : n(n), t((4 * n) + 1, 0), lazy((4 * n) + 1) {}
+  seg_tree(vector<ll> &vec) : seg_tree(vec.size()) {
+    _build(vec, 0, vec.size() - 1, 0);
+  }
+
+  void _build(vector<ll> &vec, int tl, int tr, int ind) {
+    if (tl == tr) {
+      t[ind] = vec[tl];
+    } else {
+      int m = (tl + tr) / 2;
+      _build(vec, tl, m, 2 * ind + 1);
+      _build(vec, m + 1, tr, 2 * ind + 2);
+      t[ind] = max(t[2 * ind + 1], t[2 * ind + 2]);
+    }
+  }
+
+  inline void prop(int ind, int l, int r) {
+  	//change this as per need
+    t[ind] += lazy[ind];
+    if (l != r) {
+      lazy[2 * ind + 1] += lazy[ind];
+      lazy[2 * ind + 2] += lazy[ind];
+    }
+    lazy[ind] = 0;
+  }
+
+  inline void update(int l, int r, int delta) { update(l, r, 0, n - 1, 0, delta); }
+  void update(int l, int r, int tl, int tr, int ind, int delta) {
+    prop(ind, tl, tr);
+    if (l > r)
+      return;
+    if (l == tl && r == tr) {
+      lazy[ind] = delta;
+      prop(ind, tl, tr);
+    } else {
+      int m = (tl + tr) / 2;
+      update(l, min(r, m), tl, m, 2 * ind + 1, delta);
+      update(max(l, m + 1), r, m + 1, r, 2 * ind + 2, delta);
+      t[ind] = max(t[2 * ind + 1], t[2 * ind + 2]);
+    }
+  }
+
+  inline ll query(int l, int r) { return query(l, r, 0, n - 1, 0); }
+  ll query(int l, int r, int tl, int tr, int ind) {
+    prop(ind, tl, tr);
+    if (l > r)
+      return INT64_MIN;
+    if (l == tl && r == tr) {
+      return t[ind];
+    }
+    int m = (tl + tr) / 2;
+    auto x = query(l, min(r, m), tl, m, 2 * ind + 1);
+    auto y = query(max(l, m + 1), r, m + 1, tr, 2 * ind + 2);
+    return max(x, y);
+  }
+};
+endsnippet
