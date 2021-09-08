@@ -1,0 +1,22 @@
+snippet clangformat "Clang format boilerplate" b
+
+# clang-format boilerplate
+find_program(
+  CLANG_FORMAT_EXE
+  NAMES "clang-format"
+  DOC "Path to clang-format executable")
+
+if(NOT CLANG_FORMAT_EXE)
+  message(STATUS "clang-format not found.")
+else()
+  message(STATUS "clang-format found: ${CLANG_FORMAT_EXE}")
+
+  file(GLOB_RECURSE FILES_TO_FORMAT includes/*.hpp src/*.cpp)
+
+  add_custom_target(
+    clang-format-project-files COMMAND ${CLANG_FORMAT_EXE} -i -style=Google
+                                       ${FILES_TO_FORMAT})
+endif()
+
+
+endsnippet

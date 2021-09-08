@@ -1,4 +1,5 @@
 {
+  "java.home": "/usr/lib/jvm/java-16-openjdk",
   "coc.preferences.floatActions": true,
   "coc.preferences.formatOnSaveFiletypes": [
     "c",
@@ -45,21 +46,26 @@
         }
       }
     },
-  //   "haskell": {
-  //     "command": "~/.local/bin/haskell-language-server-wrapper",
-  //     "args": ["--lsp"],
-  //     "rootPatterns": [
-  //       "*.cabal",
-  //       "stack.yaml",
-  //       "cabal.project",
-  //       "package.yaml",
-  //       "hie.yaml"
-  //     ],
-  //     // "rootPatterns": ["*.cabal", "stack.yaml", "cabal.project"],
-  //     "filetypes": ["haskell", "lhaskell"]
-  //   }
+    "racket": {
+      "command": "racket",
+      "args": ["--lib", "racket-langserver"],
+      "filetypes": ["scheme"]
+    },
+    "haskell": {
+      "command": "~/.local/bin/haskell-language-server-wrapper",
+      "args": ["--lsp"],
+      "rootPatterns": [
+        "*.cabal",
+        "stack.yaml",
+        "cabal.project",
+        "package.yaml",
+        "hie.yaml"
+      ],
+      // "rootPatterns": ["*.cabal", "stack.yaml", "cabal.project"],
+      "filetypes": ["haskell", "lhaskell"]
+    }
   },
   "codeLens.enable": true,
-  // "codeLens.separator": "‣"
-  "codeLens.separator": ""
+  "codeLens.separator": "‣",
+  "haskell.formattingProvider": "ormolu"
 }

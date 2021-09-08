@@ -247,3 +247,109 @@ struct seg_tree {
   }
 };
 endsnippet
+
+snippet networks "networking libaries headers" b
+#include <arpa/inet.h>
+#include <iostream>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <optional>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+void HANDLE_SEND_RECV_ERRORS(int st) {
+  if (st == -1) {
+    perror("Error in send()/recv()");
+    exit(254);
+  } else if ((st) == 0) {
+    perror("Connection is closed because send/recv returned 0");
+    exit(255);
+  }
+}
+
+void die_with_error(const char *message, int err_code = 1) {
+  perror(message);
+  exit(err_code);
+}
+
+struct addrinfo *addr_setup(const char *address, const char *port_no) {
+  struct addrinfo hints, *result;
+
+  memset(&hints, 0, sizeof(hints));
+  hints.ai_addr = AF_UNSPEC;
+  hints.ai_socktype = SOCK_STREAM;
+  hints.ai_flags = AI_PASSIVE;
+
+  int status = getaddrinfo(address, port_no, &hints, &result);
+  if (status != 0)
+    die_with_error("getaddrinfo");
+  return result;
+}
+
+int setup_socket(struct addrinfo *result) {
+  int yes = 1;
+  int sock_fd =
+      socket(result->ai_family, result->ai_socktype, result->ai_protocol);
+  if (sock_fd < 0)
+    die_with_error("socket()");
+  if (setsockopt(sock_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT | SO_LINGER,
+                 &yes, sizeof(yes)) < 0)
+    die_with_error("setsockopt");
+  if (bind(sock_fd, result->ai_addr, result->ai_addrlen) < 0)
+    die_with_error("bind()");
+  return sock_fd;
+}
+
+int setup_client_socket(struct addrinfo *result) {
+  int yes = 1;
+  int sock_fd =
+      socket(result->ai_family, result->ai_socktype, result->ai_protocol);
+  if (sock_fd < 0)
+    die_with_error("socket()");
+  if (setsockopt(sock_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT | SO_LINGER,
+                 &yes, sizeof(yes)) < 0)
+    die_with_error("setsockopt");
+  if (connect(sock_fd, result->ai_addr, result->ai_addrlen) < 0)
+    die_with_error("bind()");
+  return sock_fd;
+}
+
+pair<int, struct sockaddr_storage> accept_connection(int sock_fd) {
+  struct sockaddr_storage addr;
+  socklen_t len = sizeof(addr);
+  int client_fd = accept(sock_fd, (struct sockaddr *)&addr, &len);
+  if (client_fd == -1)
+    die_with_error("accept()");
+  return {client_fd, addr};
+}
+
+endsnippet
+
+snippet print_ip "Functions for printing ip address and port" b
+int get_port(const sockaddr_storage *addr) {
+  if (addr->ss_family == AF_INET) {
+    return ((struct sockaddr_in *)addr)->sin_port;
+  } else {
+    return ((struct sockaddr_in6 *)addr)->sin6_port;
+  }
+}
+
+void *get_in_addr(const sockaddr_storage *addr) {
+  if (addr->ss_family == AF_INET) {
+    return &((struct sockaddr_in *)addr)->sin_addr;
+  } else {
+    return &((struct sockaddr_in6 *)addr)->sin6_addr;
+  }
+}
+
+void print_conn_name(int fd, const sockaddr_storage *addr) {
+  char buf[1000];
+  inet_ntop(addr->ss_family, get_in_addr(addr), buf, sizeof(sockaddr_storage));
+  int port = get_port(addr);
+  printf("Connected to %s at port %d\n", buf, port);
+}
+endsnippet

@@ -175,7 +175,9 @@ alias gl='git log --graph --decorate'
 alias gs='git status'
 alias glo='git log --graph --decorate --oneline'
 alias gloa='git log --all --graph --decorate --oneline'
-alias acad='cd ~/Acads'
+alias acad='cd ~/Acads/SEM5'
+alias dbmslab='cd ~/Projects/LabsAndAssignments/LabDBMS'
+alias netlab='cd ~/Projects/LabsAndAssignments/LabNetworks'
 alias clrs_open='zathura "~/Books/CS/Algo/Introduction_to_algorithms-3rd Edition.pdf" &'
 
 
@@ -211,3 +213,15 @@ copy(){
 #https://starship.rs/config/#prompt
 eval "$(starship init zsh)"
 export STARSHIP_CONFIG=~/.starship/config.toml
+
+ruby ~/scripts/touch_pad_enable.rb
+export GEM_PATH=/usr/lib/ruby/3.0.0:/home/dipesh/.local/share/gem/ruby/3.0.0/bin
+export PATH=$PATH:$GEM_PATH
+
+if [[ $TERM == "xterm-kitty" ]]; then
+	alias ssh="TERM='xterm-256color' ssh "
+fi
+
+if [[ $TERM == "tmux-256color" ]]; then
+	alias ssh="TERM='xterm-256color' ssh "
+fi
