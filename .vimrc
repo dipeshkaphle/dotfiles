@@ -136,8 +136,10 @@ if !exists('g:vscode')
 call plug#begin()
 Plug 'tpope/vim-surround'
 Plug 'raimondi/delimitmate'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
+if !has('nvim')
+	Plug 'vim-airline/vim-airline'
+	Plug 'vim-airline/vim-airline-themes'
+end
 Plug 'vim-ruby/vim-ruby'
 Plug 'neoclide/coc.nvim'
 " Plug 'morhetz/gruvbox'
@@ -160,11 +162,19 @@ Plug 'voldikss/vim-floaterm'
 Plug 'tpope/vim-fugitive'
 if has('nvim')
 	Plug 'ms-jpq/chadtree', {'branch': 'chad', 'do': 'python3 -m chadtree deps'}
+	Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
+	Plug 'famiu/feline.nvim'
+	Plug 'nvim-treesitter/playground'
+	Plug 'nvim-lua/plenary.nvim'
+	Plug 'lewis6991/gitsigns.nvim'
+	Plug 'kyazdani42/nvim-web-devicons'
 endif
-Plug 'sheerun/vim-polyglot'
+
+" Plug 'sheerun/vim-polyglot'
 Plug 'stsewd/fzf-checkout.vim'
 Plug 'szw/vim-maximizer' 
 call plug#end()
+
 
 
 " Copied from someone
@@ -266,6 +276,7 @@ autocmd FileType haskell setlocal softtabstop=4 expandtab
 autocmd FileType c setlocal ts=2 sts=2 sw=2
 autocmd FileType cpp setlocal ts=2 sts=2 sw=2
 autocmd FileType haskell :ALEDisable
+autocmd FileType sql :ALEDisable
 autocmd FileType cpp :ALEDisable
 
 
@@ -302,6 +313,7 @@ let g:gruvbox_material_better_performance = 1
 " let g:gruvbox_material_visual= 'reverse'
 colorscheme gruvbox-material
 
+" colorscheme molokai
 
 " colorscheme Atelier_SeasideDark
 " colorscheme Atelier_DuneDark
@@ -484,6 +496,8 @@ autocmd FileType markdown nnoremap <leader>pdf :! zsh ~/scripts/mdMake.sh %
     " if molokai_original
     "     hi Visual term=reverse cterm=reverse
     " endif
+
+
 highlight Comment cterm=italic gui=italic
 highlight Function cterm=none gui=none
 endif
@@ -496,13 +510,13 @@ let g:NERDCreateDefaultMappings = 1
 let g:NERDSpaceDelims = 1
 
 " Use compact syntax for prettified multi-line comments
-let g:NERDCompactSexyComs = 1
+let g:NERDCompactSexyComs = 0
 
 " Align line-wise comment delimiters flush left instead of following code indentation
-let g:NERDDefaultAlign = 'left'
+" let g:NERDDefaultAlign = 'left'
 
 " Allow commenting and inverting empty lines (useful when commenting a region)
-let g:NERDCommentEmptyLines = 1
+let g:NERDCommentEmptyLines = 0
 
 " Enable trimming of trailing whitespace when uncommenting
 let g:NERDTrimTrailingWhitespace = 1
