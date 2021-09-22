@@ -225,3 +225,9 @@ fi
 if [[ $TERM == "tmux-256color" ]]; then
 	alias ssh="TERM='xterm-256color' ssh "
 fi
+
+alias startns2='docker run --rm -ti -v $(pwd):/src  --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" ns2'
+
+# // script to generate compile commands with header info as well
+alias make_compile_commands='python ~/scripts/make_compile_commands.py '
+alias run_clang_tidy='python ~/scripts/run-clang-tidy.py'

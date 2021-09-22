@@ -136,10 +136,10 @@ if !exists('g:vscode')
 call plug#begin()
 Plug 'tpope/vim-surround'
 Plug 'raimondi/delimitmate'
-if !has('nvim')
-	Plug 'vim-airline/vim-airline'
-	Plug 'vim-airline/vim-airline-themes'
-end
+" if !has('nvim')
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+" end
 Plug 'vim-ruby/vim-ruby'
 Plug 'neoclide/coc.nvim'
 " Plug 'morhetz/gruvbox'
@@ -536,4 +536,26 @@ let g:fzf_preview_window = ['right:50%', 'ctrl-/']
 " -----------------------------------------------------------------------
 " -----------------------------------------------------------------------
 
+function IN()
+	if !has('nvim')
+		execute  "below term++rows=10"
+		execute "NERDTreeToggle"
+	elseif has('nvim')
+		execute "FloatermNew --wintype=split --position=botright"
+		execute "resize 10"
+		execute "NERDTreeToggle"
+	end
+endfunction
+command! In call IN()
+nnoremap <leader>in :In
 
+function Belowterm()
+	if !has('nvim')
+		execute  "below term++rows=10"
+	elseif has('nvim')
+		execute "FloatermNew --wintype=split --position=botright"
+		execute "resize 10"
+	end
+endfunction
+command! Belowterm call Belowterm()
+nnoremap <leader>bterm :Belowterm

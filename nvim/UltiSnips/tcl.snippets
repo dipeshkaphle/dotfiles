@@ -1,0 +1,29 @@
+snippet boilerplate "Boilerplate" b
+set ns [new Simulator]
+
+#Open the nam trace file
+set nf [open out.nam w]
+$ns namtrace-all $nf
+
+set all_trace [open all.tr w]
+$ns trace-all $all_trace
+
+#Define a 'finish' procedure
+proc finish {} {
+        global ns nf all_trace
+        $ns flush-trace
+		#Close the trace file
+        close $nf
+		close $all_trace
+		#Execute nam on the trace file
+        exec nam out.nam &
+        exit 0
+}
+
+
+# call finish after <x> sec time(change 200 to some other value)
+$ns at 200.0 "finish"
+
+#Run the simulation
+$ns run
+endsnippet

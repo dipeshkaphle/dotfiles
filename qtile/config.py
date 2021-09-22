@@ -131,19 +131,42 @@ for i in groups:
         # Key([mod, "shift"], i.name, lazy.window.togroup(i.name),
         #     desc="move focused window to group {}".format(i.name)),
     ])
-
+border = dict(
+    border_normal='#808080',
+    border_width=0,
+)
 layouts = [
     layout.Bsp(border_focus_stack='#d75f5f', margin=4),
     layout.Columns(border_focus_stack='#d75f5f', margin=4),
     layout.Max(border_focus_stack='#d75f5f', margin=4),
     # Try more layouts by unleashing below layouts.
-    #  layout.Stack(num_stacks=2),
+    #  layout.Stack(num_stacks=1,border_focus = '#0000ff', border_normal='#000000', border_width=2),
     # layout.Matrix(),
     # layout.MonadTall(),
     # layout.MonadWide(),
     # layout.RatioTile(),
     layout.Tile(border_focus_stack='#d75f5f', margin=4),
-    # layout.TreeTab(),
+   layout.TreeTab(
+         font = "Ubuntu",
+         fontsize = 10,
+         sections = ["Windows"],
+         section_fontsize = 10,
+         border_width = 2,
+         bg_color = "1c1f2499",
+         active_bg = "c678dd",
+         active_fg = "000000",
+         inactive_bg = "a9a1e1",
+         inactive_fg = "1c1f24",
+         padding_left = 0,
+         padding_x = 0,
+         padding_y = 5,
+         section_top = 10,
+         section_bottom = 20,
+         level_shift = 8,
+         vspace = 3,
+         panel_width =120
+         ),
+    #  layout.TreeTab(panel_width=100 ),
     # layout.VerticalTile(),
     #  layout.Zoomy(),
 ]
