@@ -98,7 +98,7 @@ keys = [
     Key([mod], "space", lazy.window.toggle_floating()),
     Key([mod], "f", lazy.spawn("firefox")),
     Key([mod], "b", lazy.spawn("brave")),
-    Key([], "Print", lazy.spawn("xfce4-screenshooter")),
+    Key([], "Print", lazy.spawn("flameshot gui")),
     Key([mod,"shift"], "s", lazy.spawn('''sh /home/dipesh/scripts/prompt "Suspend computer?" "systemctl suspend" && i3lock -i /home/dipesh/dotfiles/wallpapers/lockscreen.png''')),
     Key([mod,"shift"], "r", lazy.spawn('''sh /home/dipesh/scripts/prompt "Reboot computer?" "reboot"''')),
     Key([mod,"shift"], "x", lazy.spawn('''sh /home/dipesh/scripts/prompt "Shutdown computer?" "shutdown now"''')),

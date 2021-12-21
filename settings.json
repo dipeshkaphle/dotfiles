@@ -1,9 +1,7 @@
 {
-  "workbench.colorTheme": "Gruvbox Dark Hard",
   "ruby.codeCompletion": "rcodetools",
   "ruby.format": "rubocop",
   "ruby.rctComplete.commandPath": "/home/dipesh/.gem/ruby/2.7.0/bin/rct-complete",
-  "window.zoomLevel": 0,
   "code-runner.runInTerminal": true,
   "code-runner.fileDirectoryAsCwd": true,
   "C_Cpp.default.cppStandard": "c++20",
@@ -39,7 +37,6 @@
   "c-cpp-flylint.clang.standard": ["c++20"],
   "python.languageServer": "Pylance",
   "c-cpp-flylint.clang.enable": true,
-  "c-cpp-flylint.cppcheck.enable": false,
   "c-cpp-flylint.flexelint.enable": false,
   "vsicons.dontShowNewVersionMessage": true,
   "prettier.printWidth": 80,
@@ -50,5 +47,36 @@
   "[javascriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "C_Cpp.updateChannel": "Insiders"
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.wordWrap": "on",
+    "editor.quickSuggestions": false
+  },
+  "files.exclude": {
+    "**/.classpath": true,
+    "**/.project": true,
+    "**/.settings": true,
+    "**/.factorypath": true
+  },
+  "[python]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "workbench.colorTheme": "Gruvbox Dark Hard",
+  "C_Cpp.autocomplete": "Disabled",
+  "clangd.detectExtensionConflicts": false,
+  "editor.inlineSuggest.enabled": true,
+  "sqltools.codelensLanguages": [],
+  "github.copilot.enable": {
+    "*": true,
+    "yaml": false,
+    "plaintext": false,
+    "markdown": false,
+    "python": false,
+    "sql": true,
+    "rust": false
+  },
+  "window.zoomLevel": -1
 }

@@ -228,6 +228,17 @@ fi
 
 alias startns2='docker run --rm -ti -v $(pwd):/src  --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" ns2'
 
+start(){
+	docker run --rm -ti -v $(pwd):/src  --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" $1
+}
+
 # // script to generate compile commands with header info as well
 alias make_compile_commands='python ~/scripts/make_compile_commands.py '
 alias run_clang_tidy='python ~/scripts/run-clang-tidy.py'
+alias expermintal_container='docker run -d -it --privileged experimental'
+
+# opam configuration
+[[ ! -r /home/dipesh/.opam/opam-init/init.zsh ]] || source /home/dipesh/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
+alias doom='~/.emacs.d/bin/doom'
+alias btop='docker run --pid=host -it alpine-btop'
+alias ani-cli='~/scripts/ani-cli/ani-cli'

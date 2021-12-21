@@ -149,8 +149,8 @@ Plug 'scrooloose/nerdtree'
 Plug 'neovimhaskell/haskell-vim'
 Plug 'lambdalisue/suda.vim'
 Plug 'atelierbram/vim-colors_atelier-schemes'
-Plug 'honza/vim-snippets'
 Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
 Plug 'scrooloose/nerdcommenter'
 Plug 'alvan/vim-closetag'
 Plug 'dense-analysis/ale'
@@ -310,7 +310,7 @@ let g:gruvbox_material_disable_italic_comment = 0
 " let g:gruvbox_material_diagnostic_line_highlight = 1
 let g:gruvbox_material_better_performance = 1
 " let g:gruvbox_material_cursor= 'red' // works in gvim only
-" let g:gruvbox_material_visual= 'reverse'
+let g:gruvbox_material_visual= 'reverse'
 colorscheme gruvbox-material
 
 " colorscheme molokai

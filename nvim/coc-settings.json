@@ -17,6 +17,8 @@
         "cmake",
         "haskell"
     ],
+    "clangd.disableCompletion": true,
+    "clangd.disableSnippetCompletion": true,
     "prettier.printWidth": 80,
     "prettier.tabWidth": 4,
     "prettier.proseWrap": "always",
@@ -37,6 +39,16 @@
     "rust-analyzer.lens.enable": true,
     // "clangd.path": "/usr/bin/clangd",
     "languageserver": {
+        "ccls": {
+            "command": "ccls",
+            "filetypes": ["c", "cc", "cpp", "c++"],
+            "rootPatterns": [".ccls", "compile_commands.json", ".git/"],
+            "initializationOptions": {
+                "cache": {
+                    "directory": "/tmp/ccls"
+                }
+            }
+        },
         "racket": {
             "command": "racket",
             "args": ["--lib", "racket-langserver"],
@@ -53,6 +65,11 @@
                 "hie.yaml"
             ],
             "filetypes": ["haskell", "lhaskell"]
+        },
+        "ocaml-lsp": {
+            "command": "opam",
+            "args": ["config", "exec", "--", "ocamllsp"],
+            "filetypes": ["ocaml", "reason"]
         }
     },
     "codeLens.enable": true,
