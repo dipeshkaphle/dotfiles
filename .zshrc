@@ -9,6 +9,7 @@
 
 export EDITOR='nvim'
 # keyboard repeat rate 
+xset r on
 xset r rate 500 50
 export BAT_THEME='gruvbox-dark'
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-xinput set-prop 10 315 1 &
+bash ~/scripts/set_res.sh 1920 1200 60 &
 xfce4-power-manager &
 # bash /home/dipesh/.config/polybar/launch.sh &
 picom --config '/home/dipesh/.config/picom/picom.conf' &

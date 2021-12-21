@@ -242,7 +242,7 @@ widgets = [
 		fontsize = 14,
 		mouse_callbacks = {"Button1": lambda: qtile.cmd_spawn(myTerm + ' -e ytop')},
 		padding = 0,
-		text = ' '
+        text = u'CPU: '.encode().decode()
 	),
 	widget.CPU(
 		foreground = colours[3],
@@ -261,7 +261,7 @@ widgets = [
 		fontsize = 14,
 		mouse_callbacks = {"Button1": lambda: qtile.cmd_spawn(myTerm + ' -e ytop')},
 		padding = 0,
-		text = '﬙ ',
+        text = 'RAM: ',
 	),
 	widget.Memory(
 		foreground = colours[4],
@@ -274,13 +274,13 @@ widgets = [
 		linewidth = 1,
 		padding = 10,
 	),
-	#widget.TextBox(
-	#	foreground = colours[5],
-	#	font = "JetBrainsMono Nerd Font Regular",
-	#	fontsize = 12,
-	#	padding = 0,
-	#	text = ' ',
-	#),
+	widget.TextBox(
+		foreground = colours[5],
+		font = "JetBrainsMono Nerd Font Regular",
+		fontsize = 12,
+		padding = 0,
+        text = 'Brightness: ',
+	),
     widget.Backlight(
         foreground = colours[5],
         foreground_alert = colours[3],
@@ -298,7 +298,7 @@ widgets = [
 		font = "JetBrainsMono Nerd Font Regular",
 		fontsize = 14,
 		padding = 0,
-		text = ' ',
+        text = 'Upd: ',
 	),
 	widget.CheckUpdates(
 		colour_have_updates = colours[5],
@@ -327,7 +327,7 @@ widgets = [
 			"Button5": lambda: qtile.cmd_spawn("amixer -M set Master 5%- unmute"),
 		}),
 		padding = 0,
-		text = '墳 ',
+        text = 'Vol: ',
 	),
 	widget.Volume(
 		foreground = colours[6],
@@ -360,11 +360,11 @@ widgets = [
 	widget.Battery(
 		foreground = colours[7],
 		low_foreground = colours[3],
-		charge_char = ' ',
-		discharge_char = ' ',
-		empty_char = ' ',
-		full_char = ' ',
-		unknown_char = ' ',
+        charge_char = 'Charging: ',
+        discharge_char = 'Battery: ',
+		empty_char = ' ',
+        full_char = 'Full: ',
+		unknown_char = ' ',
 		font = "JetBrainsMono Nerd Font Regular",
 		fontsize = 14,
 		format = '{char}',
@@ -389,7 +389,7 @@ widgets = [
 		font = "JetBrainsMono Nerd Font Regular",
 		fontsize = 14,
 		padding = 0,
-		text = ' ',
+        text = 'Date: ',
 	),
 	widget.Clock(
 		foreground = colours[8],
