@@ -176,7 +176,7 @@ alias gl='git log --graph --decorate'
 alias gs='git status'
 alias glo='git log --graph --decorate --oneline'
 alias gloa='git log --all --graph --decorate --oneline'
-alias acad='cd ~/Acads/SEM5'
+alias acad='cd ~/Acads/Sem6'
 alias dbmslab='cd ~/Projects/LabsAndAssignments/LabDBMS'
 alias netlab='cd ~/Projects/LabsAndAssignments/LabNetworks'
 alias clrs_open='zathura "~/Books/CS/Algo/Introduction_to_algorithms-3rd Edition.pdf" &'
@@ -219,6 +219,11 @@ ruby ~/scripts/touch_pad_enable.rb
 export GEM_PATH=/usr/lib/ruby/3.0.0:/home/dipesh/.local/share/gem/ruby/3.0.0/bin
 export PATH=$PATH:$GEM_PATH
 
+# Add Stack installed  GHC to path
+
+export GHC_BIN_PATH=$(stack exec -- which ghc | python -c "print('/'.join(input().split('/')[:-1]))")
+export PATH=$PATH:$GHC_BIN_PATH
+
 if [[ $TERM == "xterm-kitty" ]]; then
 	alias ssh="TERM='xterm-256color' ssh "
 fi
@@ -241,5 +246,5 @@ alias expermintal_container='docker run -d -it --privileged experimental'
 # opam configuration
 [[ ! -r /home/dipesh/.opam/opam-init/init.zsh ]] || source /home/dipesh/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
 alias doom='~/.emacs.d/bin/doom'
-alias btop='docker run --pid=host -it alpine-btop'
 alias ani-cli='~/scripts/ani-cli/ani-cli'
+alias btop='btop -t'

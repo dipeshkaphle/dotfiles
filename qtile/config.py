@@ -99,7 +99,7 @@ keys = [
     Key([mod], "f", lazy.spawn("firefox")),
     Key([mod], "b", lazy.spawn("brave")),
     Key([], "Print", lazy.spawn("flameshot gui")),
-    Key([mod,"shift"], "s", lazy.spawn('''sh /home/dipesh/scripts/prompt "Suspend computer?" "systemctl suspend" && i3lock -i /home/dipesh/dotfiles/wallpapers/lockscreen.png''')),
+    Key([mod,"shift"], "s", lazy.spawn('''sh /home/dipesh/scripts/prompt "Suspend computer?" "systemctl suspend" ''')),
     Key([mod,"shift"], "r", lazy.spawn('''sh /home/dipesh/scripts/prompt "Reboot computer?" "reboot"''')),
     Key([mod,"shift"], "x", lazy.spawn('''sh /home/dipesh/scripts/prompt "Shutdown computer?" "shutdown now"''')),
     # Media hotkeys
@@ -148,7 +148,7 @@ layouts = [
     layout.Tile(border_focus_stack='#d75f5f', margin=4),
    layout.TreeTab(
          font = "Ubuntu",
-         fontsize = 10,
+         fontsize = 14,
          sections = ["Windows"],
          section_fontsize = 10,
          border_width = 2,
@@ -173,7 +173,7 @@ layouts = [
 
 widget_defaults = dict(
     font='sans',
-    fontsize=12,
+    fontsize=15,
     padding=3,
 )
 extension_defaults = widget_defaults.copy()
@@ -242,7 +242,7 @@ widgets = [
 		fontsize = 14,
 		mouse_callbacks = {"Button1": lambda: qtile.cmd_spawn(myTerm + ' -e ytop')},
 		padding = 0,
-        text = u'CPU: '.encode().decode()
+        text = 'CPU: '
 	),
 	widget.CPU(
 		foreground = colours[3],
@@ -293,13 +293,13 @@ widgets = [
 		linewidth = 1,
 		padding = 10,
 	),
-	widget.TextBox(
-		foreground = colours[5],
-		font = "JetBrainsMono Nerd Font Regular",
-		fontsize = 14,
-		padding = 0,
-        text = 'Upd: ',
-	),
+	#  widget.TextBox(
+		#  foreground = colours[5],
+		#  font = "JetBrainsMono Nerd Font Regular",
+		#  fontsize = 14,
+		#  padding = 0,
+        #  text = 'Upd: ',
+	#  ),
 	widget.CheckUpdates(
 		colour_have_updates = colours[5],
 		colour_no_updates = colours[5],
@@ -349,7 +349,7 @@ widgets = [
     widget.Net(
         foreground = colours[7],
         format = '{down}  ',
-        interface = 'wlp3s0',
+        interface = 'wlp0s20f3',
 		update_interval = 20.0,
     ),
 	widget.Sep(
