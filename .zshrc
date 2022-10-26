@@ -163,6 +163,7 @@ bindkey -M vicmd 'j' history-substring-search-down
 alias -g la='exa -a'
 alias -g ll='exa -l'
 alias -g lla='exa -la'
+alias -g ls='exa'
 alias tmuxat='tmux a -t'
 alias tmux='tmux -u'
 alias open='xdg-open'
@@ -216,8 +217,10 @@ eval "$(starship init zsh)"
 export STARSHIP_CONFIG=~/.starship/config.toml
 
 ruby ~/scripts/touch_pad_enable.rb
-export GEM_PATH=/usr/lib/ruby/3.0.0:/home/dipesh/.local/share/gem/ruby/3.0.0/bin
-export PATH=$PATH:$GEM_PATH
+export GEM_HOME="$(ruby -e 'puts Gem.user_dir')"
+export PATH="$PATH:$GEM_HOME/bin"
+# export GEM_PATH=/usr/lib/ruby/3.0.0:/home/dipesh/.local/share/gem/ruby/3.0.0
+# export PATH=$PATH:$GEM_PATH
 
 # Add Stack installed  GHC to path
 
@@ -248,3 +251,4 @@ alias expermintal_container='docker run -d -it --privileged experimental'
 alias doom='~/.emacs.d/bin/doom'
 alias ani-cli='~/scripts/ani-cli/ani-cli'
 alias btop='btop -t'
+alias monitor='~/dotfiles/watch.sh'

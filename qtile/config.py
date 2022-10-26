@@ -97,7 +97,7 @@ keys = [
         desc="Spawn a command using a prompt widget"),
     Key([mod], "space", lazy.window.toggle_floating()),
     Key([mod], "f", lazy.spawn("firefox")),
-    Key([mod], "b", lazy.spawn("brave")),
+    Key([mod], "b", lazy.spawn("microsoft-edge-dev --force-device-scale=1.5")),
     Key([], "Print", lazy.spawn("flameshot gui")),
     Key([mod,"shift"], "s", lazy.spawn('''sh /home/dipesh/scripts/prompt "Suspend computer?" "systemctl suspend" ''')),
     Key([mod,"shift"], "r", lazy.spawn('''sh /home/dipesh/scripts/prompt "Reboot computer?" "reboot"''')),
@@ -240,14 +240,14 @@ widgets = [
 		foreground = colours[3],
 		font = "JetBrainsMono Nerd Font Regular",
 		fontsize = 14,
-		mouse_callbacks = {"Button1": lambda: qtile.cmd_spawn(myTerm + ' -e ytop')},
+		mouse_callbacks = {"Button1": lambda: qtile.cmd_spawn(myTerm + ' -e btop -t')},
 		padding = 0,
         text = 'CPU: '
 	),
 	widget.CPU(
 		foreground = colours[3],
 		format = '{load_percent}%',
-		mouse_callbacks = {"Button1": lambda: qtile.cmd_spawn(myTerm + ' -e ytop')},
+		mouse_callbacks = {"Button1": lambda: qtile.cmd_spawn(myTerm + ' -e btop -t')},
 		update_interval = 20.0,
 	),
 	widget.Sep(
@@ -259,14 +259,14 @@ widgets = [
 		foreground = colours[4],
 		font = "JetBrainsMono Nerd Font Regular",
 		fontsize = 14,
-		mouse_callbacks = {"Button1": lambda: qtile.cmd_spawn(myTerm + ' -e ytop')},
+		mouse_callbacks = {"Button1": lambda: qtile.cmd_spawn(myTerm + ' -e btop -t')},
 		padding = 0,
         text = 'RAM: ',
 	),
 	widget.Memory(
 		foreground = colours[4],
 		format = '{MemUsed} MB',
-		mouse_callbacks = {"Button1": lambda: qtile.cmd_spawn(myTerm + ' -e ytop')},
+		mouse_callbacks = {"Button1": lambda: qtile.cmd_spawn(myTerm + ' -e btop -t')},
 		update_interval = 20.0,
 	),
 	widget.Sep(
@@ -401,7 +401,7 @@ widgets = [
 	#),
 ]
 
-status_bar = lambda widgets: bar.Bar(widgets, 20, background = colours[0][0],opacity=0.9, margin=4)
+status_bar = lambda widgets: bar.Bar(widgets, 30, background = colours[0][0],opacity=0.9, margin=4)
 
 screens = [Screen(top=status_bar(widgets),  )]
 

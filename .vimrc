@@ -13,6 +13,7 @@
 "
 "
 "
+" TODO
 set encoding=utf-8
 "
 set nocompatible
@@ -155,12 +156,16 @@ Plug 'scrooloose/nerdcommenter'
 Plug 'alvan/vim-closetag'
 Plug 'dense-analysis/ale'
 Plug 'bfrg/vim-cpp-modern'
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
+" Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+" Plug 'junegunn/fzf.vim'
+Plug 'fannheyward/telescope-coc.nvim'
+
 Plug 'rust-lang/rust.vim'
 Plug 'voldikss/vim-floaterm'
 Plug 'tpope/vim-fugitive'
 if has('nvim')
+    Plug 'nvim-lua/plenary.nvim'
+    Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.0' }
 	Plug 'ms-jpq/chadtree', {'branch': 'chad', 'do': 'python3 -m chadtree deps'}
 	Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
 	Plug 'famiu/feline.nvim'
@@ -168,13 +173,20 @@ if has('nvim')
 	Plug 'nvim-lua/plenary.nvim'
 	Plug 'lewis6991/gitsigns.nvim'
 	Plug 'kyazdani42/nvim-web-devicons'
+    Plug 'kyazdani42/nvim-tree.lua'
 endif
 
-" Plug 'sheerun/vim-polyglot'
+Plug 'sheerun/vim-polyglot'
 Plug 'stsewd/fzf-checkout.vim'
 Plug 'szw/vim-maximizer' 
+
+" Session management
+Plug 'xolox/vim-misc'
+Plug 'xolox/vim-session'
 call plug#end()
 
+
+let g:session_autosave = 'no'
 
 
 " Copied from someone
@@ -216,7 +228,7 @@ let g:closetag_filenames = '*.html,*.xhtml,*.xml,*.js,*.html.erb,*.md'
 
 " Airline Config
 let g:airline_powerline_fonts=1
-let g:airline_theme='gruvbox_material'
+let g:airline_theme='base16_adwaita'
 " let g:airline_theme='random'
 let g:airline#extensions#branch#enabled = 1
 "tabline
@@ -312,7 +324,6 @@ let g:gruvbox_material_better_performance = 1
 " let g:gruvbox_material_cursor= 'red' // works in gvim only
 let g:gruvbox_material_visual= 'reverse'
 colorscheme gruvbox-material
-
 " colorscheme molokai
 
 " colorscheme Atelier_SeasideDark
@@ -355,8 +366,8 @@ au BufRead,BufNewFile *.MD set filetype=markdown
 
 
 "Mapping to resize the splits a bit faster
-nnoremap <C-w>> 15<C-w>>
-nnoremap <C-w>< 15<C-w><
+nnoremap <C-w>> 10<C-w>>
+nnoremap <C-w>< 10<C-w><
 
 nnoremap <leader>cpp : ! g++ -std=c++20 -lm % -o %:t:r -Wall -Wpedantic -Wextra -Werror -g -fsanitize=address
 nnoremap <leader>c :! gcc -lm % -o %:t:r -Wall -Wpedantic -Wextra -Werror -g -fsanitize=address
@@ -384,7 +395,7 @@ vnoremap <leader>y "+y<CR>
 nnoremap <leader>yy "+yy<CR>
 nnoremap <leader>p "+p<CR>
 if has('nvim')
-	nnoremap <leader>n :CHADopen
+	nnoremap <leader>n :NvimTreeToggle
 else
 	nnoremap <leader>n :NERDTreeOpen
 	nnoremap <leader>qn :NERDTreeClose
@@ -396,9 +407,11 @@ nnoremap <leader>th :FloatermHide
 nnoremap <leader>ts :FloatermShow
 nnoremap <leader>tt :FloatermToggle
 
-nnoremap <leader>fs :FZF<CR>
-nnoremap <leader>buf :Buffers<CR>
-nnoremap <leader>rg :Rg<CR>
+nnoremap <leader>fs :Telescope find_files find_command=rg,--ignore,--files prompt_prefix=🔍<CR>
+nnoremap <leader>fsh :Telescope find_files find_command=rg,--ignore,--hidden,--files prompt_prefix=🔍<CR>
+nnoremap <leader>fsih :Telescope find_files find_command=rg,--no-ignore-vcs,--hidden,--files prompt_prefix=🔍<CR>
+nnoremap <leader>buf :Telescope buffers<CR>
+nnoremap <leader>rg :Telescope live_grep<CR>
 map <leader>z <plug>NERDCommenterToggle
 nmap <leader>rnm <Plug>(coc-rename)
 " nmap :rename <Plug>(coc-rename)
@@ -418,14 +431,6 @@ nmap <silent> ]n <Plug>(coc-diagnostic-next)
 xmap <leader>f  <Plug>(coc-format-selected)
 nmap <leader>f  <Plug>(coc-format-selected)
 
-" Use tab for trigger completion with characters ahead and navigate.
-" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
-" other plugin before putting this into your config.
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 
 " GoTo code navigation.
@@ -559,3 +564,21 @@ function Belowterm()
 endfunction
 command! Belowterm call Belowterm()
 nnoremap <leader>bterm :Belowterm
+
+au BufNewFile,BufRead *.lpp set ft=lex
+au BufNewFile,BufRead *.ypp set ft=yacc
+" " autocmd ColorScheme * highlight Normal ctermbg=Black
+"
+" Use tab for trigger completion with characters ahead and navigate.
+" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+" other plugin before putting this into your config.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+
+hi! CocErrorVirtualText guifg=#d1666a
+hi! CocInfoVirtualText guibg=#353b45
+hi! CocWarningVirtualText guifg=#d1cd66
