@@ -160,27 +160,17 @@ bindkey -M vicmd 'j' history-substring-search-down
 # Example aliases
 # Some aliases are defined globally so that theyll
 # expand inside the functions like copy and vimOut
-alias -g la='exa -a'
-alias -g ll='exa -l'
-alias -g lla='exa -la'
-alias -g ls='exa'
+alias la='exa -a'
+alias ll='exa -l'
+alias lla='exa -la'
+alias ls='exa'
 alias tmuxat='tmux a -t'
 alias tmux='tmux -u'
 alias open='xdg-open'
-alias -g lsf='~/scripts/myLs files'
-alias -g lsfa='~/scripts/myLs allFiles'
-alias -g lsfh='~/scripts/myLs hiddenFiles'
-alias -g lsd='~/scripts/myLs dirs'
-alias -g lsda='~/scripts/myLs allDirs'
-alias -g lsdh='~/scripts/myLs hiddenDirs'
 alias gl='git log --graph --decorate'
 alias gs='git status'
 alias glo='git log --graph --decorate --oneline'
 alias gloa='git log --all --graph --decorate --oneline'
-alias acad='cd ~/Acads/Sem6'
-alias dbmslab='cd ~/Projects/LabsAndAssignments/LabDBMS'
-alias netlab='cd ~/Projects/LabsAndAssignments/LabNetworks'
-alias clrs_open='zathura "~/Books/CS/Algo/Introduction_to_algorithms-3rd Edition.pdf" &'
 
 
 
@@ -249,6 +239,30 @@ alias expermintal_container='docker run -d -it --privileged experimental'
 # opam configuration
 [[ ! -r /home/dipesh/.opam/opam-init/init.zsh ]] || source /home/dipesh/.opam/opam-init/init.zsh  > /dev/null 2> /dev/null
 alias doom='~/.emacs.d/bin/doom'
-alias ani-cli='~/scripts/ani-cli/ani-cli'
 alias btop='btop -t'
 alias monitor='~/dotfiles/watch.sh'
+
+
+
+# This line automatically added by ./everest
+export PATH=/home/dipesh/verified_gc/everest/z3-4.8.5-x64-debian-8.11/bin:$PATH
+
+# This line automatically added by ./everest
+export PATH=/home/dipesh/verified_gc/everest/z3-4.8.5-x64-debian-8.11/bin:$PATH
+
+# This line automatically added by ./everest
+export PATH=/home/dipesh/verified_gc/everest/z3-4.8.5-x64-debian-8.11/bin:$PATH
+
+# This line automatically added by ./everest
+export PATH=/home/dipesh/verified_gc/everest/z3-4.8.5-x64-debian-8.11/bin:$PATH
+
+
+mount_windows_drive(){
+  sudo mkdir /run/media/bitlocker; sudo dislocker /dev/nvme0n1p4 -p144793-200739-670736-297363-418330-349877-104093-197428 -- /run/media/bitlocker
+  sudo mkdir /run/media/dipesh; sudo mount -t ntfs-3g -o loop /run/media/bitlocker/dislocker-file /run/media/dipesh
+}
+
+tmux-window-name() {
+	($TMUX_PLUGIN_MANAGER_PATH/tmux-window-name/scripts/rename_session_windows.py &)
+}
+

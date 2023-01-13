@@ -10,6 +10,8 @@ function run_cmd() {
 	echo "--------------------------------------"
 	echo "Running: $cmd"
 	eval $cmd 
+	echo "Completed: $cmd"
+	echo "--------------------------------------"
 }
 
 function test_and_run_cmd(){

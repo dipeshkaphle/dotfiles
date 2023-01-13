@@ -137,11 +137,8 @@ if !exists('g:vscode')
 call plug#begin()
 Plug 'tpope/vim-surround'
 Plug 'raimondi/delimitmate'
-" if !has('nvim')
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-" end
-Plug 'vim-ruby/vim-ruby'
 Plug 'neoclide/coc.nvim'
 " Plug 'morhetz/gruvbox'
 Plug 'sainnhe/gruvbox-material'
@@ -149,7 +146,6 @@ Plug 'tomasr/molokai'
 Plug 'scrooloose/nerdtree'
 Plug 'neovimhaskell/haskell-vim'
 Plug 'lambdalisue/suda.vim'
-Plug 'atelierbram/vim-colors_atelier-schemes'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'scrooloose/nerdcommenter'
@@ -181,13 +177,30 @@ Plug 'stsewd/fzf-checkout.vim'
 Plug 'szw/vim-maximizer' 
 
 " Session management
+" IMP: Has CreateSession OpenSession DeleteSession ViewSession
 Plug 'xolox/vim-misc'
 Plug 'xolox/vim-session'
+
+if has('nvim')
+  function! UpdateRemotePlugins(...)
+    " Needed to refresh runtime files
+    let &rtp=&rtp
+    UpdateRemotePlugins
+  endfunction
+
+  Plug 'gelguy/wilder.nvim', { 'do': function('UpdateRemotePlugins') }
+else
+  Plug 'gelguy/wilder.nvim'
+
+  " To use Python remote plugin features in Vim, can be skipped
+  " Plug 'roxma/nvim-yarp'
+  " Plug 'roxma/vim-hug-neovim-rpc'
+endif
+
 call plug#end()
 
 
 let g:session_autosave = 'no'
-
 
 " Copied from someone
 let $FZF_DEFAULT_OPTS="--ansi --preview-window 'right:60%' --layout reverse --margin=1,4 --preview 'bat --color=always --style=header,grid {}'"
@@ -202,8 +215,6 @@ let $FZF_DEFAULT_OPTS="--ansi --preview-window 'right:60%' --layout reverse --ma
 " let g:UltiSnipsListSnippets =<c-Tab>
 " let g:UltiSnipsJumpForwardTrigger          <c-j>
 " let g:UltiSnipsJumpBackwardTrigger         <c-k>
-
-
 
 let g:cpp_no_function_highlight = 1
 let g:cpp_simple_highlight = 1
@@ -222,7 +233,6 @@ let g:haskell_backpack = 1                " to enable highlighting of backpack k
 " let g:haskell_classic_highlighting = 1
 
 " vim close-tag config
-"
 let g:closetag_filenames = '*.html,*.xhtml,*.xml,*.js,*.html.erb,*.md'
 
 
@@ -232,21 +242,19 @@ let g:airline_theme='base16_adwaita'
 " let g:airline_theme='random'
 let g:airline#extensions#branch#enabled = 1
 "tabline
-
-let g:airline#extensions#tabline#enabled = 1           " enable airline tabline                                                           
-let g:airline#extensions#tabline#show_close_button = 0 " remove 'X' at the end of the tabline                                            
+let g:airline#extensions#tabline#enabled = 1           " enable airline tabline 
+let g:airline#extensions#tabline#show_close_button = 0 " remove 'X' at the end of the tabline 
 let g:airline#extensions#tabline#tabs_label = ''       " can put text here like BUFFERS to denote buffers (I clear it so nothing is shown)
 let g:airline#extensions#tabline#buffers_label = ''    " can put text here like TABS to denote tabs (I clear it so nothing is shown)
 " let g:airline#extensions#tabline#fnamemod = ':t'       " disable file paths in the tab
-let g:airline#extensions#tabline#show_tab_count = 0    " dont show tab numbers on the right                                                           
-let g:airline#extensions#tabline#show_buffers = 0      " dont show buffers in the tabline                                                 
-let g:airline#extensions#tabline#tab_min_count = 2     " minimum of 2 tabs needed to display the tabline                                  
-let g:airline#extensions#tabline#show_splits = 0       " disables the buffer name that displays on the right of the tabline               
-let g:airline#extensions#tabline#show_tab_nr = 0       " disable tab numbers                                                              
+let g:airline#extensions#tabline#show_tab_count = 0    " dont show tab numbers on the right
+let g:airline#extensions#tabline#show_buffers = 0      " dont show buffers in the tabline
+let g:airline#extensions#tabline#tab_min_count = 2     " minimum of 2 tabs needed to display the tabline
+let g:airline#extensions#tabline#show_splits = 0       " disables the buffer name that displays on the right of the tabline
+let g:airline#extensions#tabline#show_tab_nr = 0       " disable tab numbers
 let g:airline#extensions#tabline#show_tab_type = 0     " disables the weird ornage arrow on the tabline
 
 "ALE stuff
-
 let g:ale_disable_lsp = 1
 autocmd FileType ruby :ALEEnable
 " let g:ale_sign_error = '>>'
@@ -351,10 +359,9 @@ let g:haskell_enable_static_pointers = 1  " to enable highlighting of `static`
 let g:haskell_backpack = 1                " to enable highlighting of backpack keywords
 
 
-" Terminal Mode remap
+" Terminal Mode remap, Escape in terminal mode changes to Normal Mode instead
+" of the complicated default mapping
 tnoremap <Esc> <C-\><C-n>
-
-
 
 
 " Setting syntax for MD as markdown
@@ -440,7 +447,7 @@ nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 nnoremap  <leader>cr :CocRestart
 
-" Use K to show documentation in float window.
+" Use Q to show documentation in float window.
 nnoremap <silent> Q :call <SID>show_documentation()<CR>
 
 
@@ -548,7 +555,7 @@ function IN()
 	elseif has('nvim')
 		execute "FloatermNew --wintype=split --position=botright"
 		execute "resize 10"
-		execute "NERDTreeToggle"
+		execute "NvimTreeToggle"
 	end
 endfunction
 command! In call IN()
@@ -582,3 +589,12 @@ inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 hi! CocErrorVirtualText guifg=#d1666a
 hi! CocInfoVirtualText guibg=#353b45
 hi! CocWarningVirtualText guifg=#d1cd66
+
+set nobackup
+set nowritebackup
+
+" wilder.nvim
+call wilder#setup({'modes': [':', '/', '?']})
+call wilder#set_option('renderer', wilder#popupmenu_renderer({
+      \ 'highlighter': wilder#basic_highlighter(),
+      \ }))

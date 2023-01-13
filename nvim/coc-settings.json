@@ -16,7 +16,7 @@
         "rust",
         "cmake",
         "haskell",
-		"ocaml",
+        "ocaml",
         "go"
     ],
     "clangd.disableCompletion": true,
@@ -54,7 +54,7 @@
         "racket": {
             "command": "racket",
             "args": ["--lib", "racket-langserver"],
-            "filetypes": ["scheme","racket"]
+            "filetypes": ["scheme", "racket"]
         },
         "haskell": {
             "command": "~/.local/bin/haskell-language-server-wrapper",
@@ -82,8 +82,14 @@
     "go.goplsOptions.gofumpt": true,
     "go.goplsOptions.staticcheck": true,
     "rust-analyzer.checkOnSave.command": "clippy",
-    "clangd.arguments": ["--background-index", "--clang-tidy", "--all-scopes-completion"],
+    "clangd.arguments": [
+        "--background-index",
+        "--clang-tidy",
+        "--all-scopes-completion"
+    ],
     "diagnostic.virtualText": true,
     "diagnostic.virtualTextCurrentLineOnly": false,
-    "diagnostic.virtualTextLineSeparator": " | "
+    "diagnostic.virtualTextLineSeparator": " | ",
+    // "rust-analyzer.cargo.features": ["btree_free"],
 }
+
