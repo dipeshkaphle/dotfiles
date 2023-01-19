@@ -196,6 +196,7 @@ else
   " Plug 'roxma/nvim-yarp'
   " Plug 'roxma/vim-hug-neovim-rpc'
 endif
+Plug 'FStarLang/VimFStar', {'for': 'fstar'}
 
 call plug#end()
 

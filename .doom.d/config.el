@@ -33,7 +33,7 @@
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 (setq doom-theme  'doom-gruvbox)
-(setq doom-font "Jetbrains Mono")
+(setq doom-font (font-spec :family "Jetbrains Mono" :size 22))
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
@@ -87,5 +87,92 @@
 (global-prettify-symbols-mode)
 
 (map! :m  "C-i" #'evil-jump-forward)
+;; this messes TAB, must change
+(define-key evil-insert-state-map (kbd "TAB") 'indent-for-tab-command)
 
 (xclip-mode 1)
+
+
+(defun find-hidden ()
+  (interactive)
+  (+vertico/consult-fd)
+  )
+
+(setq cursor-type :box)
+
+;; https://www.reddit.com/r/emacs/comments/hz6ibe/how_to_bind_cc_to_send_ctr_c_in_vtermmode_in/
+(map! :after vterm
+      :map vterm-mode-map
+      :ni "C-c" #'vterm-send-C-c)
+
+
+
+;; imap <C-k> <Up>
+;; imap <C-j> <Down>
+;; imap <C-l> <Right>
+;; imap <C-h> <Left>
+(define-key evil-insert-state-map (kbd "C-l") 'right-char)
+(define-key evil-insert-state-map (kbd "C-h") 'left-char)
+(define-key evil-insert-state-map (kbd "C-j") 'next-line)
+(define-key evil-insert-state-map (kbd "C-k") 'previous-line)
+
+;; inoremap <C-w> <C-o>W
+;; inoremap <C-b> <C-o><C-Left>
+;; inoremap <C-f> <C-o>^
+;; inoremap <C-e> <C-o>$
+;; inoremap <C-t> <C-o>O
+;; inoremap <C-d> <C-o>o
+(define-key evil-insert-state-map (kbd "C-b") (kbd "C-<left>") )
+(define-key evil-insert-state-map (kbd "C-w") (kbd "C-<right>") )
+(define-key evil-insert-state-map (kbd "C-f") 'beginning-of-line-text)
+(define-key evil-insert-state-map (kbd "C-e") 'end-of-line)
+(define-key evil-insert-state-map (kbd "C-t") '+default/newline-above)
+(define-key evil-insert-state-map (kbd "C-d") '+default/newline-below)
+;; nnoremap <S-j> <C-e>
+;; nnoremap <S-k> <C-y>
+(define-key evil-normal-state-map (kbd "K") 'evil-scroll-line-up)
+(define-key evil-normal-state-map (kbd "J") 'evil-scroll-line-down)
+
+
+
+(map! :leader "z" #'comment-or-uncomment-region)
+
+(map!
+ :map fstar-mode-map
+ :prefix "C-c"
+ "C-SPC" #'fstar-subp-company-backend
+ )
+
+(setq evil-vsplit-window-right t)
+(setq evil-split-window-below t)
+
+
+(defadvice! prompt-for-ex-after-vnew (&rest _)
+  :after 'evil-window-vnew (evil-ex))
+
+(defadvice! prompt-for-ex-after-new (&rest _)
+  :after 'evil-window-new (evil-ex))
+
+(defadvice! prompt-for-ex-after-tabnew (&rest _)
+  :after '+workspace/new (evil-ex))
+
+(evil-ex-define-cmd "be[low]"
+                    (lambda ()
+                      (interactive)
+                      (evil-window-new nil nil)
+                      (evil-ex)))
+
+(evil-ex-define-cmd "vert[ical]"
+                    (lambda () (interactive)
+                      (evil-window-vnew nil nil)
+                      (evil-ex)))
+
+(after! persp-mode
+  (setq persp-emacsclient-init-frame-behaviour-override "main")
+  )
+
+(evil-ex-define-cmd "!" 'projectile-run-shell-command-in-root)
+
+(global-visual-line-mode)
+(global-tree-sitter-mode)
+(add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)

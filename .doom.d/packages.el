@@ -50,4 +50,4 @@
 ;(unpin! t)
 
 (package! xclip)
-(package! ivy)
+(package! vdiff)

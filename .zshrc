@@ -266,3 +266,9 @@ tmux-window-name() {
 	($TMUX_PLUGIN_MANAGER_PATH/tmux-window-name/scripts/rename_session_windows.py &)
 }
 
+export PATH=$PATH:/home/dipesh/.config/coc/extensions/coc-rust-analyzer-data
+export PATH=$PATH:/home/dipesh/verified_gc/everest/FStar/bin
+
+run_emacs_daemon(){
+  PATH=$PATH emacs --daemon
+}
