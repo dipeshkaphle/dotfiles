@@ -268,7 +268,39 @@ tmux-window-name() {
 
 export PATH=$PATH:/home/dipesh/.config/coc/extensions/coc-rust-analyzer-data
 export PATH=$PATH:/home/dipesh/verified_gc/everest/FStar/bin
+export PATH=$PATH:/home/dipesh/go/bin
 
 run_emacs_daemon(){
   PATH=$PATH emacs --daemon
+}
+
+emacsclient_tui() {
+  DIR="."
+  if [[ "$1" != "" ]]; then
+    cmdtorun=$1
+  fi
+  emacsclient -c -t $DIR
+}
+emacsclient_gui(){
+  DIR="."
+  if [[ "$1" != "" ]]; then
+    cmdtorun=$1
+  fi
+  emacsclient -c $DIR &
+}
+
+emacs_tui(){
+  DIR="."
+  if [[ "$1" != "" ]]; then
+    cmdtorun=$1
+  fi
+  emacs -t $DIR
+}
+
+emacs_gui(){
+  DIR="."
+  if [[ "$1" != "" ]]; then
+    cmdtorun=$1
+  fi
+  emacs $DIR &
 }

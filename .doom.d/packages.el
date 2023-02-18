@@ -51,3 +51,7 @@
 
 (package! xclip)
 (package! vdiff)
+(package! ivy-rich :disable t)
+(package! ivy :disable t)
+(package! ivy-hydra :disable t)
+(unpin! lsp-mode magit swiper)
