@@ -401,9 +401,10 @@ widgets = [
 	#),
 ]
 
-status_bar = lambda widgets: bar.Bar(widgets, 30, background = colours[0][0],opacity=0.9, margin=4)
+status_bar = lambda widgets: bar.Bar(widgets, 40, background = colours[0][0],opacity=0.9, margin=4)
 
 screens = [Screen(top=status_bar(widgets),  )]
+#  screens = [Screen()]
 
 
 #  screens = [

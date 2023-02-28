@@ -227,7 +227,7 @@ struct seg_tree {
     } else {
       int m = (tl + tr) / 2;
       update(l, min(r, m), tl, m, 2 * ind + 1, delta);
-      update(max(l, m + 1), r, m + 1, r, 2 * ind + 2, delta);
+      update(max(l, m + 1), r, m + 1, tr, 2 * ind + 2, delta);
       t[ind] = max(t[2 * ind + 1], t[2 * ind + 2]);
     }
   }
