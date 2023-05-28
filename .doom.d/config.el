@@ -32,8 +32,8 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme  'doom-gruvbox)
-(setq doom-font (font-spec :family "Jetbrains Mono" :size 22))
+(setq doom-theme 'doom-gruvbox)
+(setq doom-font (font-spec :family "Jetbrains Mono" :size 24))
 
 (setq evil-normal-state-cursor '(box "red")
       evil-insert-state-cursor '(bar "white")
@@ -133,13 +133,15 @@
  :n "C-k" #'evil-scroll-line-up
  :n "C-j" #'evil-scroll-line-down
  :i "C-V" #'evil-paste-after
+ :n "]n"  #'flycheck-previous-error
+ :n "[n"  #'flycheck-next-error
  )
 
 ;; map C-V to paste
 ;; (define-key evil-insert-state-map (kbd "C-V") #'evil-paste-after)
 
 (map! :leader "z" #'comment-or-uncomment-region)
-
+(map! :leader "a" #'embark-act)
 
 (map!
  :map fstar-mode-map
@@ -159,10 +161,14 @@
  )
 
 (use-package! lsp
-    :ensure
     :custom
     (lsp-rust-analyzer-server-display-inlay-hints t)
 )
+
+(use-package! ocamlformat
+  :custom (ocamlformat-enable 'enable-outside-detected-project)
+  :hook (before-save . ocamlformat-before-save)
+  )
 
 (map!
  :map company-mode-map
@@ -173,11 +179,6 @@
 (setq flycheck-check-syntax-automatically '(mode-enabled save))
 ;; (setq flycheck-idle-change-delay 10)
 (setq flycheck-idle-buffer-switch-delay 5)
-
-
-
-
-
 (setq evil-vsplit-window-right t)
 (setq evil-split-window-below t)
 
@@ -233,9 +234,9 @@
 				"--header-insertion-decorators=0"))
 (after! lsp-clangd (set-lsp-priority! 'clangd 2))
 
-
 ;; Specifying directory in rg search => https://emacs.stackexchange.com/questions/63079/how-to-change-counsel-grep-options-once-activated-counsel-rg-counsel-git-grep
-
-
 (setq counsel-mode t)
 (setq utop-command "opam config exec -- dune utop . -- -emacs")
+
+(add-hook! 'tuareg-mode-hook #'merlin-mode)
+(add-hook! 'caml-mode-hook #'merlin-mode)

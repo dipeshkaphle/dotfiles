@@ -277,14 +277,14 @@ run_emacs_daemon(){
 emacsclient_tui() {
   DIR="."
   if [[ "$1" != "" ]]; then
-    cmdtorun=$1
+    DIR=$1
   fi
   emacsclient -c -t $DIR
 }
 emacsclient_gui(){
   DIR="."
   if [[ "$1" != "" ]]; then
-    cmdtorun=$1
+    DIR=$1
   fi
   emacsclient -c $DIR &
 }
@@ -292,15 +292,15 @@ emacsclient_gui(){
 emacs_tui(){
   DIR="."
   if [[ "$1" != "" ]]; then
-    cmdtorun=$1
+    DIR=$1
   fi
-  emacs -t $DIR
+  emacs -nw $DIR
 }
 
 emacs_gui(){
   DIR="."
   if [[ "$1" != "" ]]; then
-    cmdtorun=$1
+    DIR=$1
   fi
   emacs $DIR &
 }

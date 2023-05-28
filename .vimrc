@@ -162,7 +162,6 @@ Plug 'tpope/vim-fugitive'
 if has('nvim')
     Plug 'nvim-lua/plenary.nvim'
     Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.0' }
-	Plug 'ms-jpq/chadtree', {'branch': 'chad', 'do': 'python3 -m chadtree deps'}
 	Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
 	Plug 'famiu/feline.nvim'
 	Plug 'nvim-treesitter/playground'
@@ -170,7 +169,7 @@ if has('nvim')
 	Plug 'lewis6991/gitsigns.nvim'
 	Plug 'kyazdani42/nvim-web-devicons'
     Plug 'kyazdani42/nvim-tree.lua'
-endif
+end
 
 Plug 'sheerun/vim-polyglot'
 Plug 'stsewd/fzf-checkout.vim'
@@ -193,12 +192,14 @@ else
   Plug 'gelguy/wilder.nvim'
 
   " To use Python remote plugin features in Vim, can be skipped
-  " Plug 'roxma/nvim-yarp'
-  " Plug 'roxma/vim-hug-neovim-rpc'
+  Plug 'roxma/nvim-yarp'
+  Plug 'roxma/vim-hug-neovim-rpc'
 endif
+
 Plug 'FStarLang/VimFStar', {'for': 'fstar'}
 
 call plug#end()
+endif
 
 
 let g:session_autosave = 'no'
@@ -398,7 +399,7 @@ else
 	nnoremap <leader>irb :vert term irb
 	nnoremap <leader>ipy :vert term python
 	nnoremap <leader>term :vert term
-end
+endif
 vnoremap <leader>y "+y<CR>
 nnoremap <leader>yy "+yy<CR>
 nnoremap <leader>p "+p<CR>
@@ -513,7 +514,6 @@ autocmd FileType markdown nnoremap <leader>pdf :! zsh ~/scripts/mdMake.sh %
 
 highlight Comment cterm=italic gui=italic
 highlight Function cterm=none gui=none
-endif
 
 " -----------------------------------------------------------------------
 " Create default mappings
