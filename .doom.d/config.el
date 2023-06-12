@@ -165,6 +165,8 @@
     (lsp-rust-analyzer-server-display-inlay-hints t)
 )
 
+(add-hook! 'lsp-mode-hook #'lsp-headerline-breadcrumb-mode)
+
 (use-package! ocamlformat
   :custom (ocamlformat-enable 'enable-outside-detected-project)
   :hook (before-save . ocamlformat-before-save)
@@ -240,3 +242,4 @@
 
 (add-hook! 'tuareg-mode-hook #'merlin-mode)
 (add-hook! 'caml-mode-hook #'merlin-mode)
+(which-function-mode 1)
