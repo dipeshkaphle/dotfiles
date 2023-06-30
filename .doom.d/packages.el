@@ -54,12 +54,15 @@
 (package! merlin)
 (package! org-tree-slide)
 (package! ivy-rich :disable t)
+(package! amx :disable t)
 (package! ivy :disable t)
 (package! ivy-hydra :disable t)
-(package! embark :disable t)
+;; (package! embark :disable t)
+(package! swiper :disable t)
 (unpin! lsp-mode magit swiper)
 (package! lean4-mode :recipe
   (:host github
    :repo "leanprover/lean4-mode"
    :files ("*.el" "data")))
 (package! org-modern)
+(unpin! modus-themes)

@@ -32,7 +32,12 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-gruvbox)
+(setq doom-theme 'modus-vivendi-tritanopia)
+;; (after! modus-themes (modus-themes-load-vivendi))
+;; (after! modus-themes (load-theme 'modus-vivendi-tritanopia))
+;; (setq doom-theme 'doom-one-light)
+;; (setq doom-theme 'doom-gruvbox)
+
 (setq doom-font (font-spec :family "Jetbrains Mono" :size 24))
 
 (setq evil-normal-state-cursor '(box "red")
@@ -141,7 +146,6 @@
 ;; (define-key evil-insert-state-map (kbd "C-V") #'evil-paste-after)
 
 (map! :leader "z" #'comment-or-uncomment-region)
-(map! :leader "a" #'embark-act)
 
 (map!
  :map fstar-mode-map
@@ -171,6 +175,7 @@
   :custom (ocamlformat-enable 'enable-outside-detected-project)
   :hook (before-save . ocamlformat-before-save)
   )
+
 
 (map!
  :map company-mode-map
@@ -243,3 +248,7 @@
 (add-hook! 'tuareg-mode-hook #'merlin-mode)
 (add-hook! 'caml-mode-hook #'merlin-mode)
 (which-function-mode 1)
+
+(after! embark
+  (setq! prefix-help-command #'which-key-C-h-dispatch)
+  )
