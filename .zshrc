@@ -304,3 +304,6 @@ emacs_gui(){
   fi
   emacs $DIR &
 }
+
+# use this in manjaro to map caps to ctrl
+# setxkbmap -option caps:ctrl_modifier

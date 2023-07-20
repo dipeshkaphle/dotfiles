@@ -166,7 +166,9 @@
 
 (use-package! lsp
     :custom
-    (lsp-rust-analyzer-server-display-inlay-hints t)
+    ((lsp-rust-analyzer-server-display-inlay-hints t)
+     (lsp-enable-which-key-integration t)
+     )
 )
 
 (add-hook! 'lsp-mode-hook #'lsp-headerline-breadcrumb-mode)
@@ -252,3 +254,5 @@
 (after! embark
   (setq! prefix-help-command #'which-key-C-h-dispatch)
   )
+
+(with-eval-after-load 'org (global-org-modern-mode))
