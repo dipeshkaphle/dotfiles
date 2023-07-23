@@ -145,7 +145,9 @@
 ;; map C-V to paste
 ;; (define-key evil-insert-state-map (kbd "C-V") #'evil-paste-after)
 
-(map! :leader "z" #'comment-or-uncomment-region)
+(map!
+ :leader "z" #'comment-or-uncomment-region
+ :leader "r" #'rotate-layout)
 
 (map!
  :map fstar-mode-map

@@ -66,3 +66,4 @@
    :files ("*.el" "data")))
 (package! org-modern)
 (unpin! modus-themes)
+(package! rotate)
