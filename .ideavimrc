@@ -1,0 +1,252 @@
+" From : https://github.com/JetBrains/ideavim/discussions/303#discussioncomment-5827656
+"" Source your .vimrc
+"source ~/.vimrc
+
+"" -- Suggested options --
+" Show a few lines of context around the cursor. Note that this makes the
+" text scroll if you mouse-click near the start or end of the window.
+set scrolloff=5
+
+" Do incremental searching.
+set incsearch
+
+map Q <Action>(QuickJavaDoc)
+map K <Action>(QuickJavaDoc)
+
+
+
+"" -- Map IDE actions to IdeaVim -- https://jb.gg/abva4t
+"" Map \r to the Reformat Code action
+"map \r <Action>(ReformatCode)
+
+"" Map <leader>d to start debug
+"map <leader>d <Action>(Debug)
+
+"" Map \b to toggle the breakpoint on the current line
+"map \b <Action>(ToggleLineBreakpoint)
+
+
+" Find more examples here: https://jb.gg/share-ideavimrc
+
+
+" ------------------------------------- 插件配置 (Plugins config)
+
+" sneak
+set sneak
+" IdeaVimExtension 输入法切换
+set keep-english-in-normal-and-restore-in-insert
+" which-key
+set which-key
+set notimeout
+let g:WhichKey_FontSize = 16
+" NERDTree
+" 需要关闭 Enable Preview Tab 和 Open Files with Single Click
+set NERDTree
+let g:NERDTreeMapPreview = 'O'
+
+"-------------------------------------- 我的配置 (My config)
+
+"-------------------------------------- Options
+
+set encoding = 'utf-8'
+set fileencoding = 'utf-8'
+set fileformat = 'unix'
+" search
+set incsearch
+set hlsearch
+set ignorecase
+set smartcase
+set infercase
+set wildignorecase
+" ident
+set breakindent
+set autoindent
+set smartindent
+" tab
+set expandtab
+set smarttab
+set clipboard+=unnamed
+
+"-------------------------------------- Variables
+
+let mapleader=" "
+
+"-------------------------------------- sethandler
+
+" Commenting them out because I don't know what they do
+" sethandler <C-v> a:ide
+" sethandler <C-o> a:vim
+" sethandler <C-i> a:vim
+" sethandler <M-2> a:vim
+" sethandler <C-f> a:ide
+" sethandler <C-b> a:ide
+
+"-------------------------------------- Keymaps
+
+" 复制到系统剪贴板 (Copy to system clipboard)
+vnoremap <leader>y "+y<CR>
+nnoremap <leader>yy "+yy<CR>
+nnoremap <leader>p "+p<CR>
+
+" 行首行末移动 (Move to line start/end)
+map H ^
+map L $
+
+" Redo
+map U <C-r>
+
+" 块缩进 (Block ident)
+vmap < <gv
+vmap > >gv
+
+" 方法间移动 (Move between methods)
+map [f <Action>(MethodUp)
+map ]f <Action>(MethodDown)
+
+" 代码折叠/展开 (Code fold/expand)
+map zm <Action>(CollapseRegion)
+map za <Action>(ExpandRegion)
+map zM <Action>(CollapseAllRegions)
+map zR <Action>(ExpandAllRegions)
+
+" 取消高亮显示 (Cancel search highlight)
+nnoremap <leader>nh :nohl<CR>
+
+" Join Lines
+map <leader>j <Action>(EditorJoinLines)
+
+" View mode
+map <leader>vf <Action>(ToggleFullScreen)
+map <leader>vv <Action>(ToggleDistractionFreeMode)
+map <leader>vp <Action>(TogglePresentationMode)
+
+" Forward/Back
+
+map <C-o> <Action>(Back)
+map <C-i> <Action>(Forward)
+
+" Tab
+" Tab 切换 (Tab switch)
+map <S-Tab> <Action>(PreviousTab)
+map <Tab> <Action>(NextTab)
+map gT <Action>(PreviousTab)
+map gt <Action>(NextTab)
+" pin/unpin tab
+map <leader>P <Action>(PinActiveEditorTab)
+" 关闭当前/所有/其他/unpinned tabs (Close current/all/others/unpinned tabs)
+map <leader>xx <Action>(CloseContent)
+map <leader>xa <Action>(CloseAllEditors)
+map <leader>xo <Action>(CloseAllEditorsButActive)
+map <leader>xp <Action>(CloseAllUnpinnedEditors)
+
+" 终端 (Terminal)
+" 打开终端并进入项目根目录 (ActivateTerminal with project root dir)
+map <leader>tt <Action>(ActivateTerminalToolWindow)
+" 打开终端并进入当前目录 (OpenTerminal with current dir)
+map <leader>tc <Action>(Terminal.OpenInTerminal)
+
+" 分屏 (Pane)
+" 分屏 垂直/水平/关闭 (Pane vertically split/horizontally split/close)
+map <C-=> <Action>(SplitVertically)
+map <C--> <Action>(SplitHorizontally)
+map <C-BS> <Action>(Unsplit)
+
+
+" 上下移动行 (Move line up/down)
+map <M-k> <Action>(MoveLineUp)
+map <M-j> <Action>(MoveLineDown)
+
+" 注释 (Comment)
+map <leader>z <Action>(CommentByLineComment)
+map <leader>bz <Action>(CommentByBlockComment)
+
+" Pick action/class/symbol/file/recent change file/recent file
+map <leader>a <Action>(GotoAction)
+map <leader>c <Action>(GotoClass)
+map <leader>s <Action>(GotoSymbol)
+map <leader>ff <Action>(GotoFile)
+map <leader>fc <Action>(RecentChangedFiles)
+map <leader>fo <Action>(RecentFiles)
+
+" Goto
+map gu <Action>(GotoSuperMethod)
+map gi <Action>(GotoImplementation)
+map gd <Action>(GotoDeclaration)
+" map gt <Action>(GotoTest)
+map gj <Action>(GotoNextError)
+map gk <Action>(GotoPreviousError)
+"
+map gh <Action>(QuickJavaDoc)
+map gH <Action>(QuickActions)
+map gr <Action>(ShowUsages)
+map gR <Action>(FindUsages)
+
+" New ...
+map <leader>nn <Action>(NewElement)
+map <leader>nd <Action>(NewDir)
+map <leader>nf <Action>(NewFile)
+map <leader>np <Action>(NewProject)
+map <leader>nm <Action>(NewModule)
+
+" Build
+map <leader>b <Action>(BuildMenu)
+
+" Run & Debug
+map <leader>rc <Action>(ContextRun)
+map <leader>rf <Action>(ChooseRunConfiguration)
+map <leader>rr <Action>(Rerun)
+map <leader>dc <Action>(ContextDebug)
+map <leader>df <Action>(ChooseDebugConfiguration)
+" 断点 (Breakpoint)
+map mm <Action>(ToggleLineBreakpoint)
+map me <Action>(EditBreakpoint)
+map ma <Action>(ViewBreakpoints)
+
+" 停止执行 (Stop execute)
+map <C-c> <Action>(Stop)
+
+" Gradle tasks execute
+map <leader>g <Action>(Gradle.ExecuteTask)
+
+" 打开文件 (Open file)
+map <leader>o <Action>(OpenFile)
+
+" 项目管理 (Project management)
+map <leader>pr <Action>(ManageRecentProjects)
+map <leader>pl <Action>(RecentProjectListGroup)
+map <leader>px <Action>(CloseProject)
+
+" 清除缓存 (Clear caches)
+map <leader>xc <Action>(InvalidateCaches)
+" 关闭所有通知 (Close all notifications)
+map <leader>xn <Action>(CloseAllNotifications)
+" 隐藏所有工具窗口 (Hide all windows)
+map <leader>xw <Action>(HideAllWindows)
+
+
+" Movements in insert mode
+imap <C-k> <Up>
+imap <C-j> <Down>
+imap <C-l> <Right>
+imap <C-h> <Left>
+
+"C-b will move back a word
+"C-Shift-b will move to first character on the line
+"C-Shift-f will move to the end of the line in insert mode
+"ctrl w to move by word
+inoremap <C-w> <C-o>W
+inoremap <C-b> <C-o><C-Left>
+inoremap <C-f> <C-o>^
+inoremap <C-e> <C-o>$
+inoremap <C-t> <C-o>O
+inoremap <C-d> <C-o>o
+
+
+
+" nnoremap <S-j> <C-e>
+" nnoremap <S-k> <C-y>
+
+
+set showmode
+set ideajoin
+set surround
