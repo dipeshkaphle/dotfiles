@@ -30,6 +30,7 @@ from libqtile import qtile,bar, layout, widget
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
+import os
 
 colours = [["#141414", "#141414"], # Background
 		   ["#FFFFFF", "#FFFFFF"], # Foreground
@@ -46,6 +47,7 @@ colours = [["#141414", "#141414"], # Background
 mod = "mod4"
 terminal = "kitty"
 myTerm = "kitty"
+user_home = os.getenv("HOME")
 
 keys = [
     # Switch between windows
@@ -99,9 +101,9 @@ keys = [
     Key([mod], "f", lazy.spawn("firefox")),
     Key([mod], "b", lazy.spawn("microsoft-edge-dev --force-device-scale=1.5")),
     Key([], "Print", lazy.spawn("flameshot gui")),
-    Key([mod,"shift"], "s", lazy.spawn('''sh /home/dipesh/scripts/prompt "Suspend computer?" "systemctl suspend" ''')),
-    Key([mod,"shift"], "r", lazy.spawn('''sh /home/dipesh/scripts/prompt "Reboot computer?" "reboot"''')),
-    Key([mod,"shift"], "x", lazy.spawn('''sh /home/dipesh/scripts/prompt "Shutdown computer?" "shutdown now"''')),
+    Key([mod,"shift"], "s", lazy.spawn("sh " + user_home + '''/dotfiles/scripts/prompt "Suspend computer?" "systemctl suspend" ''')),
+    Key([mod,"shift"], "r", lazy.spawn("sh " + user_home + '''/dotfiles/scripts/prompt "Reboot computer?" "reboot"''')),
+    Key([mod,"shift"], "x", lazy.spawn("sh " + user_home + '''/dotfiles/scripts/prompt "Shutdown computer?" "shutdown now"''')),
     # Media hotkeys
     Key([], 'XF86AudioRaiseVolume', lazy.spawn('pulseaudio-ctl up 5')),
     Key([], 'XF86AudioLowerVolume', lazy.spawn('pulseaudio-ctl down 5')),

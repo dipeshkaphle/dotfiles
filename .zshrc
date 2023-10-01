@@ -7,6 +7,7 @@
 # Zsh configuration
 # -----------------
 
+export ZIM_HOME=$HOME/.zim/
 export EDITOR='nvim'
 # keyboard repeat rate 
 xset r on
@@ -20,8 +21,8 @@ bindkey -v
 # History
 
 # FZF settings
-source /usr/share/fzf/key-bindings.zsh
-source /usr/share/fzf/completion.zsh
+source $HOME/.nix-profile/share/fzf/key-bindings.zsh
+source $HOME/.nix-profile/share/fzf/completion.zsh
 export FZF_CTRL_T_OPTS="--reverse --preview '(bat --color=always --style=header,grid --line-range :500 {} ) 2> /dev/null '"
 export FZF_DEFAULT_OPTS="--reverse --preview '(bat --color=always --style=header,grid --line-range :500 {} ) 2> /dev/null '"
 
@@ -206,15 +207,20 @@ copy(){
 eval "$(starship init zsh)"
 export STARSHIP_CONFIG=~/.starship/config.toml
 
-ruby ~/scripts/touch_pad_enable.rb
-export GEM_HOME="$(ruby -e 'puts Gem.user_dir')"
-export PATH="$PATH:$GEM_HOME/bin"
-# export GEM_PATH=/usr/lib/ruby/3.0.0:/home/dipesh/.local/share/gem/ruby/3.0.0
-# export PATH=$PATH:$GEM_PATH
+
+# Requires xinput to be installed
+if [ $(uname) = 'Linux' ] ; then
+	device_id=$(xinput list | grep Touchpad | gawk 'match($0, /.*id=([0-9]+).*/ , ary) {print ary[1]}')
+	for prop_id in $(xinput list-props 9 | grep 'Tapping Enabled' | head -n 1 | gawk 'match($0, /.*\(([0-9]+)\).*/, ary) {print ary[1]}'); do
+		xinput set-prop $device_id $prop_id 1
+	done
+
+fi
+
 
 # Add Stack installed  GHC to path
 
-export GHC_BIN_PATH=$(stack exec -- which ghc | python -c "print('/'.join(input().split('/')[:-1]))")
+# export GHC_BIN_PATH=$(stack exec -- which ghc | python -c "print('/'.join(input().split('/')[:-1]))")
 export PATH=$PATH:$GHC_BIN_PATH
 
 if [[ $TERM == "xterm-kitty" ]]; then
