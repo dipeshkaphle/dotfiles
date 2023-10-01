@@ -139,7 +139,7 @@ Plug 'tpope/vim-surround'
 Plug 'raimondi/delimitmate'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'neoclide/coc.nvim'
+Plug 'neoclide/coc.nvim', {'branch': 'master', 'do': 'yarn install --frozen-lockfile'}
 " Plug 'morhetz/gruvbox'
 Plug 'sainnhe/gruvbox-material'
 Plug 'tomasr/molokai'

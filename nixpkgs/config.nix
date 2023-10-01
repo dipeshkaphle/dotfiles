@@ -40,6 +40,8 @@ in
                 opam
                 rustup
                 gh
+                yarn
+                gnumake
 			] ++ linux_only_packages;
 		};
 	};
