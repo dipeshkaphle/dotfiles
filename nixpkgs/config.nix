@@ -7,6 +7,7 @@ let linux_only_packages =  if pkgs.system == "x86_64-linux"
 			    pkgs.picom
 			    pkgs.feh
 			    pkgs.xss-lock
+                pkgs.xclip
 			    ]
 			   else [];
 in
@@ -36,12 +37,17 @@ in
                 nodejs
                 libvterm
                 # lean4
+                elan
                 fstar
                 opam
                 rustup
                 gh
                 yarn
                 gnumake
+                patch
+                tree-sitter
+                aspell
+                aspellDicts.en
 			] ++ linux_only_packages;
 		};
 	};

@@ -277,7 +277,7 @@ export PATH=$PATH:/home/dipesh/verified_gc/everest/FStar/bin
 export PATH=$PATH:/home/dipesh/go/bin
 
 run_emacs_daemon(){
-  PATH=$PATH emacs --daemon
+  emacs --daemon
 }
 
 emacsclient_tui() {
@@ -312,4 +312,8 @@ emacs_gui(){
 }
 
 # use this in manjaro to map caps to ctrl
-# setxkbmap -option caps:ctrl_modifier
+#setxkbmap -option caps:ctrl_modifier
+
+search_all_nixpkgs(){
+  nix-env --query --available --attr-path
+}
