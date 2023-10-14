@@ -15,6 +15,7 @@ in
 let not_working_packages = [ 
 	pkgs.kitty 
 	pkgs.rofi
+    pkgs.i3lock
 	];
 in
 {
@@ -38,7 +39,7 @@ in
                 libvterm
                 # lean4
                 elan
-                fstar
+                # fstar
                 opam
                 rustup
                 gh
@@ -48,7 +49,13 @@ in
                 tree-sitter
                 aspell
                 aspellDicts.en
+                python2
+                z3
 			] ++ linux_only_packages;
-		};
+          };
 	};
+    permittedInsecurePackages = [
+      "python-2.7.18.7"
+    ];
 }
+

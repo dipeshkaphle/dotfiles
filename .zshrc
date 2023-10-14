@@ -250,19 +250,6 @@ alias monitor='~/dotfiles/watch.sh'
 
 
 
-# This line automatically added by ./everest
-export PATH=/home/dipesh/verified_gc/everest/z3-4.8.5-x64-debian-8.11/bin:$PATH
-
-# This line automatically added by ./everest
-export PATH=/home/dipesh/verified_gc/everest/z3-4.8.5-x64-debian-8.11/bin:$PATH
-
-# This line automatically added by ./everest
-export PATH=/home/dipesh/verified_gc/everest/z3-4.8.5-x64-debian-8.11/bin:$PATH
-
-# This line automatically added by ./everest
-export PATH=/home/dipesh/verified_gc/everest/z3-4.8.5-x64-debian-8.11/bin:$PATH
-
-
 mount_windows_drive(){
   sudo mkdir /run/media/bitlocker; sudo dislocker /dev/nvme0n1p4 -p144793-200739-670736-297363-418330-349877-104093-197428 -- /run/media/bitlocker
   sudo mkdir /run/media/dipesh; sudo mount -t ntfs-3g -o loop /run/media/bitlocker/dislocker-file /run/media/dipesh
@@ -273,7 +260,6 @@ tmux-window-name() {
 }
 
 export PATH=$PATH:/home/dipesh/.config/coc/extensions/coc-rust-analyzer-data
-export PATH=$PATH:/home/dipesh/verified_gc/everest/FStar/bin
 export PATH=$PATH:/home/dipesh/go/bin
 
 run_emacs_daemon(){
@@ -312,7 +298,7 @@ emacs_gui(){
 }
 
 # use this in manjaro to map caps to ctrl
-#setxkbmap -option caps:ctrl_modifier
+setxkbmap -option caps:ctrl_modifier
 
 search_all_nixpkgs(){
   nix-env --query --available --attr-path
