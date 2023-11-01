@@ -16,6 +16,7 @@ let not_working_packages = [
 	pkgs.kitty 
 	pkgs.rofi
     pkgs.i3lock
+    # pkgs.llvmenv (install from cargo, quite outdated tbh, just build llvm yourself )
 	];
 in
 {
@@ -49,13 +50,15 @@ in
                 tree-sitter
                 aspell
                 aspellDicts.en
-                python2
+                # python2
                 z3
+                # pkgconf (download manually else it messes up paths)
+                bear
 			] ++ linux_only_packages;
           };
 	};
-    permittedInsecurePackages = [
-      "python-2.7.18.7"
-    ];
+    # permittedInsecurePackages = [
+      # "python-2.7.18.7"
+    # ];
 }
 

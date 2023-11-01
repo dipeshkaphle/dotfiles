@@ -7,6 +7,8 @@
 # Zsh configuration
 # -----------------
 
+# 10ms for key sequences, makes C-[ and Esc key pressses instantaneous
+KEYTIMEOUT=1
 export ZIM_HOME=$HOME/.zim/
 export EDITOR='nvim'
 # keyboard repeat rate 
