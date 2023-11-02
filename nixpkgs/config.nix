@@ -54,6 +54,7 @@ in
                 z3
                 # pkgconf (download manually else it messes up paths)
                 bear
+                zola
 			] ++ linux_only_packages;
           };
 	};

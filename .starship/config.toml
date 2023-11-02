@@ -1,5 +1,9 @@
 add_newline = false
 
+[time]
+disabled = false
+format = '🕙[\[ $time \]]($style) '
+
 # Replace the "❯" symbol in the prompt with "➜"
 [character]                            # The name of the module we are configuring is "character"
 success_symbol = "[λ](green)"     # The "success_symbol" segment is being set to "➜" with the color "bold green"
