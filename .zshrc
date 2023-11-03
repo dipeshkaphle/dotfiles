@@ -15,13 +15,16 @@ bindkey '^e' end-of-line
 # Allow to move to backward/forward of word
 bindkey '^b' backward-word
 bindkey '^w' forward-word
-bindkey '^j' backward-char
-bindkey '^k' forward-char
+bindkey '^h' backward-char
+bindkey '^l' forward-char
+bindkey '^j' backward-kill-line # prefer C-u though
+bindkey '^k' kill-line
 bindkey '^X^W' kill-word
 bindkey '^X^B' vi-backward-kill-word
 # bindkey '^X^E' kill-line # this cannot be overrided it seems(it opens editor to edit current command)
 bindkey '^X^f' backward-kill-line # prefer C-u though
 bindkey '^X^X' kill-line
+bindkey '^X^L' clear-screen
 export ZIM_HOME=$HOME/.zim/
 export EDITOR='nvim'
 # keyboard repeat rate 
