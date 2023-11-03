@@ -9,6 +9,19 @@
 
 # 10ms for key sequences, makes C-[ and Esc key pressses instantaneous
 KEYTIMEOUT=1
+bindkey '^f' beginning-of-line
+bindkey '^e' end-of-line
+
+# Allow to move to backward/forward of word
+bindkey '^b' backward-word
+bindkey '^w' forward-word
+bindkey '^j' backward-char
+bindkey '^k' forward-char
+bindkey '^X^W' kill-word
+bindkey '^X^B' vi-backward-kill-word
+# bindkey '^X^E' kill-line # this cannot be overrided it seems(it opens editor to edit current command)
+bindkey '^X^f' backward-kill-line # prefer C-u though
+bindkey '^X^X' kill-line
 export ZIM_HOME=$HOME/.zim/
 export EDITOR='nvim'
 # keyboard repeat rate 
