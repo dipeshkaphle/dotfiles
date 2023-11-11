@@ -167,11 +167,11 @@
  )
 
 (use-package! lsp
-    :custom
-    ((lsp-rust-analyzer-server-display-inlay-hints t)
-     (lsp-enable-which-key-integration t)
-     )
-)
+  :custom
+  ((lsp-rust-analyzer-server-display-inlay-hints t)
+   (lsp-enable-which-key-integration t)
+   )
+  )
 
 (add-hook! 'lsp-mode-hook #'lsp-headerline-breadcrumb-mode)
 
@@ -258,3 +258,17 @@
   )
 
 (with-eval-after-load 'org (global-org-modern-mode))
+
+;; See the README to learn about consult(this has a lot of functionalities)
+;; https://github.com/minad/consult
+(after! consult
+  (consult-customize
+   consult-ripgrep consult-git-grep consult-grep
+   consult-bookmark consult-recent-file consult-xref
+   consult--source-bookmark consult--source-file-register
+   consult--source-recent-file consult--source-project-recent-file
+   ;; my/command-wrapping-consult    ;; disable auto previews inside my command
+   :preview-key '(:debounce 0.4 any) ;; Option 1: Delay preview
+   ;; :preview-key "M-.")            ;; Option 2: Manual preview
+   )
+  )
