@@ -67,3 +67,4 @@
 (package! org-modern)
 (unpin! modus-themes)
 (package! rotate)
+(package! affe)
