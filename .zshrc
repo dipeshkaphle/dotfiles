@@ -17,8 +17,8 @@ bindkey '^b' backward-word
 bindkey '^w' forward-word
 bindkey '^h' backward-char
 bindkey '^l' forward-char
-bindkey '^j' backward-kill-line # prefer C-u though
-bindkey '^k' kill-line
+# bindkey '^j' backward-kill-line # prefer C-u though # emacs vterm gets messed up with this for some reason
+# bindkey '^k' kill-line
 bindkey '^X^W' kill-word
 bindkey '^X^B' vi-backward-kill-word
 # bindkey '^X^E' kill-line # this cannot be overrided it seems(it opens editor to edit current command)

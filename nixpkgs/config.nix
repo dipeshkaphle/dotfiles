@@ -55,6 +55,8 @@ in
                 # pkgconf (download manually else it messes up paths)
                 bear
                 zola
+                zig
+                zls
 			] ++ linux_only_packages;
           };
 	};
