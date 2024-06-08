@@ -33,6 +33,7 @@
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 (setq doom-theme 'modus-vivendi-tritanopia)
+;; (setq doom-theme 'modus-operandi-tritanopia)
 ;; (after! modus-themes (modus-themes-load-vivendi))
 ;; (after! modus-themes (load-theme 'modus-vivendi-tritanopia))
 ;; (setq doom-theme 'doom-one-light)
@@ -272,3 +273,9 @@
    ;; :preview-key "M-.")            ;; Option 2: Manual preview
    )
   )
+
+;; (https://github.com/vspinu/company-math)
+;; works in a scratch buffer and fundamental-mode
+;;, doesn't work in other places 
+;; (add-to-list 'company-backends 'company-math-symbols-unicode )
+;; Just wanted to be fancy

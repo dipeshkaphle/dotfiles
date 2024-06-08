@@ -16,6 +16,8 @@ let not_working_packages = [
 	pkgs.kitty 
 	pkgs.rofi
     pkgs.i3lock
+    # pkgs.perf
+    # checkinstall
     # pkgs.llvmenv (install from cargo, quite outdated tbh, just build llvm yourself )
 	];
 in
@@ -57,6 +59,9 @@ in
                 zola
                 zig
                 zls
+                ctags
+                hyperfine
+                # ghcup # Couldn't find ? do it from https://www.haskell.org/ghcup/#
 			] ++ linux_only_packages;
           };
 	};

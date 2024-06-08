@@ -57,7 +57,8 @@ ff(){
     selected=$(fzf --bind "change:reload:$RG_PREFIX {q} || true" \
         --ansi --disabled --query "$INITIAL_QUERY" \
         --height=50% --layout=reverse \
-        --preview "bat --color=always --style=header,grid \$(echo {} | cut -d':' -f1) -H \$(echo {} | cut -d':' -f2) -r \$(echo {} | cut -d':' -f2):" | cut -d':' -f1)
+        --preview "/home/dipesh/github.com/sharkdp/bat/target/debug/bat --color=always --style=header,grid \$(echo {} | cut -d':' -f1) -H \$(echo {} | cut -d':' -f2) --context-around-highlight 5" | cut -d':' -f1)
+        # --preview "bat --color=always --style=header,grid \$(echo {} | cut -d':' -f1) -H \$(echo {} | cut -d':' -f2) -r \$(echo {} | cut -d':' -f2):" | cut -d':' -f1)
 
   [[ -n $selected ]] && $cmdtorun $selected
 }
@@ -229,7 +230,7 @@ export STARSHIP_CONFIG=~/.starship/config.toml
 # Requires xinput to be installed
 if [ $(uname) = 'Linux' ] ; then
 	device_id=$(xinput list | grep Touchpad | gawk 'match($0, /.*id=([0-9]+).*/ , ary) {print ary[1]}')
-	for prop_id in $(xinput list-props 9 | grep 'Tapping Enabled' | head -n 1 | gawk 'match($0, /.*\(([0-9]+)\).*/, ary) {print ary[1]}'); do
+	for prop_id in $(xinput list-props $device_id | grep 'Tapping Enabled' | head -n 1 | gawk 'match($0, /.*\(([0-9]+)\).*/, ary) {print ary[1]}'); do
 		xinput set-prop $device_id $prop_id 1
 	done
 
@@ -321,3 +322,5 @@ setxkbmap -option caps:ctrl_modifier
 search_all_nixpkgs(){
   nix-env --query --available --attr-path
 }
+
+[ -f "/home/dipesh/.ghcup/env" ] && . "/home/dipesh/.ghcup/env" # ghcup-env
