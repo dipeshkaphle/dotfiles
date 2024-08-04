@@ -39,7 +39,7 @@
 ;; (setq doom-theme 'doom-one-light)
 ;; (setq doom-theme 'doom-gruvbox)
 
-(setq doom-font (font-spec :family "Jetbrains Mono" :size 24))
+(setq doom-font (font-spec :family "Jetbrains Mono" :size 18))
 
 (setq evil-normal-state-cursor '(box "red")
       evil-insert-state-cursor '(bar "white")
@@ -148,7 +148,9 @@
 
 (map!
  :leader "z" #'comment-or-uncomment-region
- :leader "r" #'rotate-layout)
+ :leader "r" #'rotate-layout
+ :leader "sf" #'projectile-find-file-in-directory
+ )
 
 (map!
  :map fstar-mode-map
@@ -279,3 +281,9 @@
 ;;, doesn't work in other places 
 ;; (add-to-list 'company-backends 'company-math-symbols-unicode )
 ;; Just wanted to be fancy
+
+
+;; Doesn't work for some reason, start company-coq-mode manually
+;; (add-hook! 'coq-mode-hook #'company-coq-mode)
+;;
+(setq company-coq-live-on-the-edge t)

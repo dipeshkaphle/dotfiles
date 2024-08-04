@@ -67,3 +67,6 @@
 (package! org-modern)
 (unpin! modus-themes)
 (package! rotate)
+
+(package! proof-general)
+(package! company-coq)
