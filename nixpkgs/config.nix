@@ -62,6 +62,7 @@ in
                 ctags
                 hyperfine
                 # ghcup # Couldn't find ? do it from https://www.haskell.org/ghcup/#
+                typst
 			] ++ linux_only_packages;
           };
 	};

@@ -32,8 +32,8 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'modus-vivendi-tritanopia)
-;; (setq doom-theme 'modus-operandi-tritanopia)
+                                        ; (setq doom-theme 'modus-vivendi-tritanopia)
+(setq doom-theme 'modus-operandi-tritanopia)
 ;; (after! modus-themes (modus-themes-load-vivendi))
 ;; (after! modus-themes (load-theme 'modus-vivendi-tritanopia))
 ;; (setq doom-theme 'doom-one-light)
@@ -177,6 +177,7 @@
   )
 
 (add-hook! 'lsp-mode-hook #'lsp-headerline-breadcrumb-mode)
+                                        ; (add-hook! 'lsp-mode-hook #'lsp-inlay-hints-mode)
 
 (use-package! ocamlformat
   :custom (ocamlformat-enable 'enable-outside-detected-project)
@@ -287,3 +288,26 @@
 ;; (add-hook! 'coq-mode-hook #'company-coq-mode)
 ;;
 (setq company-coq-live-on-the-edge t)
+
+
+;; Call this once you start the fstar subprocess
+(defun enable-fstar-company-mode ()
+  "Enable company mode for fstar, have to do this explicitly for some reason"
+  (interactive)
+  (fstar-setup-company-defaults)
+  (fstar-setup-company))
+
+
+;; this assumes we have a F* installed through opam
+(after! fstar-mode
+  (setq! fstar-subp-prover-additional-args (list
+                                            "--include"
+                                            (concat (getenv "OPAM_SWITCH_PREFIX") "/lib/fstar/")
+                                            "--include"
+                                            (concat (getenv "OPAM_SWITCH_PREFIX") "/lib/fstar/.cache/")
+                                            "--include"
+                                            (concat (getenv "OPAM_SWITCH_PREFIX") "/lib/krml/")
+                                            "--include"
+                                            (concat (getenv "OPAM_SWITCH_PREFIX") "/lib/krml/obj")
+                                            )
+         ))
