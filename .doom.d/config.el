@@ -301,6 +301,8 @@
 ;; this assumes we have a F* installed through opam
 (after! fstar-mode
   (setq! fstar-subp-prover-additional-args (list
+                                            "--record_hints"
+                                            "--already_cached" "'Prims FStar LowStar C Spec.Loops TestLib WasmSupport'"
                                             "--include"
                                             (concat (getenv "OPAM_SWITCH_PREFIX") "/lib/fstar/")
                                             "--include"
@@ -309,5 +311,11 @@
                                             (concat (getenv "OPAM_SWITCH_PREFIX") "/lib/krml/")
                                             "--include"
                                             (concat (getenv "OPAM_SWITCH_PREFIX") "/lib/krml/obj")
+                                            "--hint_dir"
+                                            (concat (getenv "OPAM_SWITCH_PREFIX") "/lib/fstar/.cache/")
+                                            "--hint_dir"
+                                            (concat (getenv "OPAM_SWITCH_PREFIX") "/lib/krml/obj")
+                                            "--hint_dir"
+                                            (concat (getenv "OPAM_SWITCH_PREFIX") "/lib/krml/hints")
                                             )
          ))

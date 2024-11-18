@@ -52,7 +52,7 @@ in
                 tree-sitter
                 aspell
                 aspellDicts.en
-                # python2
+                python2
                 z3
                 # pkgconf (download manually else it messes up paths)
                 bear
@@ -63,11 +63,13 @@ in
                 hyperfine
                 # ghcup # Couldn't find ? do it from https://www.haskell.org/ghcup/#
                 typst
+                jdk21
+                gradle
 			] ++ linux_only_packages;
           };
 	};
-    # permittedInsecurePackages = [
-      # "python-2.7.18.7"
-    # ];
+    permittedInsecurePackages = [
+      "python-2.7.18.7"
+    ];
 }
 
