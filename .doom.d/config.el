@@ -319,3 +319,15 @@
                                             (concat (getenv "OPAM_SWITCH_PREFIX") "/lib/krml/hints")
                                             )
          ))
+
+
+(add-to-list 'lsp-language-id-configuration '(typst-ts-mode . "typst"))
+
+(lsp-register-client (make-lsp-client
+                      :new-connection (lsp-stdio-connection '("tinymist" "lsp"))
+                      :activation-fn (lsp-activate-on "typst")
+                      :server-id 'typst-lsp))
+
+(defun enable-typst-lsp-mode ()
+  (interactive)
+  (lsp))

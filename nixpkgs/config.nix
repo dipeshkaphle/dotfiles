@@ -34,7 +34,7 @@ in
 				fzf
 				ripgrep
 				bat
-				emacs28NativeComp
+				emacs29
 				cmake
 				ninja
 				ranger
