@@ -1,5 +1,4 @@
 " Comments in Vimscript start with a `"`.
-
 " If you open this file in Vim, it'll be syntax highlighted for you.
 
 " Vim is based on Vi. Setting `nocompatible` switches from the default
@@ -146,8 +145,6 @@ Plug 'tomasr/molokai'
 Plug 'scrooloose/nerdtree'
 Plug 'neovimhaskell/haskell-vim'
 Plug 'lambdalisue/suda.vim'
-Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'
 Plug 'scrooloose/nerdcommenter'
 Plug 'alvan/vim-closetag'
 Plug 'dense-analysis/ale'
@@ -160,6 +157,8 @@ Plug 'rust-lang/rust.vim'
 Plug 'voldikss/vim-floaterm'
 Plug 'tpope/vim-fugitive'
 if has('nvim')
+    Plug 'SirVer/ultisnips'
+    Plug 'honza/vim-snippets'
     Plug 'nvim-lua/plenary.nvim'
     Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.0' }
 	Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
@@ -195,9 +194,6 @@ else
   Plug 'roxma/nvim-yarp'
   Plug 'roxma/vim-hug-neovim-rpc'
 endif
-
-Plug 'FStarLang/VimFStar', {'for': 'fstar'}
-
 call plug#end()
 endif
 
