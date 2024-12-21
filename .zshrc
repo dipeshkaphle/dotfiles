@@ -57,11 +57,22 @@ ff(){
     selected=$(fzf --bind "change:reload:$RG_PREFIX {q} || true" \
         --ansi --disabled --query "$INITIAL_QUERY" \
         --height=50% --layout=reverse \
-        --preview "/home/dipesh/github.com/sharkdp/bat/target/debug/bat --color=always --style=header,grid \$(echo {} | cut -d':' -f1) -H \$(echo {} | cut -d':' -f2) --context-around-highlight 5" | cut -d':' -f1)
-        # --preview "bat --color=always --style=header,grid \$(echo {} | cut -d':' -f1) -H \$(echo {} | cut -d':' -f2) -r \$(echo {} | cut -d':' -f2):" | cut -d':' -f1)
+        --preview "lineno=\$(echo {} | cut -d':' -f2); filename=\$(echo {} | cut -d':' -f1) ; bat --color=always --style=header,grid "\$filename" -H \$lineno -r \$(python -c \"print((lambda x : str(max(0,min(int(x) - 5, int(x)))))(\$(echo \$lineno)))\"):" | cut -d':' -f1,2 --output-delimiter=' ' )
+# The cat at the end just prints the <file lineno> of the matched regex 
 
-  [[ -n $selected ]] && $cmdtorun $selected
+[[ -n $selected ]] && $cmdtorun $(echo $selected)
 }
+
+## Usage: ffopeneditor <editor:emacs/nvim/etc.>
+ffopeneditor(){
+  EDITOR=$1; ff editorwithlines
+}
+
+## Usage: editorwithlines <filename> <lineno>
+editorwithlines(){
+  $EDITOR +$2 $1
+}
+
 
 
 # Remove older command from the history if a duplicate is to be added.
