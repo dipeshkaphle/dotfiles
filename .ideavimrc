@@ -10,7 +10,7 @@ set scrolloff=5
 " Do incremental searching.
 set incsearch
 
-map Q <Action>(QuickJavaDoc)
+map Q <Action>(ShowErrorDescription)
 map K <Action>(QuickJavaDoc)
 
 

@@ -175,9 +175,9 @@
    (lsp-enable-which-key-integration t)
    )
   )
-
-(add-hook! 'lsp-mode-hook #'lsp-headerline-breadcrumb-mode)
-                                        ; (add-hook! 'lsp-mode-hook #'lsp-inlay-hints-mode)
+;; Has difference between `add-hook` and `add-hook!` and some more stuff https://discourse.doomemacs.org/t/common-config-anti-patterns/119
+(add-hook 'lsp-mode-hook #'lsp-headerline-breadcrumb-mode)
+(add-hook 'lsp-mode-hook #'lsp-inlay-hints-mode)
 
 (use-package! ocamlformat
   :custom (ocamlformat-enable 'enable-outside-detected-project)
@@ -285,7 +285,7 @@
 
 
 ;; Doesn't work for some reason, start company-coq-mode manually
-;; (add-hook! 'coq-mode-hook #'company-coq-mode)
+(add-hook 'coq-mode-hook #'company-coq-mode)
 ;;
 (setq company-coq-live-on-the-edge t)
 
