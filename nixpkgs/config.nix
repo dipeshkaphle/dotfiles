@@ -66,6 +66,9 @@ in
                 jdk21
                 gradle
                 tinymist
+                kotlin
+                kotlin-language-server
+                kotlin-interactive-shell
 			] ++ linux_only_packages;
           };
 	};

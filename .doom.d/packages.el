@@ -68,8 +68,8 @@
 (unpin! modus-themes)
 (package! rotate)
 
-(package! proof-general)
-(package! company-coq)
 (package! typst-ts-mode
   :recipe (:type git :host codeberg :repo "meow_king/typst-ts-mode"
            :files (:defaults "*.el")))
+(unpin! company-coq)
+(unpin! proof-general)
