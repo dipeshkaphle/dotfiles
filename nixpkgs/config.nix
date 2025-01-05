@@ -69,6 +69,8 @@ in
                 kotlin
                 kotlin-language-server
                 kotlin-interactive-shell
+                fish
+                direnv
 			] ++ linux_only_packages;
           };
 	};
