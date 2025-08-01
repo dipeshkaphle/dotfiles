@@ -34,14 +34,14 @@ in
 				fzf
 				ripgrep
 				bat
-				emacs29
+				emacs30
 				cmake
 				ninja
 				ranger
                 nodejs
                 libvterm
                 # lean4
-                elan
+                # elan
                 # fstar
                 opam
                 rustup
@@ -66,11 +66,9 @@ in
                 jdk21
                 gradle
                 tinymist
-                kotlin
-                kotlin-language-server
-                kotlin-interactive-shell
                 fish
                 direnv
+                rclone
 			] ++ linux_only_packages;
           };
 	};

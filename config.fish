@@ -94,7 +94,7 @@ function ff
     set -l selected (fzf --bind "change:reload:$RG_PREFIX {q} || true" \
         --ansi --disabled --query "$INITIAL_QUERY" \
         --height=50% --layout=reverse \
-        --preview "lineno=\$(echo {} | gcut -d':' -f2); filename=\$(echo {} | gcut -d':' -f1) ; bat --color=always --style=header,grid "\$filename" -H \$lineno -r \$(python3 -c \"print((lambda x : str(max(0,min(int(x) - 5, int(x)))))(\$(echo \$lineno)))\"):" | gcut -d':' -f1,2 --output-delimiter=' ' )
+        --preview "set lineno \$(echo {} | cut -d':' -f2); set filename \$(echo {} | cut -d':' -f1) ; bat --color=always --style=header,grid "\$filename" -H \$lineno -r \$(python3 -c \"print((lambda x : str(max(0,min(int(x) - 5, int(x)))))(\$(echo \$lineno)))\"):" | cut -d':' -f1,2 --output-delimiter=' ' )
     
     if test -n "$selected"
         eval "$cmdtorun $selected"
@@ -150,7 +150,7 @@ direnv hook fish | source
 
 if type -q startship 
     set -x STARSHIP_CONFIG ~/.starship/config.toml
-    starship init fish | source
+    # starship init fish | source
 end
 
 
@@ -187,4 +187,7 @@ if type -q fisher
     set -g fish_color_match normal --bold --background=brblue
 else
     echo "Fisher plugin manager is not installed." >&2
+    echo "Hydro plugin is also not installed(https://github.com/jorgebucaran/hydro)" >&2
 end
+
+eval (opam env)
