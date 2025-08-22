@@ -1,9 +1,0 @@
-coc-cmake
-coc-java
-coc-lua ( ? )
-coc-markdownlint
-coc-prettier
-coc-pyright
-coc-rust-analyzer
-coc-tsserver
-

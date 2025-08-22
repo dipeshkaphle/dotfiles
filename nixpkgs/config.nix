@@ -69,6 +69,7 @@ in
                 fish
                 direnv
                 rclone
+                cvc5
 			] ++ linux_only_packages;
           };
 	};

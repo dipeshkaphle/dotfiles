@@ -128,7 +128,6 @@ set -x EDITOR vim
 # Set the Bat theme
 set -x BAT_THEME gruvbox-dark
 
-
 # Aliases
 alias la="eza -a"
 alias ll="eza -l"
