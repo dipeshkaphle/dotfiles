@@ -45,8 +45,8 @@ colours = [["#141414", "#141414"], # Background
 
 
 mod = "mod4"
-terminal = "kitty"
-myTerm = "kitty"
+terminal = "ghostty"
+myTerm = "ghostty"
 user_home = os.getenv("HOME")
 
 keys = [

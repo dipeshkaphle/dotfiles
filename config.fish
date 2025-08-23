@@ -123,7 +123,7 @@ function mkcd
 end
 
 # Set the default editor to Vim
-set -x EDITOR vim
+set -x EDITOR nvim
 
 # Set the Bat theme
 set -x BAT_THEME gruvbox-dark

@@ -1,0 +1,11 @@
+font-size = 14
+theme = GruvboxDark
+gtk-titlebar = false
+
+cursor-color = #ff0000
+cursor-style = block
+
+font-family = JetBrainsMono Nerd Font
+font-family-bold = JetBrainsMonoBold Nerd Font
+font-family-italic = JetBrainsMono Nerd Font
+font-family-bold-italic = JetBrainsMonoBold Nerd Font

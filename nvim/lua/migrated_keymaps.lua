@@ -2,8 +2,6 @@
 
 local map = vim.keymap.set
 
--- General mappings
-map("n", "Q", "<Nop>")
 
 -- Insert mode mappings
 map("i", "<C-k>", "<Up>")
@@ -17,11 +15,6 @@ map("i", "<C-f>", "<C-o>^")
 map("i", "<C-e>", "<C-o>$")
 map("i", "<C-t>", "<C-o>O")
 map("i", "<C-d>", "<C-o>o")
-
--- Normal mode mappings
-map("n", "<S-j>", "<C-e>")
-map("n", "<S-k>", "<C-y>")
-
 
 -- Split resizing
 map("n", "<C-w>>", "10<C-w>>")
