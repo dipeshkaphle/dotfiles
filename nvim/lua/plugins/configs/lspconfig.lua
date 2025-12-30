@@ -39,6 +39,11 @@ capabilities.textDocument.completion.completionItem = {
 }
 
 vim.lsp.config("*", { capabilities = capabilities })
-local servers = { "html", "cssls" , 'lua_ls' }
+local servers = { "html", "cssls" , 'lua_ls', "clangd", "pyrefly" }
 
 vim.lsp.enable(servers)
+
+-- code action lsp
+vim.keymap.set({ "n", "x" }, "<leader>act", function()
+	require("tiny-code-action").code_action()
+end, { noremap = true, silent = true })

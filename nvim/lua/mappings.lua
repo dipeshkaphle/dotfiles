@@ -2,7 +2,6 @@ local map = vim.keymap.set
 
 -- general mappings
 map("n", "<C-s>", "<cmd> w <CR>")
-map("n", "<C-c>", "<cmd> %y+ <CR>") -- copy whole filecontent
 
 -- nvimtree
 map("n", "<C-n>", "<cmd> NvimTreeToggle <CR>")
@@ -21,23 +20,16 @@ map("n", "gD", "<cmd> Telescope lsp_type_definitions <CR>")
 map("n", "gr", "<cmd> Telescope lsp_references <CR>")
 map("n", "gi", "<cmd> Telescope lsp_implementations <CR>")
 
--- bufferline, cycle buffers
-map("n", "<Tab>", "<cmd> BufferLineCycleNext <CR>")
-map("n", "<S-Tab>", "<cmd> BufferLineCyclePrev <CR>")
-map("n", "<C-q>", "<cmd> bd <CR>")
-
 -- comment.nvim
 map("n", "<leader>/", "gcc", { remap = true })
 map("v", "<leader>/", "gc", { remap = true })
-map('n', "<leader>z", "gcc" )
-map('v', "<leader>z", "gc" )
+map('n', "<leader>z", "gcc" , {remap = true})
+map('v', "<leader>z", "gc" , {remap = true})
 
 -- format
 map("n", "<leader>fm", function()
-  require("conform").format()
+    vim.lsp.buf.format()
 end)
 
 map('n', 'Q', vim.diagnostic.open_float, { desc = 'Open diagnostic float' })
 
--- kill buffer (similar to emacs style)
-map('n',"bk", "<cmd> bd <CR>")

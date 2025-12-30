@@ -27,3 +27,4 @@ local plugins = require "plugins"
 require("lazy").setup(plugins, require "lazy_config")
 
 vim.cmd "colorscheme gruvbox-material"
+-- vim.cmd "colorscheme polar"

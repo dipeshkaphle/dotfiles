@@ -22,6 +22,8 @@ vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.clipboard:append("unnamed")
 vim.opt.mouse:append("a")
+vim.opt.winfixbuf = false
+
 
 -- Filetype settings
 vim.cmd("filetype plugin indent on")

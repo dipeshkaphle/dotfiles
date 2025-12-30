@@ -190,3 +190,6 @@ else
 end
 
 eval (opam env)
+
+# opencode
+fish_add_path /home/dipesh/.opencode/bin

@@ -335,3 +335,5 @@ search_all_nixpkgs(){
 }
 
 [ -f "/home/dipesh/.ghcup/env" ] && . "/home/dipesh/.ghcup/env" # ghcup-env
+
+. "$HOME/.grit/bin/env"

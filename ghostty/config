@@ -1,5 +1,5 @@
 font-size = 14
-theme = GruvboxDark
+theme = Gruvbox Dark
 gtk-titlebar = false
 
 cursor-color = #ff0000

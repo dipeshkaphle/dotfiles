@@ -53,7 +53,7 @@ in
                 aspell
                 aspellDicts.en
                 python2
-                z3
+                # z3
                 # pkgconf (download manually else it messes up paths)
                 bear
                 zola
@@ -70,6 +70,8 @@ in
                 direnv
                 rclone
                 cvc5
+                ast-grep
+                # grit-ql # not available in nix for some reason
 			] ++ linux_only_packages;
           };
 	};
