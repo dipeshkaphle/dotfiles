@@ -32,8 +32,8 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'modus-vivendi-tritanopia)
-;; (setq doom-theme 'modus-operandi-tritanopia)
+;; (setq doom-theme 'modus-vivendi-tritanopia)
+(setq doom-theme 'modus-operandi-tritanopia)
 ;; (after! modus-themes (modus-themes-load-vivendi))
 ;; (after! modus-themes (load-theme 'modus-vivendi-tritanopia))
 ;; (setq doom-theme 'doom-one-light)
@@ -109,8 +109,6 @@
 ;; (map! :after vterm
 ;;       :map vterm-mode-map
 ;;       :ni "C-c" #'vterm-send-C-c)
-
-;; (vterm-mode)
 
 
 ;; imap <C-k> <Up>
@@ -226,7 +224,7 @@
 
 
 (global-visual-line-mode)
-(global-tree-sitter-mode)
+;;(global-tree-sitter-mode)
 (add-hook! 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
 
 ;; Make lsp-mode a bit faster
@@ -331,3 +329,4 @@
 (defun enable-typst-lsp-mode ()
   (interactive)
   (lsp))
+

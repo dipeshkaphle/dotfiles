@@ -60,10 +60,13 @@
 ;; (package! embark :disable t)
 (package! swiper :disable t)
 (unpin! lsp-mode magit swiper)
-(package! lean4-mode :recipe
-  (:host github
-   :repo "leanprover/lean4-mode"
-   :files ("*.el" "data")))
+;(package! lean4-mode :recipe
+  ;(:host github
+   ;:repo "leanprover/lean4-mode"
+   ;:files ("*.el" "data")))
+;; better maintained lean mode
+; (package! nael)
+; (package! nael-lsp)
 (package! org-modern)
 (unpin! modus-themes)
 (package! rotate)
@@ -73,3 +76,7 @@
            :files (:defaults "*.el")))
 (unpin! company-coq)
 (unpin! proof-general)
+(package! shell-maker)
+(package! acp)
+(package! agent-shell)
+(package! boogie-friends)

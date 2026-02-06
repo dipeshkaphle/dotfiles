@@ -26,6 +26,21 @@ in
 		myPackages = pkgs.buildEnv {
 			name = "my-packages";
 			paths = [
+				(texlive.combine {
+				  inherit (texlive)
+				    scheme-medium
+				    latexmk
+				    biber
+				    biblatex
+				    biblatex-ieee
+				    logreq
+				    minted
+				    fvextra
+				    csquotes
+				    upquote
+				    ;
+				})
+				(python3.withPackages (ps: [ ps.pygments ]))
 				vim
 				neovim
 				starship
@@ -39,7 +54,7 @@ in
 				ninja
 				ranger
                 nodejs
-                libvterm
+                glib
                 # lean4
                 # elan
                 # fstar
@@ -52,8 +67,7 @@ in
                 tree-sitter
                 aspell
                 aspellDicts.en
-                python2
-                # z3
+                # z3 # build fails on macOS
                 # pkgconf (download manually else it messes up paths)
                 bear
                 zola
@@ -71,12 +85,11 @@ in
                 rclone
                 cvc5
                 ast-grep
+                # dafny
+                # dotnet-sdk_9
                 # grit-ql # not available in nix for some reason
 			] ++ linux_only_packages;
           };
 	};
-    permittedInsecurePackages = [
-      "python-2.7.18.8"
-    ];
 }
 

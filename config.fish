@@ -1,5 +1,8 @@
 fish_vi_key_bindings
-
+if test -e /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish
+    source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish
+end
+fish_add_path "$HOME/.local/bin"
 # Emulates vim's cursor shape behavior
 # Set the normal and visual mode cursors to a block
 set fish_cursor_default block
@@ -129,13 +132,17 @@ set -x EDITOR nvim
 set -x BAT_THEME gruvbox-dark
 
 # Aliases
-alias la="eza -a"
-alias ll="eza -l"
-alias lla="eza -la"
-alias ls="eza"
+if type -q eza
+    alias la="eza -a"
+    alias ll="eza -l"
+    alias lla="eza -la"
+    alias ls="eza"
+end
 alias tmuxat="tmux a -t"
 alias tmux="tmux -u"
-alias open="xdg-open"
+if type -q xdg-open
+    alias open="xdg-open"
+end
 alias gl="git log --graph --decorate"
 alias gs="git status"
 alias glo="git log --graph --decorate --oneline"
@@ -144,8 +151,12 @@ alias gloa="git log --all --graph --decorate --oneline"
 
 alias doom=$HOME/.config/emacs/bin/doom
 
-fzf --fish | source
-direnv hook fish | source
+if type -q fzf
+    fzf --fish | source
+end
+if type -q direnv
+    direnv hook fish | source
+end
 
 if type -q startship 
     set -x STARSHIP_CONFIG ~/.starship/config.toml
@@ -189,7 +200,10 @@ else
     echo "Hydro plugin is also not installed(https://github.com/jorgebucaran/hydro)" >&2
 end
 
-eval (opam env)
+if type -q opam
+    eval (opam env)
+end
 
 # opencode
-fish_add_path /home/dipesh/.opencode/bin
+fish_add_path "$HOME/.opencode/bin"
+export GOOGLE_CLOUD_PROJECT="gemini-code-assist-483601"
