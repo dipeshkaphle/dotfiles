@@ -40,7 +40,7 @@ in
 				    upquote
 				    ;
 				})
-				(python3.withPackages (ps: [ ps.pygments ]))
+				(python3.withPackages (ps: [ ps.pygments ps.libtmux ]))
 				vim
 				neovim
 				starship
@@ -56,7 +56,7 @@ in
                 nodejs
                 glib
                 # lean4
-                # elan
+                elan
                 # fstar
                 opam
                 rustup
@@ -88,6 +88,8 @@ in
                 # dafny
                 # dotnet-sdk_9
                 # grit-ql # not available in nix for some reason
+                fd
+                btop
 			] ++ linux_only_packages;
           };
 	};

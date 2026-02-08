@@ -1,9 +1,10 @@
-require("nvim-treesitter.configs").setup {
-  ensure_installed = { "lua", "vim", "vimdoc", "html", "css", "typescript", "javascript" },
+require("nvim-treesitter").setup {}
 
-  highlight = {
-    enable = true,
-    use_languagetree = true,
-  },
-  indent = { enable = true },
-}
+local ensure_installed = { "lua", "vim", "vimdoc", "html", "css", "typescript", "javascript", "ocaml", "cpp", "rust" }
+local installed = require("nvim-treesitter").get_installed()
+local to_install = vim.tbl_filter(function(lang)
+  return not vim.tbl_contains(installed, lang)
+end, ensure_installed)
+if #to_install > 0 then
+  require("nvim-treesitter").install(to_install)
+end

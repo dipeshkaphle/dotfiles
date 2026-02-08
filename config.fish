@@ -23,8 +23,6 @@ bind --mode insert \cp up-or-search
 bind --mode insert \cn down-or-search
 bind --mode insert \cf beginning-of-line
 bind --mode insert \ce end-of-line
-bind --mode insert \cf beginning-of-line
-bind --mode insert \ce end-of-line
 
 # Allow to move to backward/forward of word
 bind --mode insert \cb backward-word
@@ -84,35 +82,40 @@ end
 
 # FZF Options
 set -x FZF_CTRL_T_OPTS "--reverse --preview '(bat --color=always --style=header,grid --line-range :500 {} ) 2> /dev/null '"
-set -x FZF_DEFAULT_OPTS "--reverse --preview '(bat --color=always --style=header,grid --line-range :500 {} ) 2> /dev/null '"
+set -x FZF_DEFAULT_OPTS "--reverse"
 
 # Fuzzy search using rg
 function ff
-    set cmdtorun "echo"
+    set -l cmdtorun echo
     if test (count $argv) -gt 0
-        set cmdtorun $argv[1]
+        set cmdtorun $argv
     end
     set INITIAL_QUERY ""
     set RG_PREFIX "rg --colors 'match:bg:yellow' --line-number --color=always --smart-case "
+    set -l preview_script "$HOME/dotfiles/scripts/fzf-rg-preview.fish"
     set -l selected (fzf --bind "change:reload:$RG_PREFIX {q} || true" \
         --ansi --disabled --query "$INITIAL_QUERY" \
         --height=50% --layout=reverse \
-        --preview "set lineno \$(echo {} | cut -d':' -f2); set filename \$(echo {} | cut -d':' -f1) ; bat --color=always --style=header,grid "\$filename" -H \$lineno -r \$(python3 -c \"print((lambda x : str(max(0,min(int(x) - 5, int(x)))))(\$(echo \$lineno)))\"):" | cut -d':' -f1,2 --output-delimiter=' ' )
+        --preview "$preview_script {}" | awk -F: '{print $1" "$2}' )
     
     if test -n "$selected"
-        eval "$cmdtorun $selected"
+        set -l parts (string split ' ' -- $selected)
+        $cmdtorun $parts
     end
 end
 
 # Usage: ffopeneditor <editor: emacs/nvim/etc.>
 function ffopeneditor
-    set EDITOR $argv[1]
-    ff editorwithlines
+    if test (count $argv) -eq 0
+        echo "Usage: ffopeneditor <editor>" >&2
+        return 1
+    end
+    ff _editorwithlines $argv[1]
 end
 
-# Usage: editorwithlines <filename> <lineno>
-function editorwithlines
-    $EDITOR +$argv[2] $argv[1]
+# Usage: _editorwithlines <editor> <filename> <lineno>
+function _editorwithlines
+    $argv[1] +$argv[3] $argv[2]
 end
 
 function mkcd
@@ -121,8 +124,7 @@ function mkcd
         return 1
     end
 
-    mkdir $argv[1]
-    cd $argv[1]
+    mkdir -p $argv[1] && cd $argv[1]
 end
 
 # Set the default editor to Vim
@@ -139,7 +141,7 @@ if type -q eza
     alias ls="eza"
 end
 alias tmuxat="tmux a -t"
-alias tmux="tmux -u"
+alias tmux="command tmux -u"
 if type -q xdg-open
     alias open="xdg-open"
 end
@@ -158,11 +160,6 @@ if type -q direnv
     direnv hook fish | source
 end
 
-if type -q startship 
-    set -x STARSHIP_CONFIG ~/.starship/config.toml
-    # starship init fish | source
-end
-
 
 
 if type -q uname && test (uname) = "Linux"
@@ -177,10 +174,6 @@ if type -q uname && test (uname) = "Linux"
 end
 
 
-function mount_windows_drive
-  sudo mkdir /run/media/bitlocker; sudo dislocker /dev/nvme0n1p4 -p144793-200739-670736-297363-418330-349877-104093-197428 -- /run/media/bitlocker
-  sudo mkdir /run/media/dipesh; sudo mount -t ntfs-3g -o loop /run/media/bitlocker/dislocker-file /run/media/dipesh
-end
 
 function search_all_nixpkgs
   nix-env --query --available --attr-path
@@ -206,4 +199,8 @@ end
 
 # opencode
 fish_add_path "$HOME/.opencode/bin"
-export GOOGLE_CLOUD_PROJECT="gemini-code-assist-483601"
+
+# Source secrets (API keys, etc.)
+if test -e "$HOME/dotfiles/secrets.fish"
+    source "$HOME/dotfiles/secrets.fish"
+end

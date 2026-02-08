@@ -39,10 +39,10 @@
 ;; (setq doom-theme 'doom-one-light)
 ;; (setq doom-theme 'doom-gruvbox)
 
-(setq doom-font (font-spec :family "Jetbrains Mono" :size 18))
+(setq doom-font (font-spec :family "Jetbrains Mono" :size 14))
 
 (setq evil-normal-state-cursor '(box "red")
-      evil-insert-state-cursor '(bar "white")
+      evil-insert-state-cursor '((bar . 4) "#FFD700")
       evil-visual-state-cursor '(hollow "orange"))
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
