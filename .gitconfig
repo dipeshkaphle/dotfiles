@@ -1,0 +1,32 @@
+# This is Git's per-user configuration file.
+[user]
+	name = Dipesh Kafle
+	email = dipesh.kaphle111@gmail.com
+
+[core]
+	pager = delta
+
+[interactive]
+	diffFilter = delta --color-only
+
+[delta]
+	navigate = true
+	side-by-side = true
+	line-numbers = true
+	syntax-theme = gruvbox-dark
+
+[merge]
+	conflictstyle = diff3
+
+[diff]
+	colorMoved = default
+	tool = difftastic
+
+[difftool]
+	prompt = false
+
+[difftool "difftastic"]
+	cmd = difft "$LOCAL" "$REMOTE"
+
+[alias]
+	dft = difftool

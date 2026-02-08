@@ -90,6 +90,11 @@ in
                 # grit-ql # not available in nix for some reason
                 fd
                 btop
+                zoxide
+                lazygit
+                delta
+                difftastic
+                uv
 			] ++ linux_only_packages;
           };
 	};

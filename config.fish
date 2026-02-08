@@ -3,6 +3,7 @@ if test -e /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish
     source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish
 end
 fish_add_path "$HOME/.local/bin"
+fish_add_path "$HOME/dotfiles/scripts"
 # Emulates vim's cursor shape behavior
 # Set the normal and visual mode cursors to a block
 set fish_cursor_default block
@@ -81,15 +82,15 @@ end
 
 
 # FZF Options
+set -x FZF_DEFAULT_COMMAND 'fd --type f --hidden --exclude .git'
+set -x FZF_CTRL_T_COMMAND 'fd --type f --hidden --exclude .git'
+set -x FZF_ALT_C_COMMAND 'fd --type d --hidden --exclude .git'
 set -x FZF_CTRL_T_OPTS '--reverse --preview "bat --color=always --style=header,grid --line-range :500 {} 2>/dev/null"'
 set -x FZF_DEFAULT_OPTS "--reverse"
 
 # Fuzzy search using rg
+# Usage: ff [editor] — no args prints file:line, with editor opens at matching line
 function ff
-    set -l cmdtorun echo
-    if test (count $argv) -gt 0
-        set cmdtorun $argv
-    end
     set INITIAL_QUERY ""
     set RG_PREFIX "rg --colors 'match:bg:yellow' --line-number --color=always --smart-case "
     set -l preview_script "$HOME/dotfiles/scripts/fzf-rg-preview.fish"
@@ -97,25 +98,17 @@ function ff
         --ansi --disabled --query "$INITIAL_QUERY" \
         --height=50% --layout=reverse \
         --preview "$preview_script {}" | awk -F: '{print $1" "$2}' )
-    
+
     if test -n "$selected"
         set -l parts (string split ' ' -- $selected)
-        $cmdtorun $parts
+        set -l file $parts[1]
+        set -l lineno $parts[2]
+        if test (count $argv) -gt 0
+            $argv[1] +$lineno $file
+        else
+            echo "$file:$lineno"
+        end
     end
-end
-
-# Usage: ffopeneditor <editor: emacs/nvim/etc.>
-function ffopeneditor
-    if test (count $argv) -eq 0
-        echo "Usage: ffopeneditor <editor>" >&2
-        return 1
-    end
-    ff _editorwithlines $argv[1]
-end
-
-# Usage: _editorwithlines <editor> <filename> <lineno>
-function _editorwithlines
-    $argv[1] +$argv[3] $argv[2]
 end
 
 function mkcd
@@ -195,6 +188,10 @@ end
 
 if type -q opam
     eval (opam env)
+end
+
+if type -q zoxide
+    zoxide init fish | source
 end
 
 # opencode

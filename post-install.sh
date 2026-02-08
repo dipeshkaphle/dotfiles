@@ -20,6 +20,35 @@ else
     echo "TPM already installed."
 fi
 
+# Install tmux plugins
+echo "Installing tmux plugins..."
+~/.tmux/plugins/tpm/bin/install_plugins
+echo "Tmux plugins done."
+
+# Install Fish plugins (hydro prompt)
+echo "Installing Fish plugins..."
+fish -c "fisher install jorgebucaran/hydro"
+echo "Fish plugins done."
+
+# Seed zoxide with common directories
+if command -v zoxide &> /dev/null && command -v fd &> /dev/null; then
+    echo "Seeding zoxide..."
+    fd -t d --max-depth 3 . ~/github.com ~/dotfiles 2>/dev/null | xargs -I{} zoxide add "{}"
+    echo "Zoxide seeded."
+fi
+
+# Configure npm prefix to ~/.local
+echo "Configuring npm prefix..."
+npm config set prefix ~/.local
+mkdir -p ~/.local/bin
+
+# Install Pi Coding Agent
+if command -v npm &> /dev/null; then
+    echo "Installing Pi Coding Agent..."
+    npm install -g @mariozechner/pi-coding-agent
+    echo "Pi Coding Agent installed."
+fi
+
 # Set Fish as default shell
 FISH_PATH=$(which fish)
 if ! grep -qF "$FISH_PATH" /etc/shells; then
