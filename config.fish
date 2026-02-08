@@ -81,7 +81,7 @@ end
 
 
 # FZF Options
-set -x FZF_CTRL_T_OPTS "--reverse --preview '(bat --color=always --style=header,grid --line-range :500 {} ) 2> /dev/null '"
+set -x FZF_CTRL_T_OPTS '--reverse --preview "bat --color=always --style=header,grid --line-range :500 {} 2>/dev/null"'
 set -x FZF_DEFAULT_OPTS "--reverse"
 
 # Fuzzy search using rg
