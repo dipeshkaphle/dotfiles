@@ -33,17 +33,20 @@ description: Does X when Y happens. Use for Z tasks.
 - `name`: lowercase, hyphens only, must match the parent directory name
 - `description`: what the skill does and when to use it
 
-## Example
-`hello/SKILL.md`:
-```markdown
----
-name: hello
-description: Says hello. Use when asked to say hello or greet.
----
+## Available Skills
 
-# Hello
-Use this skill to say hello.
+### Internal
+- **hello**: Basic greeting skill.
 
-## Steps
-1. Run `echo "Hello World"`
-```
+### External Sources
+- **ast-grep**: Structural code search and replacement.
+  - Source: https://github.com/ast-grep/agent-skill
+
+- **ruff**: An extremely fast Python linter and code formatter.
+  - Source: https://github.com/astral-sh/claude-code-plugins (Astral)
+
+- **ty**: A skill for type checking Python code.
+  - Source: https://github.com/astral-sh/claude-code-plugins (Astral)
+
+- **uv**: An extremely fast Python package and project manager.
+  - Source: https://github.com/astral-sh/claude-code-plugins (Astral)
