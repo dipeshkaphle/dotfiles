@@ -42,7 +42,7 @@
 (setq doom-font (font-spec :family "Jetbrains Mono" :size 14))
 
 (setq evil-normal-state-cursor '(box "red")
-      evil-insert-state-cursor '((bar . 4) "#FFD700")
+      evil-insert-state-cursor '((bar . 4) "dodger blue")
       evil-visual-state-cursor '(hollow "orange"))
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
@@ -88,6 +88,10 @@
 ;; they are implemented.
 ;;
 (setq select-enable-clipboard t)
+
+;; macOS modifier keys: Cmd = Meta, Option = Super
+(setq mac-command-modifier 'meta
+      mac-option-modifier 'super)
 
 (global-prettify-symbols-mode)
 
@@ -220,7 +224,19 @@
 ;;   (setq persp-emacsclient-init-frame-behaviour-override "main")
 ;;   )
 
-(evil-ex-define-cmd "!" #'projectile-run-shell-command-in-root)
+(defun shell-in-directory ()
+  (interactive)
+  (let ((default-directory (read-directory-name "Directory: ")))
+    (shell-command (read-shell-command "Shell command: "))))
+
+(defun compile-in-directory ()
+  (interactive)
+  (let ((default-directory (read-directory-name "Directory: ")))
+    (compile (read-shell-command "Compile command: " compile-command))))
+
+(evil-ex-define-cmd "!" #'shell-in-directory)
+
+(map! :leader "c c" #'compile-in-directory)
 
 
 (global-visual-line-mode)
@@ -329,4 +345,6 @@
 (defun enable-typst-lsp-mode ()
   (interactive)
   (lsp))
+
+(add-hook 'markdown-view-mode-hook #'math-preview-all)
 

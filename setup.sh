@@ -11,6 +11,7 @@ ln -sf ~/dotfiles/.doom.d ~/.doom.d
 ln -sf ~/dotfiles/ghostty ~/.config/ghostty
 ln -sf ~/dotfiles/nixpkgs ~/.nixpkgs
 ln -sf ~/dotfiles/config.fish ~/.config/fish/config.fish
+ln -sf ~/dotfiles/fish_plugins ~/.config/fish/fish_plugins
 ln -sf ~/dotfiles/.gitconfig ~/.gitconfig
 mkdir -p ~/.claude
 ln -sf ~/dotfiles/claude/statusline-command.sh ~/.claude/statusline-command.sh
@@ -34,11 +35,7 @@ ln -sf ~/dotfiles/pi/agent ~/.pi/agent
 mkdir -p ~/dotfiles/pi/agent
 ln -sf ~/dotfiles/skills ~/dotfiles/pi/agent/skills
 
-# Link centralized skills to Gemini (User Skills)
-mkdir -p ~/.gemini
-ln -sf ~/dotfiles/skills ~/.gemini/skills
-
-# Link centralized skills to standard ~/.agents location (Opencode, Codex)
+# Link centralized skills to standard ~/.agents location (Opencode, Codex, Gemini)
 mkdir -p ~/.agents
 ln -sf ~/dotfiles/skills ~/.agents/skills
 
@@ -66,3 +63,15 @@ fi
 
 # If Nix is available, continue with post-install
 bash ~/dotfiles/post-install.sh
+
+# Install Fisher and plugins if fish is available
+if command -v fish &> /dev/null; then
+    echo "Installing Fisher plugins..."
+    fish -c "
+        if not type -q fisher
+            curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher
+        end
+        fisher update
+    "
+    echo "Fisher plugins installed."
+fi

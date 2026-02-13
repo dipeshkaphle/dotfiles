@@ -1,0 +1,10 @@
+{
+  "name": "pdf-reader-extension",
+  "version": "1.0.0",
+  "dependencies": {
+    "pdf-parse": "^1.1.1"
+  },
+  "pi": {
+    "extensions": ["./index.ts"]
+  }
+}

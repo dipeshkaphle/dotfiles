@@ -80,3 +80,4 @@
 (package! acp)
 (package! agent-shell)
 (package! boogie-friends)
+(package! math-preview)

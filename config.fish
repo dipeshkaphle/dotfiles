@@ -82,10 +82,10 @@ end
 
 
 # FZF Options
+set -g FZF_WALKER_SKIP '.git,node_modules'
 set -x FZF_DEFAULT_COMMAND 'fd --type f --hidden --exclude .git'
-set -x FZF_CTRL_T_COMMAND 'fd --type f --hidden --exclude .git'
-set -x FZF_ALT_C_COMMAND 'fd --type d --hidden --exclude .git'
-set -x FZF_CTRL_T_OPTS '--reverse --preview "bat --color=always --style=header,grid --line-range :500 {} 2>/dev/null"'
+set -x FZF_CTRL_T_OPTS "--reverse --walker-skip $FZF_WALKER_SKIP --preview \"bat --color=always --style=header,grid --line-range :500 {} 2>/dev/null\""
+set -x FZF_ALT_C_OPTS "--reverse --walker-skip $FZF_WALKER_SKIP"
 set -x FZF_DEFAULT_OPTS "--reverse"
 
 # Fuzzy search using rg

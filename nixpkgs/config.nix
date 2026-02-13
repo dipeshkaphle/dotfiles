@@ -40,7 +40,7 @@ in
 				    upquote
 				    ;
 				})
-				(python3.withPackages (ps: [ ps.pygments ps.libtmux ]))
+				(python3.withPackages (ps: [ ps.pygments ps.libtmux ps.pylatexenc ]))
 				vim
 				neovim
 				starship
@@ -95,6 +95,7 @@ in
                 delta
                 difftastic
                 uv
+                jujutsu
 			] ++ linux_only_packages;
           };
 	};
