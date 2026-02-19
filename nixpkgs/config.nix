@@ -96,6 +96,8 @@ in
                 difftastic
                 uv
                 jujutsu
+                glow # used by pi agent for file selector
+                poppler-utils # used by pi agent for converting pdfs to pngs
 			] ++ linux_only_packages;
           };
 	};
