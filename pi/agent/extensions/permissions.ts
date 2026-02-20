@@ -1,6 +1,6 @@
 
 import type { ExtensionAPI, ExtensionContext, ToolCallEvent } from "@mariozechner/pi-coding-agent";
-import { type Component, Key, matchesKey, TUI, visibleWidth, Editor, type EditorTheme } from "@mariozechner/pi-tui";
+import { type Component, Key, matchesKey, TUI, visibleWidth, truncateToWidth, Editor, type EditorTheme } from "@mariozechner/pi-tui";
 import * as fs from "fs";
 import * as path from "path";
 import * as os from "os";
@@ -128,8 +128,10 @@ class PermissionPrompt implements Component {
 
         const hLine = (c: number) => "─".repeat(c);
         const box = (s: string) => {
-            const pad = Math.max(0, boxWidth - visibleWidth(s) - 2);
-            return this.dim("│") + s + " ".repeat(pad) + this.dim("│");
+            const innerWidth = boxWidth - 2;
+            const fitted = truncateToWidth(s, innerWidth);
+            const pad = Math.max(0, innerWidth - visibleWidth(fitted));
+            return this.dim("│") + fitted + " ".repeat(pad) + this.dim("│");
         };
         const padW = (s: string) => s + " ".repeat(Math.max(0, width - visibleWidth(s)));
 
@@ -276,8 +278,10 @@ class PermissionManager implements Component {
         const boxWidth = Math.min(width - 4, 100);
         const hLine = (c: number) => "─".repeat(c);
         const box = (s: string) => {
-            const pad = Math.max(0, boxWidth - visibleWidth(s) - 2);
-            return this.dim("│") + s + " ".repeat(pad) + this.dim("│");
+            const innerWidth = boxWidth - 2;
+            const fitted = truncateToWidth(s, innerWidth);
+            const pad = Math.max(0, innerWidth - visibleWidth(fitted));
+            return this.dim("│") + fitted + " ".repeat(pad) + this.dim("│");
         };
         const padW = (s: string) => s + " ".repeat(Math.max(0, width - visibleWidth(s)));
 
@@ -366,11 +370,11 @@ export default function (pi: ExtensionAPI) {
         } catch {}
     }
 
-    function launchReviewTool(input: any, cwd: string) {
+    function prepareReviewFiles(input: any, cwd: string): { oldFile: string; newFile: string } {
         const tmpDir = os.tmpdir();
         const oldFile = path.join(tmpDir, "pi-diff-old.txt");
         const newFile = path.join(tmpDir, "pi-diff-new.txt");
-        
+
         let oldText = "";
         let newText = "";
         let filePath = input.path;
@@ -385,14 +389,7 @@ export default function (pi: ExtensionAPI) {
 
         fs.writeFileSync(oldFile, oldText);
         fs.writeFileSync(newFile, newText);
-
-        try {
-            const [cmd, ...args] = getDiffTool();
-            spawnSync(cmd, [...args, oldFile, newFile], { stdio: "inherit" });
-            process.stdout.write('\x1b[2J\x1b[H'); // Restore Screen
-        } catch (e) {
-            console.error(e);
-        }
+        return { oldFile, newFile };
     }
 
     pi.on("session_start", (_event, ctx) => { loadPermissions(ctx.cwd); });
@@ -425,8 +422,27 @@ export default function (pi: ExtensionAPI) {
                 if (!result) return { block: true, reason: "User cancelled" };
 
                 if (result.action === "review") {
-                    launchReviewTool(event.input, ctx.cwd);
-                    continue; 
+                    const { oldFile, newFile } = prepareReviewFiles(event.input, ctx.cwd);
+
+                    await ctx.ui.custom<void>((tui, _theme, _kb, done) => {
+                        tui.stop();
+
+                        try {
+                            const [cmd, ...args] = getDiffTool();
+                            spawnSync(cmd, [...args, oldFile, newFile], { stdio: "inherit" });
+                        } catch (e) {
+                            console.error(e);
+                        } finally {
+                            tui.start();
+                            // Avoid forced full redraw; let normal repaint settle to reduce flash.
+                            tui.requestRender();
+                            done();
+                        }
+
+                        return { render: () => [], invalidate: () => {} };
+                    });
+
+                    continue;
                 }
 
                 if (result.comment && result.comment.trim().length > 0) {

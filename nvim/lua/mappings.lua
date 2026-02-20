@@ -33,3 +33,18 @@ end)
 
 map('n', 'Q', vim.diagnostic.open_float, { desc = 'Open diagnostic float' })
 
+-- review notes workflow (~/.pi/reviews/*.md)
+map({ "n", "x" }, "<leader>ra", function()
+    require("review_notes").add_comment_from_selection()
+end, { desc = "Review: add snippet + comment" })
+
+map("n", "<leader>rf", function()
+    require("review_notes").select_review_file()
+end, { desc = "Review: pick/create review file" })
+
+map("n", "<leader>rv", function()
+    require("review_notes").open_current_review()
+end, { desc = "Review: view current review file" })
+
+
+

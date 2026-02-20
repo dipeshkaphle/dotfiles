@@ -1,0 +1,11 @@
+{
+  "name": "tui-runner-extension",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "pi-interactive-shell": "0.8.2"
+  },
+  "pi": {
+    "extensions": ["./interactive-shell-loader.ts", "./run-in-tui.ts"]
+  }
+}

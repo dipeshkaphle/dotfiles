@@ -98,6 +98,8 @@ in
                 jujutsu
                 glow # used by pi agent for file selector
                 poppler-utils # used by pi agent for converting pdfs to pngs
+                pandoc
+                # tuicr (used for pi reviewing)
 			] ++ linux_only_packages;
           };
 	};

@@ -44,20 +44,13 @@ Rules:
 - If no questions are found, return {"questions": []}
 `;
 
-/**
- * Parse the JSON response from the LLM
- */
 function parseExtractionResult(text: string): ExtractionResult | null {
     try {
-        // Try to find JSON in the response (it might be wrapped in markdown code blocks)
         let jsonStr = text;
-
-        // Remove markdown code block if present
         const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/);
         if (jsonMatch) {
             jsonStr = jsonMatch[1].trim();
         }
-
         const parsed = JSON.parse(jsonStr);
         if (parsed && Array.isArray(parsed.questions)) {
             return parsed as ExtractionResult;
@@ -69,8 +62,7 @@ function parseExtractionResult(text: string): ExtractionResult | null {
 }
 
 /**
- * Model Selector Component
- * Replicates the look and feel of the built-in /model selector
+ * Model Selector Component with Thinking Level support
  */
 class ModelSelectorComponent implements Component {
     private models: Model<Api>[];
@@ -78,28 +70,30 @@ class ModelSelectorComponent implements Component {
     private selectedIndex: number = 0;
     private searchEditor: Editor;
     private tui: TUI;
-    private onSelect: (model: Model<Api> | null) => void;
+    private onSelect: (model: Model<Api> | null, thinkingLevel?: string) => void;
     private currentModelId?: string;
+    
+    // Thinking Level State
+    private thinkingLevels = ["off", "minimal", "low", "medium", "high", "xhigh"];
+    private thinkingLevelIndex = 0; // default "off"
 
-    // Cache
     private cachedWidth?: number;
     private cachedLines?: string[];
 
-    // Colors
     private dim = (s: string) => `\x1b[2m${s}\x1b[0m`;
     private bold = (s: string) => `\x1b[1m${s}\x1b[0m`;
     private cyan = (s: string) => `\x1b[36m${s}\x1b[0m`;
     private green = (s: string) => `\x1b[32m${s}\x1b[0m`;
     private gray = (s: string) => `\x1b[90m${s}\x1b[0m`;
     private white = (s: string) => `\x1b[37m${s}\x1b[0m`;
+    private yellow = (s: string) => `\x1b[33m${s}\x1b[0m`;
 
     constructor(
         models: Model<Api>[], 
         currentModelId: string | undefined,
         tui: TUI, 
-        onSelect: (model: Model<Api> | null) => void
+        onSelect: (model: Model<Api> | null, thinkingLevel?: string) => void
     ) {
-        // Sort models: current first, then alphabetical
         this.models = [...models].sort((a, b) => {
             const aId = `${a.provider}/${a.id}`;
             const bId = `${b.provider}/${b.id}`;
@@ -115,10 +109,7 @@ class ModelSelectorComponent implements Component {
         this.tui = tui;
         this.onSelect = onSelect;
         
-        // Setup minimal editor for search
-        const editorTheme: EditorTheme = {
-            borderColor: this.dim,
-        };
+        const editorTheme: EditorTheme = { borderColor: this.dim };
         this.searchEditor = new Editor(tui, editorTheme);
         this.searchEditor.disableSubmit = true; 
         this.searchEditor.onChange = (text) => {
@@ -163,9 +154,19 @@ class ModelSelectorComponent implements Component {
             }
             return;
         }
+        
+        // Tab: Cycle Thinking Level
+        if (matchesKey(data, Key.tab)) {
+            this.thinkingLevelIndex = (this.thinkingLevelIndex + 1) % this.thinkingLevels.length;
+            this.invalidate();
+            this.tui.requestRender();
+            return;
+        }
+
         if (matchesKey(data, Key.enter)) {
             if (this.filteredModels.length > 0) {
-                this.onSelect(this.filteredModels[this.selectedIndex]);
+                const level = this.thinkingLevels[this.thinkingLevelIndex];
+                this.onSelect(this.filteredModels[this.selectedIndex], level === "off" ? undefined : level);
             }
             return;
         }
@@ -174,7 +175,6 @@ class ModelSelectorComponent implements Component {
             return;
         }
 
-        // Pass everything else to search editor
         this.searchEditor.handleInput(data);
         this.invalidate();
         this.tui.requestRender();
@@ -189,43 +189,33 @@ class ModelSelectorComponent implements Component {
         const boxWidth = Math.min(width - 4, 100); 
         const contentWidth = boxWidth - 4; 
 
-        // Helper to create horizontal lines
         const horizontalLine = (count: number) => "─".repeat(count);
-
-        // Helper to create a box line
-        const boxLine = (content: string, leftPad: number = 2): string => {
-            const paddedContent = " ".repeat(leftPad) + content;
-            const contentLen = visibleWidth(paddedContent);
+        const boxLine = (content: string): string => {
+            const contentLen = visibleWidth(content);
             const rightPad = Math.max(0, boxWidth - contentLen - 2);
-            return this.dim("│") + paddedContent + " ".repeat(rightPad) + this.dim("│");
+            return this.dim("│") + content + " ".repeat(rightPad) + this.dim("│");
         };
-
         const padToWidth = (line: string): string => {
             const len = visibleWidth(line);
             return line + " ".repeat(Math.max(0, width - len));
         };
 
-        // Top Border
         lines.push(padToWidth(this.dim("╭" + horizontalLine(boxWidth - 2) + "╮")));
         lines.push(padToWidth(boxLine(this.bold(this.cyan("Select Extraction Model")))));
         lines.push(padToWidth(this.dim("├" + horizontalLine(boxWidth - 2) + "┤")));
 
-        // Search Box
-        const searchPrompt = this.bold("Search: ");
-        // Ensure search editor output is just one line
-        const searchRender = this.searchEditor.render(contentWidth - 10); // leave room for prompt
-        const searchText = searchRender.length > 0 ? searchRender[0] : ""; // get first line only
-        lines.push(padToWidth(boxLine(searchPrompt + searchText)));
+        const searchRender = this.searchEditor.render(contentWidth - 10);
+        const searchText = searchRender.length > 0 ? searchRender[0] : "";
+        lines.push(padToWidth(boxLine(this.bold("Search: ") + searchText)));
         lines.push(padToWidth(this.dim("├" + horizontalLine(boxWidth - 2) + "┤")));
 
-        // Model List
         const maxVisible = 10;
         let start = 0;
         let end = 0;
         
         if (this.filteredModels.length > 0) {
             start = Math.max(0, Math.min(this.selectedIndex - Math.floor(maxVisible / 2), this.filteredModels.length - maxVisible));
-            start = Math.max(0, start); // clamp again just in case length < maxVisible
+            start = Math.max(0, start);
             end = Math.min(start + maxVisible, this.filteredModels.length);
 
             for (let i = start; i < end; i++) {
@@ -255,19 +245,20 @@ class ModelSelectorComponent implements Component {
             lines.push(padToWidth(boxLine(this.gray("No matching models"))));
         }
 
-        // Fill remaining height if needed to keep box stable
         const renderedCount = end - start;
         for (let i = renderedCount; i < maxVisible; i++) {
             lines.push(padToWidth(boxLine("")));
         }
 
-        // Scroll Indicator / Footer
-        if (this.filteredModels.length > 0) {
-            const scrollInfo = `(${this.selectedIndex + 1}/${this.filteredModels.length})`;
-            lines.push(padToWidth(boxLine(this.gray(scrollInfo))));
-        } else {
-             lines.push(padToWidth(boxLine("")));
-        }
+        // Footer: Thinking Level + Hints
+        lines.push(padToWidth(this.dim("├" + horizontalLine(boxWidth - 2) + "┤")));
+        
+        const level = this.thinkingLevels[this.thinkingLevelIndex];
+        const levelColor = level === "off" ? this.dim : level === "high" ? this.yellow : this.cyan;
+        const thinkingStr = `Thinking: ${levelColor(level.toUpperCase())}`;
+        
+        const hints = this.dim("Tab: Cycle Thinking · Enter: Select");
+        lines.push(padToWidth(boxLine(`${thinkingStr}  ${hints}`)));
 
         lines.push(padToWidth(this.dim("╰" + horizontalLine(boxWidth - 2) + "╯")));
 
@@ -277,9 +268,6 @@ class ModelSelectorComponent implements Component {
     }
 }
 
-/**
- * Interactive Q&A component for answering extracted questions
- */
 class QnAComponent implements Component {
     private questions: ExtractedQuestion[];
     private answers: string[];
@@ -288,12 +276,9 @@ class QnAComponent implements Component {
     private tui: TUI;
     private onDone: (result: string | null) => void;
     private showingConfirmation: boolean = false;
-
-    // Cache
     private cachedWidth?: number;
     private cachedLines?: string[];
 
-    // Colors - using proper reset sequences
     private dim = (s: string) => `\x1b[2m${s}\x1b[0m`;
     private bold = (s: string) => `\x1b[1m${s}\x1b[0m`;
     private cyan = (s: string) => `\x1b[36m${s}\x1b[0m`;
@@ -301,44 +286,21 @@ class QnAComponent implements Component {
     private yellow = (s: string) => `\x1b[33m${s}\x1b[0m`;
     private gray = (s: string) => `\x1b[90m${s}\x1b[0m`;
 
-    constructor(
-        questions: ExtractedQuestion[],
-        tui: TUI,
-        onDone: (result: string | null) => void,
-    ) {
+    constructor(questions: ExtractedQuestion[], tui: TUI, onDone: (result: string | null) => void) {
         this.questions = questions;
         this.answers = questions.map(() => "");
         this.tui = tui;
         this.onDone = onDone;
-
-        // Create a minimal theme for the editor
         const editorTheme: EditorTheme = {
             borderColor: this.dim,
-            selectList: {
-                selectedBg: (s: string) => `\x1b[44m${s}\x1b[0m`,
-                matchHighlight: this.cyan,
-                itemSecondary: this.gray,
-            },
+            selectList: { selectedBg: (s) => `\x1b[44m${s}\x1b[0m`, matchHighlight: this.cyan, itemSecondary: this.gray },
         };
-
         this.editor = new Editor(tui, editorTheme);
-        // Disable the editor's built-in submit (which clears the editor)
-        // We'll handle Enter ourselves to preserve the text
         this.editor.disableSubmit = true;
-        this.editor.onChange = () => {
-            this.invalidate();
-            this.tui.requestRender();
-        };
+        this.editor.onChange = () => { this.invalidate(); this.tui.requestRender(); };
     }
 
-    private allQuestionsAnswered(): boolean {
-        this.saveCurrentAnswer();
-        return this.answers.every((a) => (a?.trim() || "").length > 0);
-    }
-
-    private saveCurrentAnswer(): void {
-        this.answers[this.currentIndex] = this.editor.getText();
-    }
+    private saveCurrentAnswer(): void { this.answers[this.currentIndex] = this.editor.getText(); }
 
     private navigateTo(index: number): void {
         if (index < 0 || index >= this.questions.length) return;
@@ -350,198 +312,100 @@ class QnAComponent implements Component {
 
     private submit(): void {
         this.saveCurrentAnswer();
-
-        // Build the response text
         const parts: string[] = [];
         for (let i = 0; i < this.questions.length; i++) {
             const q = this.questions[i];
             const a = this.answers[i]?.trim() || "(no answer)";
             parts.push(`Q: ${q.question}`);
-            if (q.context) {
-                parts.push(`> ${q.context}`);
-            }
+            if (q.context) parts.push(`> ${q.context}`);
             parts.push(`A: ${a}`);
             parts.push("");
         }
-
         this.onDone(parts.join("\n").trim());
     }
 
-    private cancel(): void {
-        this.onDone(null);
-    }
-
-    invalidate(): void {
-        this.cachedWidth = undefined;
-        this.cachedLines = undefined;
-    }
+    invalidate(): void { this.cachedWidth = undefined; this.cachedLines = undefined; }
 
     handleInput(data: string): void {
-        // Handle confirmation dialog
         if (this.showingConfirmation) {
-            if (matchesKey(data, Key.enter) || data.toLowerCase() === "y") {
-                this.submit();
-                return;
-            }
+            if (matchesKey(data, Key.enter) || data.toLowerCase() === "y") { this.submit(); return; }
             if (matchesKey(data, Key.escape) || matchesKey(data, Key.ctrl("c")) || data.toLowerCase() === "n") {
-                this.showingConfirmation = false;
-                this.invalidate();
-                this.tui.requestRender();
-                return;
+                this.showingConfirmation = false; this.invalidate(); this.tui.requestRender(); return;
             }
             return;
         }
-
-        // Global navigation and commands
-        if (matchesKey(data, Key.escape) || matchesKey(data, Key.ctrl("c"))) {
-            this.cancel();
-            return;
-        }
-
-        // Tab / Shift+Tab for navigation
+        if (matchesKey(data, Key.escape) || matchesKey(data, Key.ctrl("c"))) { this.onDone(null); return; }
         if (matchesKey(data, Key.tab)) {
-            if (this.currentIndex < this.questions.length - 1) {
-                this.navigateTo(this.currentIndex + 1);
-                this.tui.requestRender();
-            }
+            if (this.currentIndex < this.questions.length - 1) { this.navigateTo(this.currentIndex + 1); this.tui.requestRender(); }
             return;
         }
         if (matchesKey(data, Key.shift("tab"))) {
-            if (this.currentIndex > 0) {
-                this.navigateTo(this.currentIndex - 1);
-                this.tui.requestRender();
-            }
+            if (this.currentIndex > 0) { this.navigateTo(this.currentIndex - 1); this.tui.requestRender(); }
             return;
         }
-
-        // Arrow up/down for question navigation when editor is empty
-        // (Editor handles its own cursor navigation when there's content)
-        if (matchesKey(data, Key.up) && this.editor.getText() === "") {
-            if (this.currentIndex > 0) {
-                this.navigateTo(this.currentIndex - 1);
-                this.tui.requestRender();
-                return;
-            }
-        }
-        if (matchesKey(data, Key.down) && this.editor.getText() === "") {
-            if (this.currentIndex < this.questions.length - 1) {
-                this.navigateTo(this.currentIndex + 1);
-                this.tui.requestRender();
-                return;
-            }
-        }
-
-        // Handle Enter ourselves (editor's submit is disabled)
-        // Plain Enter moves to next question or shows confirmation on last question
-        // Shift+Enter adds a newline (handled by editor)
+        if (matchesKey(data, Key.up) && this.editor.getText() === "") { if (this.currentIndex > 0) this.navigateTo(this.currentIndex - 1); this.tui.requestRender(); return; }
+        if (matchesKey(data, Key.down) && this.editor.getText() === "") { if (this.currentIndex < this.questions.length - 1) this.navigateTo(this.currentIndex + 1); this.tui.requestRender(); return; }
         if (matchesKey(data, Key.enter) && !matchesKey(data, Key.shift("enter"))) {
             this.saveCurrentAnswer();
-            if (this.currentIndex < this.questions.length - 1) {
-                this.navigateTo(this.currentIndex + 1);
-            } else {
-                // On last question - show confirmation
-                this.showingConfirmation = true;
-            }
-            this.invalidate();
-            this.tui.requestRender();
-            return;
+            if (this.currentIndex < this.questions.length - 1) { this.navigateTo(this.currentIndex + 1); } else { this.showingConfirmation = true; }
+            this.invalidate(); this.tui.requestRender(); return;
         }
-
-        // Pass to editor
-        this.editor.handleInput(data);
-        this.invalidate();
-        this.tui.requestRender();
+        this.editor.handleInput(data); this.invalidate(); this.tui.requestRender();
     }
 
     render(width: number): string[] {
-        if (this.cachedLines && this.cachedWidth === width) {
-            return this.cachedLines;
-        }
-
+        if (this.cachedLines && this.cachedWidth === width) return this.cachedLines;
         const lines: string[] = [];
-        const boxWidth = Math.min(width - 4, 120); // Allow wider box
-        const contentWidth = boxWidth - 4; // 2 chars padding on each side
-
-        // Helper to create horizontal lines (dim the whole thing at once)
+        const boxWidth = Math.min(width - 4, 120);
+        const contentWidth = boxWidth - 4;
         const horizontalLine = (count: number) => "─".repeat(count);
-
-        // Helper to create a box line
         const boxLine = (content: string, leftPad: number = 2): string => {
             const paddedContent = " ".repeat(leftPad) + content;
             const contentLen = visibleWidth(paddedContent);
             const rightPad = Math.max(0, boxWidth - contentLen - 2);
             return this.dim("│") + paddedContent + " ".repeat(rightPad) + this.dim("│");
         };
+        const emptyBoxLine = (): string => this.dim("│") + " ".repeat(boxWidth - 2) + this.dim("│");
+        const padToWidth = (line: string): string => line + " ".repeat(Math.max(0, width - visibleWidth(line)));
 
-        const emptyBoxLine = (): string => {
-            return this.dim("│") + " ".repeat(boxWidth - 2) + this.dim("│");
-        };
-
-        const padToWidth = (line: string): string => {
-            const len = visibleWidth(line);
-            return line + " ".repeat(Math.max(0, width - len));
-        };
-
-        // Title
         lines.push(padToWidth(this.dim("╭" + horizontalLine(boxWidth - 2) + "╮")));
         const title = `${this.bold(this.cyan("Questions"))} ${this.dim(`(${this.currentIndex + 1}/${this.questions.length})`)}`;
         lines.push(padToWidth(boxLine(title)));
         lines.push(padToWidth(this.dim("├" + horizontalLine(boxWidth - 2) + "┤")));
 
-        // Progress indicator
         const progressParts: string[] = [];
         for (let i = 0; i < this.questions.length; i++) {
             const answered = (this.answers[i]?.trim() || "").length > 0;
             const current = i === this.currentIndex;
-            if (current) {
-                progressParts.push(this.cyan("●"));
-            } else if (answered) {
-                progressParts.push(this.green("●"));
-            } else {
-                progressParts.push(this.dim("○"));
-            }
+            if (current) progressParts.push(this.cyan("●"));
+            else if (answered) progressParts.push(this.green("●"));
+            else progressParts.push(this.dim("○"));
         }
         lines.push(padToWidth(boxLine(progressParts.join(" "))));
         lines.push(padToWidth(emptyBoxLine()));
 
-        // Current question
         const q = this.questions[this.currentIndex];
         const questionText = `${this.bold("Q:")} ${q.question}`;
         const wrappedQuestion = wrapTextWithAnsi(questionText, contentWidth);
-        for (const line of wrappedQuestion) {
-            lines.push(padToWidth(boxLine(line)));
-        }
+        for (const line of wrappedQuestion) lines.push(padToWidth(boxLine(line)));
 
-        // Context if present
         if (q.context) {
             lines.push(padToWidth(emptyBoxLine()));
             const contextText = this.gray(`> ${q.context}`);
             const wrappedContext = wrapTextWithAnsi(contextText, contentWidth - 2);
-            for (const line of wrappedContext) {
-                lines.push(padToWidth(boxLine(line)));
-            }
+            for (const line of wrappedContext) lines.push(padToWidth(boxLine(line)));
         }
 
         lines.push(padToWidth(emptyBoxLine()));
-
-        // Render the editor component (multi-line input) with padding
-        // Skip the first and last lines (editor's own border lines)
         const answerPrefix = this.bold("A: ");
-        const editorWidth = contentWidth - 4 - 3; // Extra padding + space for "A: "
+        const editorWidth = contentWidth - 4 - 3;
         const editorLines = this.editor.render(editorWidth);
         for (let i = 1; i < editorLines.length - 1; i++) {
-            if (i === 1) {
-                // First content line gets the "A: " prefix
-                lines.push(padToWidth(boxLine(answerPrefix + editorLines[i])));
-            } else {
-                // Subsequent lines get padding to align with the first line
-                lines.push(padToWidth(boxLine("   " + editorLines[i])));
-            }
+            if (i === 1) lines.push(padToWidth(boxLine(answerPrefix + editorLines[i])));
+            else lines.push(padToWidth(boxLine("   " + editorLines[i])));
         }
-
         lines.push(padToWidth(emptyBoxLine()));
 
-        // Confirmation dialog or footer with controls
         if (this.showingConfirmation) {
             lines.push(padToWidth(this.dim("├" + horizontalLine(boxWidth - 2) + "┤")));
             const confirmMsg = `${this.yellow("Submit all answers?")} ${this.dim("(Enter/y to confirm, Esc/n to cancel)")}`;
@@ -552,7 +416,6 @@ class QnAComponent implements Component {
             lines.push(padToWidth(boxLine(truncateToWidth(controls, contentWidth))));
         }
         lines.push(padToWidth(this.dim("╰" + horizontalLine(boxWidth - 2) + "╯")));
-
         this.cachedWidth = width;
         this.cachedLines = lines;
         return lines;
@@ -561,133 +424,73 @@ class QnAComponent implements Component {
 
 export default function (pi: ExtensionAPI) {
     const answerHandler = async (ctx: ExtensionContext) => {
-            if (!ctx.hasUI) {
-                ctx.ui.notify("answer requires interactive mode", "error");
-                return;
-            }
-
-            // Find the last assistant message on the current branch
+            if (!ctx.hasUI) return;
             const branch = ctx.sessionManager.getBranch();
             let lastAssistantText: string | undefined;
-
             for (let i = branch.length - 1; i >= 0; i--) {
                 const entry = branch[i];
-                if (entry.type === "message") {
-                    const msg = entry.message;
-                    if ("role" in msg && msg.role === "assistant") {
-                        const textParts = msg.content
-                            .filter((c): c is { type: "text"; text: string } => c.type === "text")
-                            .map((c) => c.text);
-                        if (textParts.length > 0) {
-                            lastAssistantText = textParts.join("\n");
-                            break;
-                        }
-                    }
+                if (entry.type === "message" && entry.message.role === "assistant") {
+                    const textParts = entry.message.content.filter((c): c is { type: "text"; text: string } => c.type === "text").map((c) => c.text);
+                    if (textParts.length > 0) { lastAssistantText = textParts.join("\n"); break; }
                 }
             }
+            if (!lastAssistantText) { ctx.ui.notify("No assistant messages found", "error"); return; }
 
-            if (!lastAssistantText) {
-                ctx.ui.notify("No assistant messages found", "error");
-                return;
-            }
-
-            // 1. Get available models
             const models = ctx.modelRegistry.getAvailable();
-            if (models.length === 0) {
-                ctx.ui.notify("No models available", "error");
-                return;
-            }
-
-            // Determine current model ID to highlight it
+            if (models.length === 0) { ctx.ui.notify("No models available", "error"); return; }
             const currentModelId = ctx.model ? `${ctx.model.provider}/${ctx.model.id}` : undefined;
 
-            // 2. Show Custom Model Selector
-            const extractionModel = await ctx.ui.custom<Model<Api> | null>((tui, _theme, _kb, done) => {
-                return new ModelSelectorComponent(models, currentModelId, tui, done);
+            interface SelectedModel { model: Model<Api>, thinking?: string }
+            const selection = await ctx.ui.custom<SelectedModel | null>((tui, _theme, _kb, done) => {
+                return new ModelSelectorComponent(models, currentModelId, tui, (model, thinking) => {
+                    done(model ? { model, thinking } : null);
+                });
             });
             
-            if (!extractionModel) {
-                // User cancelled selection
-                ctx.ui.notify("Selection cancelled", "info");
-                return; 
-            }
+            if (!selection) return;
 
-            // 3. Run extraction with loader UI
             const extractionResult = await ctx.ui.custom<ExtractionResult | null>((tui, theme, _kb, done) => {
-                const loader = new BorderedLoader(tui, theme, `Extracting questions using ${extractionModel.id}...`);
+                const loader = new BorderedLoader(tui, theme, `Extracting questions using ${selection.model.id}...`);
                 loader.onAbort = () => done(null);
-
                 const doExtract = async () => {
-                    const apiKey = await ctx.modelRegistry.getApiKey(extractionModel);
-                    const userMessage: UserMessage = {
-                        role: "user",
-                        content: [{ type: "text", text: lastAssistantText! }],
-                        timestamp: Date.now(),
-                    };
+                    const apiKey = await ctx.modelRegistry.getApiKey(selection.model);
+                    const userMessage: UserMessage = { role: "user", content: [{ type: "text", text: lastAssistantText! }], timestamp: Date.now() };
+                    
+                    // Note: pi-ai complete() options don't natively expose 'thinking', 
+                    // but we pass it anyway in case custom models/adapters support it.
+                    // If not, it's ignored.
+                    const options: any = { apiKey, signal: loader.signal };
+                    if (selection.thinking) options.thinking = selection.thinking;
 
                     const response = await complete(
-                        extractionModel,
+                        selection.model,
                         { systemPrompt: SYSTEM_PROMPT, messages: [userMessage] },
-                        { apiKey, signal: loader.signal },
+                        options
                     );
-
-                    if (response.stopReason === "aborted") {
-                        return null;
-                    }
-
-                    const responseText = response.content
-                        .filter((c): c is { type: "text"; text: string } => c.type === "text")
-                        .map((c) => c.text)
-                        .join("\n");
-
+                    if (response.stopReason === "aborted") return null;
+                    const responseText = response.content.filter((c): c is { type: "text"; text: string } => c.type === "text").map((c) => c.text).join("\n");
                     return parseExtractionResult(responseText);
                 };
-
-                doExtract()
-                    .then(done)
-                    .catch(() => done(null));
-
+                doExtract().then(done).catch(() => done(null));
                 return loader;
             });
 
-            if (extractionResult === null) {
-                ctx.ui.notify("Cancelled", "info");
-                return;
-            }
+            if (!extractionResult) { ctx.ui.notify("Cancelled", "info"); return; }
+            if (extractionResult.questions.length === 0) { ctx.ui.notify("No questions found", "info"); return; }
 
-            if (extractionResult.questions.length === 0) {
-                ctx.ui.notify("No questions found in the last message", "info");
-                return;
-            }
-
-            // 4. Show the Q&A component
             const answersResult = await ctx.ui.custom<string | null>((tui, _theme, _kb, done) => {
                 return new QnAComponent(extractionResult.questions, tui, done);
             });
 
-            if (answersResult === null) {
-                ctx.ui.notify("Cancelled", "info");
-                return;
-            }
+            if (answersResult === null) { ctx.ui.notify("Cancelled", "info"); return; }
 
-            // 5. Send the answers directly as a message and trigger a turn
-            pi.sendMessage(
-                {
-                    customType: "answers",
-                    content: "I answered your questions in the following way:\n\n" + answersResult,
-                    display: true,
-                },
-                { triggerTurn: true },
-            );
+            pi.sendMessage({
+                customType: "answers",
+                content: "I answered your questions in the following way:\n\n" + answersResult,
+                display: true,
+            }, { triggerTurn: true });
     };
 
-    pi.registerCommand("answer", {
-        description: "Extract questions from last assistant message into interactive Q&A",
-        handler: (_args, ctx) => answerHandler(ctx),
-    });
-
-    pi.registerShortcut("ctrl+.", {
-        description: "Extract and answer questions",
-        handler: answerHandler,
-    });
+    pi.registerCommand("answer", { description: "Extract questions from last assistant message", handler: (_args, ctx) => answerHandler(ctx) });
+    pi.registerShortcut("ctrl+.", { description: "Extract and answer questions", handler: answerHandler });
 }

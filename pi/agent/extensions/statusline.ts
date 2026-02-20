@@ -43,11 +43,12 @@ export default async function(pi: ExtensionAPI) {
         
         if (Array.isArray(usage.windows)) {
             for (const win of usage.windows) {
-                const percent = Math.round(win.usedPercent * 100);
+                const raw = Number(win.usedPercent ?? 0);
+                const percent = Math.max(0, Math.min(100, Math.round(raw)));
                 const label = win.label || "Win";
-                let color = "\x1b[32m"; 
-                if (percent >= 80) color = "\x1b[31m"; 
-                else if (percent >= 50) color = "\x1b[33m"; 
+                let color = "\x1b[32m";
+                if (percent >= 80) color = "\x1b[31m";
+                else if (percent >= 50) color = "\x1b[33m";
                 parts.push(`${color}${label}:${percent}%\x1b[0m`);
             }
         }
