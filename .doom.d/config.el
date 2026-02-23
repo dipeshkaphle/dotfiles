@@ -151,8 +151,14 @@
 
 (map!
  :leader "z" #'comment-or-uncomment-region
- :leader "r" #'rotate-layout
  :leader "sf" #'projectile-find-file-in-directory
+ :leader
+ (:prefix ("r" . "review/rotate")
+  :desc "Rotate layout"       "r" #'rotate-layout
+  :desc "Add snippet"         "a" #'review-add-snippet
+  :desc "Open review"         "v" #'review-open-current
+  :desc "Start/Pick review"   "f" #'review-start
+  :desc "Toggle comments"     "t" #'review-toggle-comments)
  )
 
 (map!

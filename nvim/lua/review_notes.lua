@@ -2,24 +2,121 @@ local M = {}
 
 M.state = {
   current_file = nil,
+  comments_shown = false,
+  ns_id = vim.api.nvim_create_namespace("review_notes_comments"),
+  review_dir = nil, -- Optional override
 }
 
-local function project_root()
-  local root = vim.fs.root(0, { ".git", ".pi" })
-  return root or vim.fn.getcwd()
+function M.setup(opts)
+  opts = opts or {}
+  if opts.dir then
+    M.state.review_dir = vim.fn.expand(opts.dir)
+  end
 end
 
-local function reviews_dir()
-  local dir = vim.fs.joinpath(vim.fn.expand("~/.pi"), "reviews")
-  vim.fn.mkdir(dir, "p")
-  return dir
+local function script_path()
+  -- Assume scripts/review_notes.py is relative to the dotfiles root or somewhere in PATH
+  -- Ideally, we find the script relative to this lua file or assume a fixed location.
+  -- For this user, it's in ~/dotfiles/scripts/review_notes.py based on previous `ls`.
+  -- Let's try to find it dynamically or hardcode for now.
+  local root = vim.fs.root(0, { ".git", ".pi" }) or vim.fn.expand("~")
+  local candidates = {
+    vim.fs.joinpath(root, "scripts", "review_notes.py"),
+    vim.fs.joinpath(vim.fn.expand("~"), "dotfiles", "scripts", "review_notes.py"),
+    vim.fs.joinpath(vim.fn.expand("~"), ".config", "scripts", "review_notes.py"), -- fallback
+  }
+  
+  for _, p in ipairs(candidates) do
+    if vim.fn.filereadable(p) == 1 then
+      return p
+    end
+  end
+  return "review_notes.py" -- Hope it's in PATH
+end
+
+local function exec_json(cmd)
+  -- Inject --dir if set
+  if M.state.review_dir then
+    table.insert(cmd, 3, "--dir")
+    table.insert(cmd, 4, M.state.review_dir)
+  end
+  local output = vim.fn.system(cmd)
+  if vim.v.shell_error ~= 0 then
+    vim.notify("Review Notes Error: " .. output, vim.log.levels.ERROR)
+    return nil
+  end
+  local ok, res = pcall(vim.json.decode, output)
+  if not ok then
+    vim.notify("Review Notes JSON Error: " .. output, vim.log.levels.ERROR)
+    return nil
+  end
+  return res
 end
 
 local function list_review_files()
-  local dir = reviews_dir()
-  local files = vim.fn.globpath(dir, "*.md", false, true)
-  table.sort(files)
-  return files
+  local script = script_path()
+  return exec_json({ "python3", script, "list" }) or {}
+end
+
+local function create_review_file(name)
+  local script = script_path()
+  local cmd = { "python3", script, "create", name }
+  -- Must inject dir here too if configured
+  if M.state.review_dir then
+    table.insert(cmd, 3, "--dir")
+    table.insert(cmd, 4, M.state.review_dir)
+  end
+  local output = vim.fn.system(cmd)
+  local ok, res = pcall(vim.json.decode, output)
+  return ok and res and res.path
+end
+
+local function append_snippet(target, rel_path, s, e, comment, lang, content)
+  local script = script_path()
+  local cmd = {
+    "python3", script, "add",
+    target, rel_path, tostring(s), tostring(e),
+    comment, lang
+  }
+  
+  if M.state.review_dir then
+    table.insert(cmd, 3, "--dir")
+    table.insert(cmd, 4, M.state.review_dir)
+  end
+
+  -- Pass content via stdin
+  local job = vim.fn.jobstart(cmd, {
+    on_exit = function(_, code)
+      if code == 0 then
+        vim.notify("Added snippet to " .. vim.fn.fnamemodify(target, ":t"), vim.log.levels.INFO)
+      else
+        vim.notify("Failed to add snippet", vim.log.levels.ERROR)
+      end
+    end,
+    stdout_buffered = true,
+    stderr_buffered = true,
+  })
+  
+  vim.fn.chansend(job, content)
+  vim.fn.chanclose(job, "stdin")
+end
+
+local function parse_comments(target)
+  local script = script_path()
+  local cmd = { "python3", script, "parse", target }
+  if M.state.review_dir then
+    table.insert(cmd, 3, "--dir")
+    table.insert(cmd, 4, M.state.review_dir)
+  end
+  local output = vim.fn.system(cmd)
+  local ok, res = pcall(vim.json.decode, output)
+  return (ok and res) or {}
+end
+
+-- ... (Keep helpers: project_root, filename_only, relpath_from_root, ui_select, ui_input, pick_or_create_review_file)
+local function project_root()
+  local root = vim.fs.root(0, { ".git", ".pi" })
+  return root or vim.fn.getcwd()
 end
 
 local function filename_only(p)
@@ -96,6 +193,10 @@ local function ui_input(prompt, cb)
   end
 end
 
+local function get_review_dir()
+  return M.state.review_dir or vim.fn.expand("~/.review-notes")
+end
+
 local function pick_or_create_review_file(cb)
   local files = list_review_files()
   local items = {}
@@ -127,104 +228,35 @@ local function pick_or_create_review_file(cb)
           cb(nil)
           return
         end
-        name = vim.trim(name):gsub("%s+", "-")
-        local full = vim.fs.joinpath(reviews_dir(), name .. ".md")
-        if vim.fn.filereadable(full) == 0 then
-          local header = {
-            "# Review Notes: " .. name,
-            "",
-            "Created: " .. os.date("%Y-%m-%d %H:%M:%S"),
-            "",
-          }
-          vim.fn.writefile(header, full)
+        local path = create_review_file(name)
+        if path then
+          M.state.current_file = path
+          cb(path)
         end
-        M.state.current_file = full
-        cb(full)
       end)
       return
     end
 
-    local full = vim.fs.joinpath(reviews_dir(), choice)
+    local full = vim.fs.joinpath(get_review_dir(), choice)
     M.state.current_file = full
     cb(full)
   end)
 end
 
 local function get_visual_range_lines()
-  -- Visual marks are more reliable than checking current mode in mapped callbacks.
   local s = vim.fn.getpos("'<")[2]
   local e = vim.fn.getpos("'>")[2]
-
   if s > 0 and e > 0 then
-    if s > e then
-      s, e = e, s
-    end
+    if s > e then s, e = e, s end
     return s, e
   end
-
-  -- Fallback: current cursor line
   local l = vim.api.nvim_win_get_cursor(0)[1]
   return l, l
 end
 
 local function sanitize_text(s)
-  if not s then
-    return ""
-  end
-  -- Strip embedded NUL bytes that can appear from certain visual/block selections.
-  s = s:gsub("%z", "")
-  return s
-end
-
-local function with_current_review(cb)
-  if M.state.current_file then
-    cb(M.state.current_file)
-    return
-  end
-  pick_or_create_review_file(function(target)
-    cb(target)
-  end)
-end
-
-local function add_selection()
-  local buf = vim.api.nvim_get_current_buf()
-  local abs = vim.api.nvim_buf_get_name(buf)
-  if abs == "" then
-    vim.notify("Buffer has no file path", vim.log.levels.WARN)
-    return
-  end
-
-  local start_l, end_l = get_visual_range_lines()
-  local lines = vim.api.nvim_buf_get_lines(buf, start_l - 1, end_l, false)
-  local selected = sanitize_text(table.concat(lines, "\n"))
-  local rel = relpath_from_root(abs)
-  local ext = vim.fn.fnamemodify(abs, ":e")
-
-  with_current_review(function(target)
-    if not target then
-      return
-    end
-
-    vim.ui.input({ prompt = "Comment: " }, function(comment)
-      if comment == nil then
-        return
-      end
-      comment = sanitize_text(comment)
-
-      local block = {
-        "## " .. rel .. " (lines " .. start_l .. "-" .. end_l .. ")",
-        "Comment: " .. (comment ~= "" and comment or "(none)"),
-        "",
-        "```" .. (ext ~= "" and ext or "text"),
-        selected,
-        "```",
-        "",
-      }
-
-      vim.fn.writefile(block, target, "a")
-      vim.notify("Added snippet to " .. filename_only(target), vim.log.levels.INFO)
-    end)
-  end)
+  if not s then return "" end
+  return s:gsub("%z", "")
 end
 
 function M.select_review_file()
@@ -244,26 +276,95 @@ function M.open_current_review()
 end
 
 function M.add_comment_from_selection()
-  add_selection()
+  local buf = vim.api.nvim_get_current_buf()
+  local abs = vim.api.nvim_buf_get_name(buf)
+  if abs == "" then return end
+
+  local start_l, end_l = get_visual_range_lines()
+  local lines = vim.api.nvim_buf_get_lines(buf, start_l - 1, end_l, false)
+  local selected = sanitize_text(table.concat(lines, "\n"))
+  local rel = relpath_from_root(abs)
+  local ext = vim.fn.fnamemodify(abs, ":e")
+
+  if not M.state.current_file then
+     M.select_review_file()
+     if not M.state.current_file then return end
+  end
+
+  ui_input("Comment: ", function(comment)
+    if not comment then return end
+    append_snippet(M.state.current_file, rel, start_l, end_l, comment, ext, selected)
+  end)
 end
 
-function M.prefill_for_pi()
-  local target = M.state.current_file
-  if not target or vim.fn.filereadable(target) == 0 then
-    vim.notify("No current review file selected", vim.log.levels.WARN)
+function M.toggle_comments()
+  if M.state.comments_shown then
+    vim.api.nvim_buf_clear_namespace(0, M.state.ns_id, 0, -1)
+    M.state.comments_shown = false
+    vim.notify("Review comments hidden", vim.log.levels.INFO)
     return
   end
 
-  local content = vim.fn.readfile(target)
-  local prompt = {
-    "I collected these snippets from the codebase. Please answer based on them first, and tell me if extra files are needed.",
-    "",
-  }
-  vim.list_extend(prompt, content)
-  vim.list_extend(prompt, { "", "My question:" })
+  if not M.state.current_file then
+    M.select_review_file()
+    if not M.state.current_file then return end
+  end
+  
+  local comments = parse_comments(M.state.current_file)
+  local buf = vim.api.nvim_get_current_buf()
+  local abs = vim.api.nvim_buf_get_name(buf)
+  local rel = relpath_from_root(abs)
+  local count = 0
+  
+  for _, item in ipairs(comments) do
+    if abs:sub(-#item.file) == item.file then
+       local start_l = item.start_line - 1
+       local end_l = item.end_line -- 1-based inclusive -> 0-based exclusive for range
+       
+       if start_l >= 0 then
+         -- 1. Highlight the code range
+         vim.api.nvim_buf_set_extmark(buf, M.state.ns_id, start_l, 0, {
+           end_line = end_l,
+           hl_group = "Visual",
+           strict = false
+         })
 
-  vim.fn.setreg("+", table.concat(prompt, "\n"))
-  vim.notify("Compiled prompt copied to clipboard (+ register)", vim.log.levels.INFO)
+         -- 2. Add comment text below the snippet (at the last line)
+         -- Wrap long comments using virtual lines
+         local max_width = 80
+         local prefix = "   "
+         local indent = "    "
+         local current_line = prefix
+         local lines = {}
+         
+         for word in item.comment:gmatch("%S+") do
+           if #current_line + #word + 1 > max_width then
+             table.insert(lines, {{current_line, "Comment"}})
+             current_line = indent .. word
+           else
+             if #current_line == #prefix or #current_line == #indent then
+                current_line = current_line .. word
+             else
+                current_line = current_line .. " " .. word
+             end
+           end
+         end
+         table.insert(lines, {{current_line, "Comment"}})
+         
+         -- Attach virtual lines to the last line of the snippet
+         vim.api.nvim_buf_set_extmark(buf, M.state.ns_id, end_l - 1, 0, {
+           virt_lines = lines,
+           virt_lines_above = false,
+           strict = false
+         })
+         
+         count = count + 1
+       end
+    end
+  end
+  
+  M.state.comments_shown = true
+  vim.notify(string.format("Showing %d comments from %s", count, filename_only(M.state.current_file)), vim.log.levels.INFO)
 end
 
 return M

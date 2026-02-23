@@ -46,5 +46,9 @@ map("n", "<leader>rv", function()
     require("review_notes").open_current_review()
 end, { desc = "Review: view current review file" })
 
+map("n", "<leader>rt", function()
+    require("review_notes").toggle_comments()
+end, { desc = "Review: toggle comments visibility" })
+
 
 
