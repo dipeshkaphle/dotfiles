@@ -13,7 +13,6 @@
 	navigate = true
 	side-by-side = true
 	line-numbers = true
-	syntax-theme = gruvbox-dark
 
 [merge]
 	conflictstyle = diff3

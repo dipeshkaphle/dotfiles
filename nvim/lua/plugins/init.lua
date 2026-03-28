@@ -152,5 +152,6 @@ return {
       ---@module 'render-markdown'
       ---@type render.md.UserConfig
       opts = {},
-  }
+  },
+  { "catppuccin/nvim", name = "catppuccin", priority = 1000 }
 }

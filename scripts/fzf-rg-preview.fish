@@ -12,4 +12,4 @@ if not string match -qr '^\d+$' -- $lineno
 end
 
 set -l start (math "max(1, $lineno - 5)")
-bat --color=always --style=header,grid "$filename" -H $lineno -r "$start:" 2>/dev/null
+bat --color=always --style=header,grid --theme=ansi "$filename" -H $lineno -r "$start:" 2>/dev/null

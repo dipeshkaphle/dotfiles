@@ -1,5 +1,6 @@
 font-size = 14
-theme = Gruvbox Dark
+# Source of truth for terminal-adjacent theming.
+theme = Catppuccin Latte
 gtk-titlebar = false
 
 cursor-color = #ff0000

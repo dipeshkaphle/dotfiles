@@ -1,0 +1,22 @@
+#!/bin/sh
+set -eu
+
+CHANNEL_NAME="nixpkgs"
+CHANNEL_URL="https://nixos.org/channels/nixpkgs-unstable"
+PACKAGE_ATTR="nixpkgs.myPackages"
+
+if ! command -v nix-env >/dev/null 2>&1; then
+    echo "nix-env is not installed. Install Nix first." >&2
+    exit 1
+fi
+
+if ! nix-channel --list | awk '{print $1}' | grep -qx "$CHANNEL_NAME"; then
+    echo "Adding $CHANNEL_NAME channel: $CHANNEL_URL"
+    nix-channel --add "$CHANNEL_URL" "$CHANNEL_NAME"
+fi
+
+echo "Updating Nix channels..."
+nix-channel --update
+
+echo "Installing $PACKAGE_ATTR..."
+nix-env -iA "$PACKAGE_ATTR"

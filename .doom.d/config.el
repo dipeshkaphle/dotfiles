@@ -33,14 +33,20 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-;; (setq doom-theme 'modus-vivendi-tritanopia)
-(setq doom-theme 'modus-operandi-tritanopia)
+;;(setq doom-theme 'modus-vivendi-tritanopia)
+(setq doom-theme 'catppuccin)
+(setq catppuccin-flavor 'latte)
+;; (setq doom-theme 'modus-operandi-tritanopia)
 ;; (after! modus-themes (modus-themes-load-vivendi))
 ;; (after! modus-themes (load-theme 'modus-vivendi-tritanopia))
 ;; (setq doom-theme 'doom-one-light)
 ;; (setq doom-theme 'doom-gruvbox)
 
-(setq doom-font (font-spec :family "Jetbrains Mono" :size 14))
+(setq doom-font (font-spec :family "JetBrains Mono" :size 14)
+      doom-symbol-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 14))
+
+(after! nerd-icons
+  (setq nerd-icons-font-family "JetBrainsMono Nerd Font Mono"))
 
 (setq evil-normal-state-cursor '(box "red")
       evil-insert-state-cursor '((bar . 4) "dodger blue")
@@ -354,4 +360,3 @@
   (lsp))
 
 (add-hook 'markdown-view-mode-hook #'math-preview-all)
-

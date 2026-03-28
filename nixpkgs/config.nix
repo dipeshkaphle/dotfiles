@@ -1,6 +1,7 @@
 {pkgs, ... }:
 
-let linux_only_packages =  if pkgs.system == "x86_64-linux"
+let
+    linux_only_packages = if pkgs.system == "x86_64-linux"
 			   then [
 			    pkgs.xorg.xinput
 			    pkgs.xorg.xrandr
@@ -8,6 +9,19 @@ let linux_only_packages =  if pkgs.system == "x86_64-linux"
 			    pkgs.feh
 			    pkgs.xss-lock
                 pkgs.xclip
+			    ]
+			   else [];
+    mac_only_packages = if pkgs.system == "aarch64-darwin" || pkgs.system == "x86_64-darwin"
+			   then [
+			    pkgs.gmp
+			    pkgs.gmp.dev
+			    pkgs.mpfr
+			    pkgs.mpfr.dev
+			    pkgs.libmpc
+			    pkgs.flex
+			    pkgs.bison
+			    pkgs.autogen
+			    pkgs.dejagnu
 			    ]
 			   else [];
 in
@@ -26,20 +40,7 @@ in
 		myPackages = pkgs.buildEnv {
 			name = "my-packages";
 			paths = [
-				(texlive.combine {
-				  inherit (texlive)
-				    scheme-medium
-				    latexmk
-				    biber
-				    biblatex
-				    biblatex-ieee
-				    logreq
-				    minted
-				    fvextra
-				    csquotes
-				    upquote
-				    ;
-				})
+				texliveFull
 				(python3.withPackages (ps: [ ps.pygments ps.libtmux ps.pylatexenc ]))
 				vim
 				neovim
@@ -100,7 +101,12 @@ in
                 poppler-utils # used by pi agent for converting pdfs to pngs
                 pandoc
                 # tuicr (used for pi reviewing)
-			] ++ linux_only_packages;
+                tesseract
+                duckdb
+                sioyek
+				(coq.withPackages (ps: with ps; [ stdlib coq-lsp ]))
+                d2
+			] ++ linux_only_packages ++ mac_only_packages;
           };
 	};
 }

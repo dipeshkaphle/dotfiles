@@ -123,8 +123,18 @@ end
 # Set the default editor to Vim
 set -x EDITOR nvim
 
-# Set the Bat theme
-set -x BAT_THEME gruvbox-dark
+# Let the terminal palette drive preview colors.
+set -x BAT_THEME ansi
+
+function set-terminal-theme
+    if test (count $argv) -ne 1
+        echo "Usage: set-terminal-theme <Ghostty theme>"
+        return 1
+    end
+
+    $HOME/dotfiles/scripts/set-terminal-theme "$argv[1]"
+    set -x BAT_THEME ansi
+end
 
 # Aliases
 if type -q eza

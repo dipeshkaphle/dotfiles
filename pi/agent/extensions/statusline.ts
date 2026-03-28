@@ -87,9 +87,18 @@ export default async function(pi: ExtensionAPI) {
         if (!ctx.hasUI) return;
 
         ctx.ui.setFooter((tui, theme) => {
+            const formatLine = (parts: string[], width: number): string => {
+                let line = parts.join("");
+                const vw = visibleWidth(line);
+                if (vw > width) line = truncateToWidth(line, width);
+                else line = line + " ".repeat(Math.max(0, width - vw));
+                return line;
+            };
+
             return {
                 render(width: number) {
-                    const parts: string[] = [];
+                    const topParts: string[] = [];
+                    const bottomParts: string[] = [];
                     
                     // 1. Model + Thinking
                     const modelName = ctx.model?.name || ctx.model?.id || "unknown";
@@ -99,47 +108,51 @@ export default async function(pi: ExtensionAPI) {
                     if (thinking && thinking !== "off") {
                         modelDisplay += ` \x1b[2m(${thinking})\x1b[0m`;
                     }
-                    parts.push(modelDisplay);
-                    
-                    // 2. Git
-                    if (gitBranch) {
-                        parts.push(` on \x1b[36m${gitBranch}\x1b[0m`);
+                    topParts.push(modelDisplay);
+
+                    // 2. Session ID
+                    const sessionId = ctx.sessionManager.getSessionId();
+                    if (sessionId) {
+                        topParts.push(` \x1b[90m[${sessionId}]\x1b[0m`);
                     }
                     
-                    // 3. CWD
+                    // 3. Git
+                    if (gitBranch) {
+                        bottomParts.push(` on \x1b[36m${gitBranch}\x1b[0m`);
+                    }
+                    
+                    // 4. CWD
                     const cwd = ctx.cwd;
                     const pathParts = cwd.split('/').filter(p => p.length > 0);
                     let dirDisplay = cwd;
                     if (pathParts.length > 0) dirDisplay = pathParts.length > 1 ? `${pathParts[pathParts.length-2]}/${pathParts[pathParts.length-1]}` : pathParts[0];
-                    parts.push(` in \x1b[34m${dirDisplay}\x1b[0m`);
+                    bottomParts.push(` in \x1b[34m${dirDisplay}\x1b[0m`);
 
-                    // 4. Sub-Core Usage
+                    // 5. Sub-Core Usage
                     if (subCoreUsage) {
-                        parts.push(formatSubCore(subCoreUsage));
+                        bottomParts.push(formatSubCore(subCoreUsage));
                     }
                     
-                    // 5. Context
+                    // 6. Context
                     const usage = ctx.getContextUsage();
                     const contextWindow = ctx.model?.contextWindow || 0;
                     if (usage) {
                         const total = usage.tokens || 0;
                         const fmt = (n: number) => n >= 1000 ? `${Math.floor(n/1000)}K` : `${n}`;
-                        parts.push(` \x1b[90m[${fmt(total)}]\x1b[0m`);
+                        bottomParts.push(` \x1b[90m[${fmt(total)}]\x1b[0m`);
                         if (contextWindow > 0) {
                             const remainingTokens = Math.max(0, contextWindow - total);
                             const percent = Math.floor((remainingTokens / contextWindow) * 100);
                             let color = "\x1b[32m";
                             if (percent <= 20) color = "\x1b[31m";
                             else if (percent <= 50) color = "\x1b[33m";
-                            parts.push(` ${color}[${percent}%]\x1b[0m`);
+                            bottomParts.push(` ${color}[${percent}%]\x1b[0m`);
                         }
                     }
 
-                    let line = parts.join("");
-                    const vw = visibleWidth(line);
-                    if (vw > width) line = truncateToWidth(line, width);
-                    else line = line + " ".repeat(Math.max(0, width - vw));
-                    return [line];
+                    const topLine = formatLine(topParts, width);
+                    const bottomLine = formatLine(bottomParts, width);
+                    return bottomParts.length > 0 ? [topLine, bottomLine] : [topLine];
                 },
                 invalidate() {}
             };

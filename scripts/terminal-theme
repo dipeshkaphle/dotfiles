@@ -1,0 +1,31 @@
+#!/bin/sh
+set -eu
+
+ROOT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+GHOSTTY_CONFIG="$ROOT_DIR/ghostty/config"
+
+theme_name() {
+    awk '
+        /^[[:space:]]*theme[[:space:]]*=/ {
+            sub(/^[[:space:]]*theme[[:space:]]*=[[:space:]]*/, "", $0)
+            theme = $0
+        }
+        END {
+            gsub(/^[[:space:]]+|[[:space:]]+$/, "", theme)
+            print theme
+        }
+    ' "$GHOSTTY_CONFIG"
+}
+
+case "${1:-}" in
+    theme-name)
+        theme_name
+        ;;
+    bat-theme)
+        printf '%s\n' 'ansi'
+        ;;
+    *)
+        printf '%s\n' "usage: terminal-theme theme-name|bat-theme" >&2
+        exit 1
+        ;;
+esac

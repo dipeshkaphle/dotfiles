@@ -5,6 +5,7 @@ import * as fs from "fs";
 import * as path from "path";
 import * as os from "os";
 import { spawnSync } from "child_process";
+import { resolveToolPath } from "./lib/diff-utils";
 
 type PermissionLevel = "allow" | "ask" | "block";
 interface PermissionsConfig { [toolName: string]: PermissionLevel; }
@@ -31,42 +32,64 @@ interface PermissionResult {
 class PermissionPrompt implements Component {
     private tui: TUI;
     private onDone: (result: PermissionResult | null) => void;
-    
+    private theme: any;
+
     private items: { label: string, action: PermissionResult["action"] }[];
     private selectedIndex: number = 0;
     private mode: "menu" | "comment" = "menu";
-    
     private commentEditor: Editor;
-    private description: string;
+    private filterQuery: string = "";
 
-    private dim = (s: string) => `\x1b[2m${s}\x1b[0m`;
-    private bold = (s: string) => `\x1b[1m${s}\x1b[0m`;
-    private cyan = (s: string) => `\x1b[36m${s}\x1b[0m`;
-    private yellow = (s: string) => `\x1b[33m${s}\x1b[0m`;
+    private dim = (s: string) => this.theme?.fg ? this.theme.fg("dim", s) : s;
+    private bold = (s: string) => this.theme?.bold ? this.theme.bold(s) : s;
+    private accent = (s: string) => this.theme?.fg ? this.theme.fg("accent", s) : s;
+    private warning = (s: string) => this.theme?.fg ? this.theme.fg("warning", s) : s;
+
+    private getReviewItem() {
+        return this.items.find((item) => item.action === "review");
+    }
+
+    private getVisibleItems() {
+        const q = this.filterQuery.trim().toLowerCase();
+        if (!q) return this.items;
+        return this.items.filter((item) => item.label.toLowerCase().includes(q) || item.action.toLowerCase().includes(q));
+    }
+
+    private clampSelected() {
+        const visible = this.getVisibleItems();
+        if (visible.length === 0) {
+            this.selectedIndex = 0;
+            return;
+        }
+        if (this.selectedIndex >= visible.length) this.selectedIndex = visible.length - 1;
+        if (this.selectedIndex < 0) this.selectedIndex = 0;
+    }
 
     constructor(
-        description: string,
-        showReview: boolean,
-        tui: TUI, 
+        _description: string,
+        _showReview: boolean,
+        _previewText: string | undefined,
+        tui: TUI,
+        theme: any,
         onDone: (result: PermissionResult | null) => void
     ) {
         this.tui = tui;
+        this.theme = theme;
         this.onDone = onDone;
-        this.description = description;
 
         this.items = [
-            { label: "Allow this once", action: "allow" },
+            { label: "Allow", action: "allow" },
             { label: "Allow (Session)", action: "allow-session" },
             { label: "Block", action: "block" },
-            { label: "Block (Session)", action: "block-session" }
+            { label: "Block (Session)", action: "block-session" },
         ];
 
-        if (showReview) {
+        if (_showReview) {
             this.items.push({ label: "Review with nvim", action: "review" });
         }
 
-        const theme: EditorTheme = { borderColor: this.dim };
-        this.commentEditor = new Editor(tui, theme);
+        const editorTheme: EditorTheme = { borderColor: this.dim };
+        this.commentEditor = new Editor(tui, editorTheme);
         this.commentEditor.disableSubmit = true;
     }
 
@@ -78,9 +101,7 @@ class PermissionPrompt implements Component {
                 return;
             }
             if (matchesKey(data, Key.enter) && !matchesKey(data, Key.shift("enter"))) {
-                const action = this.items[this.selectedIndex].action;
-                const comment = this.commentEditor.getText();
-                this.onDone({ action, comment });
+                this.onDone({ action: this.items[this.selectedIndex].action, comment: this.commentEditor.getText() });
                 return;
             }
             this.commentEditor.handleInput(data);
@@ -88,34 +109,67 @@ class PermissionPrompt implements Component {
             return;
         }
 
+        const visible = this.getVisibleItems();
+        this.clampSelected();
+
         if (matchesKey(data, Key.up)) {
             this.selectedIndex = Math.max(0, this.selectedIndex - 1);
             this.tui.requestRender();
             return;
         }
         if (matchesKey(data, Key.down)) {
-            this.selectedIndex = Math.min(this.items.length - 1, this.selectedIndex + 1);
+            this.selectedIndex = Math.min(Math.max(0, visible.length - 1), this.selectedIndex + 1);
             this.tui.requestRender();
             return;
         }
-        
-        if (matchesKey(data, Key.enter)) {
-            const item = this.items[this.selectedIndex];
-            this.onDone({ action: item.action });
+
+        if (matchesKey(data, Key.backspace)) {
+            if (this.filterQuery.length > 0) {
+                this.filterQuery = this.filterQuery.slice(0, -1);
+                this.selectedIndex = 0;
+                this.tui.requestRender();
+                return;
+            }
+        }
+
+        if (/^[a-zA-Z0-9 _\-]$/.test(data)) {
+            this.filterQuery += data;
+            this.selectedIndex = 0;
+            this.tui.requestRender();
             return;
         }
 
         if (matchesKey(data, Key.tab)) {
-            const item = this.items[this.selectedIndex];
-            if (item.action !== "review") {
+            const item = visible[this.selectedIndex];
+            if (item && item.action !== "review") {
                 this.mode = "comment";
-                this.commentEditor.setText(""); 
+                this.commentEditor.setText("");
                 this.tui.requestRender();
             }
             return;
         }
 
+        if (matchesKey(data, Key.enter)) {
+            const item = visible[this.selectedIndex];
+            if (item) this.onDone({ action: item.action });
+            return;
+        }
+
+        if (matchesKey(data, Key.ctrl("o"))) {
+            const review = this.getReviewItem();
+            if (review) {
+                this.onDone({ action: review.action });
+                return;
+            }
+        }
+
         if (matchesKey(data, Key.escape)) {
+            if (this.filterQuery.length > 0) {
+                this.filterQuery = "";
+                this.selectedIndex = 0;
+                this.tui.requestRender();
+                return;
+            }
             this.onDone(null);
             return;
         }
@@ -123,50 +177,43 @@ class PermissionPrompt implements Component {
 
     render(width: number): string[] {
         const lines: string[] = [];
-        const boxWidth = Math.min(width - 4, 100);
-        const contentWidth = boxWidth - 4;
+        const maxWidth = Math.max(20, width - 2);
+        const visible = this.getVisibleItems();
+        this.clampSelected();
 
-        const hLine = (c: number) => "─".repeat(c);
-        const box = (s: string) => {
-            const innerWidth = boxWidth - 2;
-            const fitted = truncateToWidth(s, innerWidth);
-            const pad = Math.max(0, innerWidth - visibleWidth(fitted));
-            return this.dim("│") + fitted + " ".repeat(pad) + this.dim("│");
-        };
-        const padW = (s: string) => s + " ".repeat(Math.max(0, width - visibleWidth(s)));
+        lines.push(this.bold(this.accent("Permission")));
+        lines.push(this.dim(`Filter: ${this.filterQuery || "(type to search)"}`));
+        lines.push("");
 
-        lines.push(padW(this.dim("╭" + hLine(boxWidth - 2) + "╮")));
-        lines.push(padW(box(this.bold("Permission Request"))));
-        lines.push(padW(this.dim("├" + hLine(boxWidth - 2) + "┤")));
-        
-        this.description.split('\n').forEach(line => lines.push(padW(box(" " + line))));
-        lines.push(padW(this.dim("├" + hLine(boxWidth - 2) + "┤")));
+        if (visible.length === 0) {
+            lines.push(this.dim("No matching options"));
+        } else {
+            visible.forEach((item, i) => {
+                const isSel = i === this.selectedIndex;
+                const text = `${isSel ? "→" : " "} ${item.label}`;
+                const clipped = truncateToWidth(text, maxWidth);
+                if (isSel && this.theme?.bg) {
+                    lines.push(this.theme.bg("selectedBg", this.bold(this.accent(clipped))));
+                } else {
+                    lines.push(isSel ? this.bold(this.accent(clipped)) : clipped);
+                }
 
-        this.items.forEach((item, i) => {
-            const isSel = i === this.selectedIndex;
-            let marker = "  ";
-            let label = item.label;
-            
-            if (isSel) {
-                marker = this.cyan("→ ");
-                label = this.bold(this.cyan(item.label));
-            }
+                if (isSel && this.mode === "comment") {
+                    lines.push(this.warning("  Comment:"));
+                    for (const l of this.commentEditor.render(Math.max(16, maxWidth - 2))) {
+                        lines.push(`  ${l}`);
+                    }
+                }
+            });
+        }
 
-            lines.push(padW(box(marker + label)));
-
-            if (isSel && this.mode === "comment") {
-                lines.push(padW(box("    " + this.yellow("Comment:"))));
-                const editorLines = this.commentEditor.render(contentWidth - 6);
-                editorLines.forEach(l => lines.push(padW(box("    " + l))));
-            }
-        });
-
-        lines.push(padW(this.dim("├" + hLine(boxWidth - 2) + "┤")));
-        const hint = this.mode === "comment" 
-            ? "Enter: Submit · Esc: Back" 
-            : "Enter: Select · Tab: Add Comment";
-        lines.push(padW(box(this.dim(" " + hint))));
-        lines.push(padW(this.dim("╰" + hLine(boxWidth - 2) + "╯")));
+        lines.push("");
+        const hint = this.mode === "comment"
+            ? "Enter: Submit · Esc: Back"
+            : this.getReviewItem()
+                ? "Type: Filter · Enter: Select · Tab: Comment · Ctrl+O: Review · Esc: Clear/Cancel"
+                : "Type: Filter · Enter: Select · Tab: Comment · Esc: Clear/Cancel";
+        lines.push(this.dim(truncateToWidth(hint, maxWidth)));
 
         return lines;
     }
@@ -337,13 +384,39 @@ export default function (pi: ExtensionAPI) {
     const sessionPermissions = new Map<string, PermissionLevel>();
     let yoloMode = false;
     let configPath: string | undefined;
-    
+
     const getDiffTool = () => {
-        if (process.env.PI_DIFF_TOOL) return process.env.PI_DIFF_TOOL.split(' ');
+        if (process.env.PI_DIFF_TOOL) return process.env.PI_DIFF_TOOL.split(" ");
         if (spawnSync("which", ["nvim"]).status === 0) return ["nvim", "-d"];
         if (spawnSync("which", ["vim"]).status === 0) return ["vim", "-d"];
         return ["diff", "--color", "-u"];
     };
+
+    function prepareReviewFiles(input: any, cwd: string): { oldFile: string; newFile: string } {
+        const tmpDir = os.tmpdir();
+        const oldFile = path.join(tmpDir, "pi-diff-old.txt");
+        const newFile = path.join(tmpDir, "pi-diff-new.txt");
+
+        let oldText = "";
+        let newText = "";
+
+        try {
+            if (typeof input?.path === "string") {
+                const fullPath = resolveToolPath(cwd, input.path);
+                if (fs.existsSync(fullPath)) oldText = fs.readFileSync(fullPath, "utf-8");
+            }
+        } catch {}
+
+        if (typeof input?.content === "string") newText = input.content;
+        else if (typeof input?.newText === "string") {
+            oldText = String(input.oldText ?? "");
+            newText = input.newText;
+        }
+
+        fs.writeFileSync(oldFile, oldText);
+        fs.writeFileSync(newFile, newText);
+        return { oldFile, newFile };
+    }
 
     function getPermission(toolName: string): PermissionLevel {
         if (yoloMode) return "allow";
@@ -370,27 +443,6 @@ export default function (pi: ExtensionAPI) {
         } catch {}
     }
 
-    function prepareReviewFiles(input: any, cwd: string): { oldFile: string; newFile: string } {
-        const tmpDir = os.tmpdir();
-        const oldFile = path.join(tmpDir, "pi-diff-old.txt");
-        const newFile = path.join(tmpDir, "pi-diff-new.txt");
-
-        let oldText = "";
-        let newText = "";
-        let filePath = input.path;
-
-        try {
-            const fullPath = path.isAbsolute(filePath) ? filePath : path.join(cwd, filePath);
-            if (fs.existsSync(fullPath)) oldText = fs.readFileSync(fullPath, "utf-8");
-        } catch {}
-
-        if (input.content !== undefined) newText = input.content;
-        else if (input.newText !== undefined) { oldText = input.oldText; newText = input.newText; }
-
-        fs.writeFileSync(oldFile, oldText);
-        fs.writeFileSync(newFile, newText);
-        return { oldFile, newFile };
-    }
 
     pi.on("session_start", (_event, ctx) => { loadPermissions(ctx.cwd); });
     loadPermissions(process.cwd());
@@ -405,19 +457,45 @@ export default function (pi: ExtensionAPI) {
         if (level === "ask") {
             if (!ctx.hasUI) return { block: true, reason: "No UI" };
 
-            while (true) {
-                let description = `Tool: ${event.toolName}`;
-                if (event.input.path) description += `\nFile: ${event.input.path}`;
-                if (event.toolName === "bash") description += `\nCmd: ${event.input.command}`;
+            const promptBits = [`tool: ${event.toolName}`];
+            if (typeof event.input?.path === "string") promptBits.push(`path: ${event.input.path}`);
+            if (typeof event.input?.command === "string") promptBits.push(`cmd: ${event.input.command}`);
+            const promptLabel = promptBits.join(" · ");
 
-                const result = await ctx.ui.custom<PermissionResult | null>((tui, _theme, _kb, done) => {
+            while (true) {
+                let result = await ctx.ui.custom<PermissionResult | null | undefined>((tui, theme, _kb, done) => {
                     return new PermissionPrompt(
-                        description,
+                        "",
                         (event.toolName === "edit" || event.toolName === "write"),
+                        undefined,
                         tui,
+                        theme,
                         done
                     );
                 });
+
+                // RPC mode: ctx.ui.custom() returns undefined. Fall back to select/confirm.
+                if (result === undefined) {
+                    const choice = await ctx.ui.select(`Permission: ${promptLabel}`, [
+                        "Allow",
+                        "Allow (Session)",
+                        "Block",
+                        "Block (Session)",
+                    ]);
+
+                    if (!choice) return { block: true, reason: "User cancelled" };
+
+                    const actionMap: Record<string, PermissionResult["action"]> = {
+                        "Allow": "allow",
+                        "Allow (Session)": "allow-session",
+                        "Block": "block",
+                        "Block (Session)": "block-session",
+                    };
+                    const action = actionMap[choice];
+                    if (!action) return { block: true, reason: "User cancelled" };
+
+                    result = { action };
+                }
 
                 if (!result) return { block: true, reason: "User cancelled" };
 
@@ -426,7 +504,6 @@ export default function (pi: ExtensionAPI) {
 
                     await ctx.ui.custom<void>((tui, _theme, _kb, done) => {
                         tui.stop();
-
                         try {
                             const [cmd, ...args] = getDiffTool();
                             spawnSync(cmd, [...args, oldFile, newFile], { stdio: "inherit" });
@@ -434,7 +511,6 @@ export default function (pi: ExtensionAPI) {
                             console.error(e);
                         } finally {
                             tui.start();
-                            // Avoid forced full redraw; let normal repaint settle to reduce flash.
                             tui.requestRender();
                             done();
                         }

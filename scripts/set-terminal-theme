@@ -1,0 +1,40 @@
+#!/bin/sh
+set -eu
+
+if [ "$#" -ne 1 ]; then
+    printf '%s\n' "usage: set-terminal-theme <Ghostty theme>" >&2
+    exit 1
+fi
+
+ROOT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+GHOSTTY_CONFIG="$ROOT_DIR/ghostty/config"
+TMP_FILE=$(mktemp "${TMPDIR:-/tmp}/ghostty-theme.XXXXXX")
+trap 'rm -f "$TMP_FILE"' EXIT HUP INT TERM
+
+awk -v theme="$1" '
+    BEGIN {
+        replaced = 0
+    }
+    /^[[:space:]]*theme[[:space:]]*=/ && !replaced {
+        print "theme = " theme
+        replaced = 1
+        next
+    }
+    {
+        print
+    }
+    END {
+        if (!replaced) {
+            print "theme = " theme
+        }
+    }
+' "$GHOSTTY_CONFIG" > "$TMP_FILE"
+
+mv "$TMP_FILE" "$GHOSTTY_CONFIG"
+trap - EXIT HUP INT TERM
+
+if tmux ls >/dev/null 2>&1; then
+    tmux source-file "$ROOT_DIR/.tmux.conf" >/dev/null 2>&1 || true
+fi
+
+printf '%s\n' "Ghostty theme set to: $1"

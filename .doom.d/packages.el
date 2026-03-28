@@ -81,3 +81,5 @@
 (package! agent-shell)
 (package! boogie-friends)
 (package! math-preview)
+(package! catppuccin-theme)
+(package! d2-mode)
