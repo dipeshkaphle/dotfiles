@@ -1,10 +1,15 @@
 require('options')
-require('lazy_config')
-require('mappings')
-require('commands')
 require('migrated_settings')
 require('migrated_keymaps')
 
+if vim.g.vscode then
+  require('vscode_config')
+  return
+end
+
+require('lazy_config')
+require('mappings')
+require('commands')
 
 -- bootstrap plugins & lazy.nvim
 local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim" -- path where its going to be installed
