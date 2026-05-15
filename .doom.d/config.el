@@ -261,10 +261,6 @@
 (setq read-process-output-max (* 1024 1024)) ;
 (setq gc-cons-threshold (* 4 1024 1024 1024))
 
-;; Use C-SPC in insert mode to get capf, it'll be much faster this way I guess
-;; and I learn to write code without being too dependent on autocomplete
-(use-package! company
-  :config (setq company-idle-delay nil))
 
 ;; Source: https://docs.doomemacs.org/v21.12/modules/lang/cc/
 ;; Making clangd the lsp in C/C++ projects
@@ -276,8 +272,6 @@
 				"--header-insertion-decorators=0"))
 (after! lsp-clangd (set-lsp-priority! 'clangd 2))
 
-;; Specifying directory in rg search => https://emacs.stackexchange.com/questions/63079/how-to-change-counsel-grep-options-once-activated-counsel-rg-counsel-git-grep
-(setq counsel-mode t)
 (setq utop-command "opam config exec -- dune utop . -- -emacs")
 
 (add-hook! 'tuareg-mode-hook #'merlin-mode)
@@ -311,10 +305,26 @@
 ;; Just wanted to be fancy
 
 
-;; Doesn't work for some reason, start company-coq-mode manually
-(add-hook 'coq-mode-hook #'company-coq-mode)
-;;
-(setq company-coq-live-on-the-edge t)
+;; Manage Coq outside Doom's :lang coq module.  Proof General owns `coq-mode',
+;; while company-coq owns the Coq-specific completion backend.
+(use-package! proof-general
+  :mode ("\\.v\\'" . coq-mode))
+
+(use-package! company-coq
+  :after proof-general
+  :hook (coq-mode . company-coq-mode)
+  :config
+  ;; Keep company-coq's newer completion/indexing behavior enabled.
+  (setq company-coq-live-on-the-edge t)
+  ;; Leave only cosmetic features off; company-coq's `company' feature is what
+  ;; enables `company-mode' and installs the Coq completion backends.
+  (setq company-coq-disabled-features '(hello spinner)))
+
+
+;; Use C-SPC in insert mode to get capf, it'll be much faster this way I guess
+;; and I learn to write code without being too dependent on autocomplete
+(use-package! company
+  :config (setq company-idle-delay 0.1))
 
 
 ;; Call this once you start the fstar subprocess

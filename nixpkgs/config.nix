@@ -104,7 +104,7 @@ in
                 tesseract
                 duckdb
                 sioyek
-				(coq.withPackages (ps: with ps; [ stdlib coq-lsp ]))
+				(coq.withPackages (ps: with ps; [ stdlib coq-lsp coqutil vsrocq-language-server]))
                 d2
 			] ++ linux_only_packages ++ mac_only_packages;
           };

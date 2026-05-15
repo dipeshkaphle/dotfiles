@@ -52,21 +52,7 @@
 (package! xclip)
 (package! vdiff)
 (package! merlin)
-(package! org-tree-slide)
-(package! ivy-rich :disable t)
-(package! amx :disable t)
-(package! ivy :disable t)
-(package! ivy-hydra :disable t)
-;; (package! embark :disable t)
-(package! swiper :disable t)
-(unpin! lsp-mode magit swiper)
-;(package! lean4-mode :recipe
-  ;(:host github
-   ;:repo "leanprover/lean4-mode"
-   ;:files ("*.el" "data")))
-;; better maintained lean mode
-; (package! nael)
-; (package! nael-lsp)
+(unpin! lsp-mode magit nael nael-lsp)
 (package! org-modern)
 (unpin! modus-themes)
 (package! rotate)
@@ -74,11 +60,11 @@
 (package! typst-ts-mode
   :recipe (:type git :host codeberg :repo "meow_king/typst-ts-mode"
            :files (:defaults "*.el")))
-(unpin! company-coq)
-(unpin! proof-general)
-(package! shell-maker)
-(package! acp)
-(package! agent-shell)
+(package! proof-general
+  ;; Proof General's generated autoloads compute `proof-site' relative to
+  ;; Doom's profile directory, so build it without package autoloads.
+  :recipe (:build (:not autoloads)))
+(package! company-coq)
 (package! boogie-friends)
 (package! math-preview)
 (package! catppuccin-theme)
