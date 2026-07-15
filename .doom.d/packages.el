@@ -52,7 +52,7 @@
 (package! xclip)
 (package! vdiff)
 (package! merlin)
-(unpin! lsp-mode magit nael nael-lsp)
+(unpin! magit nael)
 (package! org-modern)
 (unpin! modus-themes)
 (package! rotate)

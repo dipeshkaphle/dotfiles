@@ -1,5 +1,12 @@
+# Credentials and machine-local state
 auth.json
+settings.json
+trust.json
+
+# Runtime data and downloaded packages
 sessions/
 git/
 npm/
-settings.json
+cache/
+run-history.jsonl
+pi-crash.log

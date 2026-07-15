@@ -1,5 +1,5 @@
 export interface AssistantMessage {
-  index: number;
+  branchIndex: number;
   markdown: string;
   preview: string;
   timestamp?: string;

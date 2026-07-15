@@ -1,4 +1,4 @@
-import type { ExtensionCommandContext } from "@mariozechner/pi-coding-agent";
+import type { ExtensionCommandContext } from "@earendil-works/pi-coding-agent";
 import { open, type GlimpseWindow } from "glimpseui";
 import { composePreviewPrompt } from "./prompt.ts";
 import { renderMarkdownBlocks } from "./render.ts";
@@ -7,90 +7,62 @@ import { buildPreviewHtml } from "./ui.ts";
 
 let activeWindow: GlimpseWindow | null = null;
 
-type IncomingPreviewComment = Partial<PreviewComment> | null | undefined;
-
-type IncomingPreviewMessage = {
-  type?: string;
-  overallComment?: string;
-  comments?: IncomingPreviewComment[];
-} | null | undefined;
-
-function isPreviewComment(value: IncomingPreviewComment): value is PreviewComment {
-  return value != null
-    && typeof value.blockId === "string"
-    && typeof value.blockIndex === "number"
-    && typeof value.blockKind === "string"
-    && typeof value.blockLabel === "string"
-    && typeof value.excerpt === "string"
-    && typeof value.sourceMarkdown === "string"
-    && typeof value.body === "string";
+function isComment(value: any): value is PreviewComment {
+  return value
+    && ["blockId", "blockKind", "blockLabel", "excerpt", "sourceMarkdown", "body"].every((key) => typeof value[key] === "string")
+    && typeof value.blockIndex === "number";
 }
 
-function isPreviewSubmitPayload(value: IncomingPreviewMessage): value is PreviewSubmitPayload {
-  return value != null
-    && value.type === "submit"
+function isSubmit(value: any): value is PreviewSubmitPayload {
+  return value?.type === "submit"
     && typeof value.overallComment === "string"
     && Array.isArray(value.comments)
-    && value.comments.every(isPreviewComment);
+    && value.comments.every(isComment);
 }
 
-function hasPreviewFeedback(payload: PreviewSubmitPayload): boolean {
-  return payload.overallComment.trim().length > 0 || payload.comments.some((comment) => comment.body.trim().length > 0);
+function hasFeedback(payload: PreviewSubmitPayload): boolean {
+  return payload.overallComment.trim() !== "" || payload.comments.some((comment) => comment.body.trim() !== "");
 }
 
 export function closePreviewWindow(): void {
-  if (activeWindow == null) return;
-  const windowToClose = activeWindow;
+  const window = activeWindow;
   activeWindow = null;
   try {
-    windowToClose.close();
+    window?.close();
   } catch {}
 }
 
 export async function showPreviewWindow(ctx: ExtensionCommandContext, markdown: string): Promise<void> {
-  const blocks = await renderMarkdownBlocks(markdown);
-  const html = buildPreviewHtml(blocks);
-
+  const html = buildPreviewHtml(await renderMarkdownBlocks(markdown));
   closePreviewWindow();
 
-  const window = open(html, {
-    width: 1420,
-    height: 960,
-    title: "",
-    openLinks: true,
-  });
+  const window = open(html, { width: 1420, height: 960, title: "", openLinks: true });
   activeWindow = window;
 
-  const clear = (): void => {
+  const clear = () => {
     if (activeWindow === window) activeWindow = null;
   };
 
-  window.on("message", (data: IncomingPreviewMessage) => {
-    if (activeWindow !== window || data == null) return;
-    const message = data as PreviewWindowMessage;
+  window.on("message", (message: PreviewWindowMessage | any) => {
+    if (activeWindow !== window || !message) return;
 
-    if (isPreviewSubmitPayload(message)) {
-      if (!hasPreviewFeedback(message)) {
+    if (isSubmit(message)) {
+      if (!hasFeedback(message)) {
         ctx.ui.notify("No preview feedback to insert.", "warning");
-        closePreviewWindow();
-        return;
+      } else {
+        ctx.ui.setEditorText(composePreviewPrompt(message));
+        ctx.ui.notify("Inserted preview comments into the editor.", "info");
       }
-
-      ctx.ui.setEditorText(composePreviewPrompt(message));
-      ctx.ui.notify("Inserted preview comments into the editor.", "info");
       closePreviewWindow();
       return;
     }
 
-    if (message.type === "done" || message.type === "cancel") {
-      closePreviewWindow();
-    }
+    if (message.type === "done" || message.type === "cancel") closePreviewWindow();
   });
 
   window.on("closed", clear);
   window.on("error", (error) => {
     clear();
-    const message = error instanceof Error ? error.message : String(error);
-    ctx.ui.notify(`Glimpse preview failed: ${message}`, "error");
+    ctx.ui.notify(`Glimpse preview failed: ${error instanceof Error ? error.message : String(error)}`, "error");
   });
 }

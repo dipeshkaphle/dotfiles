@@ -1,4 +1,4 @@
-import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
+import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { InteractiveShellOverlay } from "pi-interactive-shell/overlay-component.ts";
 import { loadConfig } from "pi-interactive-shell/config.ts";
 import type { InteractiveShellOptions, InteractiveShellResult } from "pi-interactive-shell/types.ts";

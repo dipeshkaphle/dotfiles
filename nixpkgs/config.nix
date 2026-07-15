@@ -58,7 +58,7 @@ in
                 glib
                 # lean4
                 elan
-                # fstar
+                fstar
                 opam
                 rustup
                 gh
@@ -104,8 +104,9 @@ in
                 tesseract
                 duckdb
                 sioyek
-				(coq.withPackages (ps: with ps; [ stdlib coq-lsp coqutil vsrocq-language-server]))
+				# (coq.withPackages (ps: with ps; [ stdlib coq-lsp coqutil vsrocq-language-server]))
                 d2
+                go
 			] ++ linux_only_packages ++ mac_only_packages;
           };
 	};

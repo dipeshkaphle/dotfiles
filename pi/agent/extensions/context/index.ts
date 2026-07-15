@@ -8,9 +8,9 @@
  * - current context window usage + session totals (tokens/cost)
  */
 
-import type { ExtensionAPI, ExtensionCommandContext, ExtensionContext, ToolResultEvent } from "@mariozechner/pi-coding-agent";
-import { DynamicBorder } from "@mariozechner/pi-coding-agent";
-import { Container, Key, Text, matchesKey, type Component, type TUI } from "@mariozechner/pi-tui";
+import type { ExtensionAPI, ExtensionCommandContext, ExtensionContext, ToolResultEvent } from "@earendil-works/pi-coding-agent";
+import { DynamicBorder } from "@earendil-works/pi-coding-agent";
+import { Container, Key, Text, matchesKey, type Component, type TUI } from "@earendil-works/pi-tui";
 import os from "node:os";
 import path from "node:path";
 import fs from "node:fs/promises";
@@ -124,7 +124,8 @@ function buildSkillIndex(pi: ExtensionAPI, cwd: string): SkillIndexEntry[] {
 		.getCommands()
 		.filter((c) => c.source === "skill")
 		.map((c) => {
-			const p = c.path ? normalizeReadPath(c.path, cwd) : "";
+			const commandPath = c.sourceInfo?.path ?? "";
+			const p = commandPath ? normalizeReadPath(commandPath, cwd) : "";
 			return {
 				name: normalizeSkillName(c.name),
 				skillFilePath: p,
@@ -479,7 +480,7 @@ export default function contextExtension(pi: ExtensionAPI) {
 
 			const extensionsByPath = new Map<string, string[]>();
 			for (const c of extensionCmds) {
-				const p = c.path ?? "<unknown>";
+				const p = c.sourceInfo?.path ?? "<unknown>";
 				const arr = extensionsByPath.get(p) ?? [];
 				arr.push(c.name);
 				extensionsByPath.set(p, arr);

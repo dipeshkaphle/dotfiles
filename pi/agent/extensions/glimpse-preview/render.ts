@@ -1,5 +1,4 @@
 import { unified } from "unified";
-import { visit } from "unist-util-visit";
 import remarkParse from "remark-parse";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
@@ -65,20 +64,17 @@ function extractSourceMarkdown(markdown: string, node: MarkdownNode): string {
 
 function extractPlainText(node: MarkdownNode): string {
   const parts: string[] = [];
-
-  visit(node as any, (child: any) => {
-    if (child == null || typeof child !== "object") return;
-
+  const walk = (child: MarkdownNode | undefined): void => {
+    if (!child) return;
     if (typeof child.value === "string" && ["text", "inlineCode", "code", "math", "html"].includes(child.type)) {
       parts.push(child.value);
-      return;
     }
-
-    if (child.type === "image" && typeof child.alt === "string" && child.alt.trim().length > 0) {
+    if (child.type === "image" && typeof child.alt === "string" && child.alt.trim()) {
       parts.push(child.alt);
     }
-  });
-
+    for (const grandchild of child.children ?? []) walk(grandchild);
+  };
+  walk(node);
   return normalizeWhitespace(parts.join(" "));
 }
 

@@ -42,6 +42,13 @@
 ;; (setq doom-theme 'doom-one-light)
 ;; (setq doom-theme 'doom-gruvbox)
 
+(custom-set-faces!
+  ;; Catppuccin Latte's default Vertico row highlight is very close to the
+  ;; background.  Keep the broader face overrides here as toggles if needed.
+  ;; '(highlight :background "#f4deb3" :foreground "#4c4f69")
+  ;; '(hl-line :background "#f4deb3" :extend t)
+  '(vertico-current :background "#f4deb3" :extend t))
+
 (setq doom-font (font-spec :family "JetBrains Mono" :size 14)
       doom-symbol-font (font-spec :family "JetBrainsMono Nerd Font Mono" :size 14))
 
@@ -148,8 +155,8 @@
  :n "C-k" #'evil-scroll-line-up
  :n "C-j" #'evil-scroll-line-down
  :i "C-V" #'evil-paste-after
- :n "]n"  #'flycheck-previous-error
- :n "[n"  #'flycheck-next-error
+ :n "]n"  #'flycheck-next-error
+ :n "[n"  #'flycheck-previous-error
  )
 
 ;; map C-V to paste
@@ -178,21 +185,6 @@
  :map company-active-map
  "C-y" #'company-complete-selection
  )
-
-(map!
- :map lsp-mode-map
- :n "Q" #'flycheck-explain-error-at-point
- )
-
-(use-package! lsp
-  :custom
-  ((lsp-rust-analyzer-server-display-inlay-hints t)
-   (lsp-enable-which-key-integration t)
-   )
-  )
-;; Has difference between `add-hook` and `add-hook!` and some more stuff https://discourse.doomemacs.org/t/common-config-anti-patterns/119
-(add-hook 'lsp-mode-hook #'lsp-headerline-breadcrumb-mode)
-;; (add-hook 'lsp-mode-hook #'lsp-inlay-hints-mode)
 
 (use-package! ocamlformat
   :custom (ocamlformat-enable 'enable-outside-detected-project)
@@ -261,16 +253,6 @@
 (setq read-process-output-max (* 1024 1024)) ;
 (setq gc-cons-threshold (* 4 1024 1024 1024))
 
-
-;; Source: https://docs.doomemacs.org/v21.12/modules/lang/cc/
-;; Making clangd the lsp in C/C++ projects
-(setq lsp-clients-clangd-args '("-j=4"
-				"--background-index"
-				"--clang-tidy"
-				"--completion-style=detailed"
-				"--header-insertion=never"
-				"--header-insertion-decorators=0"))
-(after! lsp-clangd (set-lsp-priority! 'clangd 2))
 
 (setq utop-command "opam config exec -- dune utop . -- -emacs")
 
@@ -358,15 +340,29 @@
          ))
 
 
-(add-to-list 'lsp-language-id-configuration '(typst-ts-mode . "typst"))
-
-(lsp-register-client (make-lsp-client
-                      :new-connection (lsp-stdio-connection '("tinymist" "lsp"))
-                      :activation-fn (lsp-activate-on "typst")
-                      :server-id 'typst-lsp))
-
 (defun enable-typst-lsp-mode ()
   (interactive)
-  (lsp))
+  (eglot-ensure))
+
+(after! eglot
+  (add-to-list 'eglot-server-programs
+               '(typst-ts-mode . ("tinymist" "lsp")))
+  ;; Source: https://docs.doomemacs.org/v21.12/modules/lang/cc/
+  ;; Making clangd the LSP server in C/C++ projects.
+  (add-to-list 'eglot-server-programs
+               '((c-mode c++-mode c-ts-mode c++-ts-mode objective-c-mode cuda-mode cuda-ts-mode)
+                 . ("clangd"
+                    "-j=4"
+                    "--background-index"
+                    "--clang-tidy"
+                    "--completion-style=detailed"
+                    "--header-insertion=never"
+                    "--header-insertion-decorators=0")))
+  (map! :map eglot-mode-map
+        :n "Q" #'flycheck-explain-error-at-point))
+
+;; Keep Doom's lookup convention: gd = definition, gD = references.
+(map! :nv "gd" #'+lookup/definition
+      :nv "gD" #'+lookup/references)
 
 (add-hook 'markdown-view-mode-hook #'math-preview-all)

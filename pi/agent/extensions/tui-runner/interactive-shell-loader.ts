@@ -1,4 +1,4 @@
-import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
+import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
 // interactive_shell is already provided by installed package:
 // /Users/dipesh/.local/lib/node_modules/pi-interactive-shell/index.ts

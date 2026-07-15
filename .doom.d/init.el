@@ -14,6 +14,11 @@
 ;;      Alternatively, press 'gd' (or 'C-c c d') on a module to browse its
 ;;      directory (for easy access to its source code).
 
+;; Doom already protects gd from evil-collection, but not gD.  Set this before
+;; evil-collection initializes so Eglot cannot steal gD for other-window jumps.
+(defvar evil-collection-key-blacklist nil)
+(add-to-list 'evil-collection-key-blacklist "gD")
+
 (doom! :input
        ;;bidi              ; (tfel ot) thgir etirw uoy gnipleh
        ;;chinese
@@ -97,7 +102,7 @@
        ;;gist              ; interacting with github gists
        lookup              ; navigate your code and its documentation
        ;; (lsp +peek +eglot)               ; M-x vscode
-       (lsp +peek )               ; M-x vscode
+       (lsp +eglot)               ; M-x vscode
        magit             ; a git porcelain for Emacs
        ;;make              ; run make tasks from Emacs
        ;;pass              ; password manager for nerds

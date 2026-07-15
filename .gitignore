@@ -1,4 +1,5 @@
 secrets.fish
+.nvimlog
 
 # Pi extensions
 pi/agent/extensions/**/node_modules/
