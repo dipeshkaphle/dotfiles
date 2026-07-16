@@ -41,10 +41,13 @@ export function getLastAssistantMarkdown(ctx: ExtensionCommandContext): string |
   return getAssistantMessages(ctx).at(-1)?.markdown;
 }
 
-export async function pickAssistantMessage(ctx: ExtensionCommandContext): Promise<string | null> {
+export async function pickAssistantMessage(
+  ctx: ExtensionCommandContext,
+  action: "view" | "save" | "copy" = "view",
+): Promise<string | null> {
   const messages = getAssistantMessages(ctx);
   if (messages.length === 0) {
-    ctx.ui.notify("No assistant message found to preview.", "warning");
+    ctx.ui.notify(`No assistant message found to ${action}.`, "warning");
     return null;
   }
   if (messages.length === 1) return messages[0]!.markdown;
@@ -53,6 +56,6 @@ export async function pickAssistantMessage(ctx: ExtensionCommandContext): Promis
     const title = message.timestamp ? `assistant · ${message.timestamp}` : `assistant · #${index + 1}`;
     return `${title}${message.preview ? ` — ${message.preview}` : ""}`;
   });
-  const picked = await ctx.ui.select("Select assistant message to preview", labels);
+  const picked = await ctx.ui.select(`Select assistant message to ${action}`, labels);
   return picked ? messages[labels.indexOf(picked)]?.markdown ?? null : null;
 }

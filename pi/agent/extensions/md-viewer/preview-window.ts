@@ -63,6 +63,6 @@ export async function showPreviewWindow(ctx: ExtensionCommandContext, markdown: 
   window.on("closed", clear);
   window.on("error", (error) => {
     clear();
-    ctx.ui.notify(`Glimpse preview failed: ${error instanceof Error ? error.message : String(error)}`, "error");
+    ctx.ui.notify(`Markdown viewer failed: ${error instanceof Error ? error.message : String(error)}`, "error");
   });
 }
